@@ -21,8 +21,8 @@ const Header = () => {
   console.log(formattedDate);
   console.log(formattedWatch);
   return (
-    <header className="w-full">
-      <nav className="navbar sticky-top bg-body-tertiary">
+    <header className="w-full h-50">
+      <nav className="navbar sticky-top bg-body-tertiary h-25">
         <div className="container-fluid d-flex flex-wrap-reverse">
           {/* <div className="d-flex flex-row justify-between"> */}
           <div className="d-flex flex-row gap-3">
@@ -50,8 +50,8 @@ const Header = () => {
           </div>
         </div>
       </nav>
-      <div className="d-flex flex-row flex-wrap justify-content-between px-5 py-5 ">
-        <div className="d-flex flex-row flex-wrap-reverse md-w-100 w-75 lg-h-50">
+      <div className="d-flex flex-row flex-wrap justify-content-between px-5 py-5  h-100">
+        <div className="d-flex flex-row flex-wrap-reverse md-w-100 align-items-center sm-align-items-center w-75">
           <img
             src="https://picsum.photos/200/300"
             alt="logo"
