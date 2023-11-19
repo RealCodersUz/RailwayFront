@@ -9,7 +9,7 @@ const Login = () => {
     password: "",
   });
 
-  const [isSubmitting, setIsSubmitting] = useState(false); // New state for button disabled state
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const navigate = useNavigate();
 
@@ -25,20 +25,16 @@ const Login = () => {
     e.preventDefault();
 
     try {
-      setIsSubmitting(true); // Set isSubmitting to true when submitting the form
+      setIsSubmitting(true);
 
-      // let res = await axios.post(
-      //   "https://kalde.victoriaslove.uz/login",
-      //   headers,
-      //   values
-      // );
-
-      let res = await axios.post("/login", values);
+      let res = await axios.post("/users/login", values);
 
       if (res.status === 200) {
         toast("Войти успешно", { type: "success" });
-        setValues({ username: "", password: "" }); // Clear input values
-        localStorage.setItem("token", res.data.token); // Save token to localStorage
+        setValues({ username: "", password: "" });
+        console.log(res.data.data.token, "data");
+        // console.log(res.data.data[0].token);
+        localStorage.setItem("token", res.data.data.token);
         navigate("/");
       }
     } catch (error) {
@@ -48,19 +44,17 @@ const Login = () => {
         toast("Введенная информация неверна", { type: "error" });
       }
 
-      console.log(error.message);
+      console.error(error.message);
     } finally {
-      setIsSubmitting(false); // Reset isSubmitting to false after request completes
+      setIsSubmitting(false);
     }
   }
 
   function handleChange(e) {
-    setValues((oldValues) => {
-      return {
-        ...oldValues,
-        [e.target.name]: e.target.value,
-      };
-    });
+    setValues((oldValues) => ({
+      ...oldValues,
+      [e.target.name]: e.target.value,
+    }));
   }
 
   return (
@@ -78,7 +72,7 @@ const Login = () => {
             {/* ... (your form content) */}
             <div className="my-3">
               <label className="form-label" htmlFor="username">
-                Имя (обязательно)
+                Имя <span style={{ color: "red" }}>( * ) </span>
               </label>
               <input
                 className="form-control"
@@ -93,7 +87,7 @@ const Login = () => {
 
             <div className="my-3">
               <label className="form-label" htmlFor="password">
-                Пароль для входа (обязательно)
+                Пароль <span style={{ color: "red" }}>( * ) </span>
               </label>
               <input
                 className="form-control"
@@ -106,18 +100,26 @@ const Login = () => {
                 // min={4}
               />
             </div>
+
             <div className="mt-3">
               <button
                 disabled={
-                  !values.username ||
-                  !values.phone_number ||
-                  values.password.length < 4 ||
-                  isSubmitting // Disable the button while submitting
+                  !values.username || values.password.length < 4 || isSubmitting // Disable the button while submitting
                 }
                 className="btn btn-primary d-block w-100 fs-4"
               >
                 {isSubmitting ? "Вход..." : "Входить"}
               </button>
+
+              <h6 className="text-center pt-5 ">
+                Если есть проблемы обращайтесь.
+                <br />
+                <span>
+                  <a href="tel=+998912345678" className="text-decoration-none">
+                    +998912345678
+                  </a>
+                </span>
+              </h6>
             </div>
           </form>
         </div>
