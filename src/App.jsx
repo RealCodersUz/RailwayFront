@@ -12,13 +12,9 @@ function App() {
         <Routes>
           <Route path="/" element={<Main />} />
           <Route path="/login" element={<Login />} />
-
           {/* reports  start*/}
-
           <Route path="/reports" element={<GetReportsPage />} />
-
           {/* reports end */}
-
           <Route path="/*" element={<NotFound />} />
         </Routes>
       </main>
