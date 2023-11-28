@@ -10,6 +10,7 @@ const Main = () => {
   return (
     <div className="h-full">
       <Header />
+
       <ReportCards />
       <Footer />
     </div>
