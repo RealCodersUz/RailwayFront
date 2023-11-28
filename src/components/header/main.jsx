@@ -1,8 +1,10 @@
 /* eslint-disable no-unused-vars */
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+
 import "./index.scss";
 import React, { useEffect } from "react";
 import axios from "axios";
+import { IoSettingsOutline } from "react-icons/io5";
 
 const Header = () => {
   const navigate = useNavigate();
@@ -60,61 +62,38 @@ const Header = () => {
   console.log(formattedDate);
   console.log(formattedWatch);
   return (
-    <header className="w-full h-50 bg-body-tertiary sticky-top pb-2">
-      <nav className="navbar  h-25">
-        <div className="container-fluid d-flex flex-wrap-reverse">
-          {/* <div className="d-flex flex-row justify-between"> */}
-          <div className="d-flex flex-row gap-3">
-            <div className="time">{formattedDate}</div>
-            <div className="time">
-              {formattedWatch.slice(0, formattedWatch.length - 2)}
-            </div>
-          </div>
-          <div className="right d-flex flex-row justify-center align-items-center gap-3">
-            <div className="names">
-              <div className="name">
-                <p>{data.name}</p>
-              </div>
-              <div className="branch_name">
-                <p>{data.branch_name}</p>
-              </div>
-            </div>
-            <img
-              src="https://picsum.photos/200/300"
-              alt="img"
-              width={50}
-              height={50}
-              style={{ borderRadius: "50%" }}
-            />
-          </div>
-        </div>
-      </nav>
-      <div className="d-flex flex-row flex-wrap justify-content-between px-5 pb-2  h-100">
-        <div className="d-flex flex-row flex-wrap-reverse md-w-100 align-items-center sm-align-items-center w-75 ">
-          <a
-            href="/"
+    <header className="header w-full bg-body-tertiary sticky-top pb-2">
+      <div className="navbar h-25 d-flex flex-row flex-wrap justify-content-between px-5 pb-2  h-100">
+        <div className="header-logo-main d-flex flex-row flex-wrap-reverse align-items-center">
+          <Link
+            to="/"
             className="text-decoration-none text-dark d-flex flex-wrap w-100"
           >
-            <img
-              src="https://picsum.photos/200/300"
-              alt="logo"
-              width="220px"
-              height="180px"
-              className="header-diamond-shape"
-            />
-            <div className="texts w-50">
-              <h3>CRM Железнодорожный учет</h3>
-              <h5>Oтправка отчётов в рамках одной системы</h5>
+            <div className="header-logo">
+              <img src="/logo_full_text.png" alt="logo" className="" />
             </div>
-          </a>
+          </Link>
         </div>
-        <div className="help">
-          <h5>Вам нужна помощь ?</h5>
-          <span>
-            <a href="tel=+998912345678" className="text-decoration-none">
-              +99891 234 56 78
-            </a>
-          </span>
+
+        <div className="header-clock">
+          <div className="time">
+            {formattedWatch.slice(0, formattedWatch.length - 2)}
+          </div>
+          <div className="time">{formattedDate}</div>
+        </div>
+
+        <div className="user-settings d-flex flex-row justify-center align-items-center">
+          <div className="names">
+            <div className="name">
+              <p className="fw-bold">{data.name}</p>
+            </div>
+            <div className="branch_name">
+              <p>{data.branch_name}</p>
+            </div>
+          </div>
+          <Link to="/settings" className="settings fw-bold ">
+            <IoSettingsOutline />
+          </Link>
         </div>
       </div>
     </header>

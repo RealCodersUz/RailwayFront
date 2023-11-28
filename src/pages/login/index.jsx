@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-toastify";
+import "./style.scss";
 
 const Login = () => {
   const [values, setValues] = useState({
@@ -58,70 +59,79 @@ const Login = () => {
   }
 
   return (
-    <main className="min-vh-100 text-bg-light my-auto ">
-      <div className="">
-        <article className="text-center pt-5">
-          <h2>CRM</h2>
-          <h3>Железнодорожный учет</h3>
-        </article>
-        <div className="">
-          <form
-            onSubmit={handleSubmit}
-            className="bg-white border w-50 p-3 m-auto"
-          >
-            {/* ... (your form content) */}
-            <div className="my-3">
-              <label className="form-label" htmlFor="username">
-                Имя <span style={{ color: "red" }}>( * ) </span>
-              </label>
-              <input
-                className="form-control"
-                type="text"
-                name="username"
-                id="username"
-                value={values.username}
-                onChange={handleChange}
-                required
-              />
-            </div>
+    <main className="login-main-div">
+      <div className="login-flex">
+        <div className="login-wrapper">
+          <img src="/logo-text.png" alt="" className="login-logo " />
 
-            <div className="my-3">
-              <label className="form-label" htmlFor="password">
-                Пароль <span style={{ color: "red" }}>( * ) </span>
-              </label>
-              <input
-                className="form-control"
-                type="password"
-                name="password"
-                id="password"
-                value={values.password}
-                onChange={handleChange}
-                required
-                // min={4}
-              />
-            </div>
+          <article className="text-center">
+            <h2>Войти в систему</h2>
+            <p className="text-secondary h5">Управление и анализ отчетов</p>
+          </article>
+          <div className="">
+            <form
+              onSubmit={handleSubmit}
+              className="bg-white m-auto login-form"
+            >
+              {/* ... (your form content) */}
+              <div className="my-3">
+                <label className="form-label" htmlFor="username">
+                  Логин :
+                </label>
+                <input
+                  className="form-control"
+                  type="text"
+                  name="username"
+                  id="username"
+                  value={values.username}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
 
-            <div className="mt-3">
-              <button
-                disabled={
-                  !values.username || values.password.length < 4 || isSubmitting // Disable the button while submitting
-                }
-                className="btn btn-primary d-block w-100 fs-4"
-              >
-                {isSubmitting ? "Вход..." : "Входить"}
-              </button>
+              <div className="my-3">
+                <label className="form-label" htmlFor="password">
+                  Пароль :
+                </label>
+                <input
+                  className="form-control"
+                  type="password"
+                  name="password"
+                  id="password"
+                  value={values.password}
+                  onChange={handleChange}
+                  required
+                  // min={4}
+                />
+              </div>
 
-              <h6 className="text-center pt-5 ">
-                Если есть проблемы обращайтесь.
-                <br />
-                <span>
-                  <a href="tel=+998912345678" className="text-decoration-none">
+              <div className="mt-3">
+                <button
+                  disabled={
+                    !values.username ||
+                    values.password.length < 4 ||
+                    isSubmitting // Disable the button while submitting
+                  }
+                  className="btn btn-primary d-block w-100 fs-4"
+                >
+                  {isSubmitting ? "Вход..." : "Войти"}
+                </button>
+
+                <h6 className="text-center pt-5 text-secondary">
+                  Если проблема,
+                  <a
+                    href="tel:+998912345678"
+                    className="text-decoration-none text-secondary icon-link-hover"
+                  >
                     +998912345678
                   </a>
-                </span>
-              </h6>
-            </div>
-          </form>
+                </h6>
+              </div>
+            </form>
+          </div>
+        </div>
+        <div className="login-wrapper">
+          <img src="/afrosiyop.png" alt="" />
         </div>
       </div>
     </main>

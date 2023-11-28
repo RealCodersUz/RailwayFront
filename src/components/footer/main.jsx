@@ -1,28 +1,32 @@
+import { Link } from "react-router-dom";
 import "./index.scss";
+import { BsFillTelephoneFill } from "react-icons/bs";
 
 const Footer = () => {
   return (
-    <footer className="w-full h-50">
-      <div className="d-flex flex-row flex-wrap justify-content-between px-5 py-5  h-100">
+    <footer className="w-full">
+      <div className="d-flex flex-row flex-wrap justify-content-between px-5 py-3">
         <div className="d-flex flex-row flex-wrap-reverse md-w-100 align-items-center sm-align-items-center w-75">
-          <img
-            src="https://picsum.photos/200/300"
-            alt="logo"
-            width="220px"
-            height="180px"
-            className="footer-diamond-shape"
-          />
-          <div className="texts w-50">
-            <h3>CRM Железнодорожный учет</h3>
-            <h5>Oтправка отчётов в рамках одной системы</h5>
+          <div className="footer-logo-main d-flex flex-row flex-wrap-reverse align-items-center">
+            <Link
+              to="/"
+              className="text-decoration-none text-dark d-flex flex-wrap w-100"
+            >
+              <div className="footer-logo">
+                <img src="/logo-text.png" alt="logo" className="" />
+              </div>
+            </Link>
           </div>
         </div>
         <div className="help">
-          <h5>Вам нужна помощь ?</h5>
+          <h5>Нужна помощь?</h5>
           <span>
-            <a href="tel=+998912345678" className="text-decoration-none">
-              +99891 234 56 78
-            </a>
+            <Link
+              to="tel:+998912345678"
+              className="footer-link text-decoration-none fw-bold text-dark"
+            >
+              <BsFillTelephoneFill /> +998 99 999 99 99
+            </Link>
           </span>
         </div>
       </div>
