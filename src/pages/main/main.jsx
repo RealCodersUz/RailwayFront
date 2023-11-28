@@ -5,12 +5,18 @@ import Header from "../../components/header/main";
 import React, { useEffect } from "react";
 import "./index.scss";
 import ReportCards from "../../components/reportCards/ReportCards";
+import SideBar from "../../components/sidebar";
+// import SideBar from "../sidebar";
 
 const Main = () => {
   return (
     <div className="h-full">
       <Header />
-      <ReportCards />
+      <div className="d-flex flex-row">
+        <SideBar />
+
+        <ReportCards />
+      </div>
       <Footer />
     </div>
   );

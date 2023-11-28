@@ -1,58 +1,79 @@
 import {
   CDBSidebar,
   CDBSidebarContent,
+  CDBSidebarFooter,
   CDBSidebarHeader,
   CDBSidebarMenu,
   CDBSidebarMenuItem,
-  CDBSidebarFooter,
 } from "cdbreact";
+import { Link } from "react-router-dom";
+import { FaArrowRightArrowLeft, FaChartSimple } from "react-icons/fa6";
+import { AiOutlineHome } from "react-icons/ai";
+import { PiArchiveBoxBold } from "react-icons/pi";
+import { FiLogOut } from "react-icons/fi";
 
 const SideBar = () => {
   return (
-    <CDBSidebar
-      style={{
-        // height: "100%",
-        // position: "fixed",
-        // top: "7rem",
-        // left: "0",
-        display: "block",
-        maxWidth: "15rem",
-      }}
-      textColor="#333"
-      backgroundColor="#f0f0f0"
-      className="sticky-bottom"
+    <div
+      style={{ display: "flex", height: "100vh", overflow: "scroll initial" }}
     >
-      <CDBSidebarHeader prefix={<i className="fa fa-bars" />}>
-        Contrast Light Mode
-      </CDBSidebarHeader>
-      <CDBSidebarContent>
-        <CDBSidebarMenu>
-          <CDBSidebarMenuItem icon="th-large">Dashboard</CDBSidebarMenuItem>
-          <CDBSidebarMenuItem icon="sticky-note">Components</CDBSidebarMenuItem>
-          <CDBSidebarMenuItem icon="chart-line" iconType="solid">
-            Metrics
-          </CDBSidebarMenuItem>
-        </CDBSidebarMenu>
-        <CDBSidebarMenu style={{ visibility: "hidden" }}>
-          <CDBSidebarMenuItem icon="th-large">Dashboard</CDBSidebarMenuItem>
-          <CDBSidebarMenuItem icon="sticky-note">Components</CDBSidebarMenuItem>
-          <CDBSidebarMenuItem icon="chart-line" iconType="solid">
-            qaaaaaaaaaa
-          </CDBSidebarMenuItem>
-        </CDBSidebarMenu>
-      </CDBSidebarContent>
+      <CDBSidebar textColor="#808080" backgroundColor="#fff">
+        <CDBSidebarHeader prefix={<FaArrowRightArrowLeft />}>
+          <h4 className="text-decoration-none text-secondary">Меню</h4>
+        </CDBSidebarHeader>
 
-      <CDBSidebarFooter style={{ textAlign: "center" }}>
-        <div className="sidebar-btn-wrapper" style={{ padding: "20px 5px" }}>
-          logout
-        </div>
-      </CDBSidebarFooter>
-      {/* <CDBSidebarFooter style={{ paddingLeft: "2rem" }}>
-        <div className="sidebar-btn-wrapper" style={{ padding: "20px 5px" }}>
-          Sidebar Footer
-        </div>
-      </CDBSidebarFooter> */}
-    </CDBSidebar>
+        <CDBSidebarContent className="sidebar-content text-secondary">
+          <CDBSidebarMenu>
+            <Link
+              className="text-secondary"
+              exact
+              to="/"
+              activeClassName="activeClicked"
+            >
+              <CDBSidebarMenuItem>
+                <AiOutlineHome className="text-bolder fs-5 " /> Dashboard
+              </CDBSidebarMenuItem>
+            </Link>
+            <Link
+              className="text-secondary"
+              exact
+              to="/reports"
+              activeClassName="activeClicked"
+            >
+              <CDBSidebarMenuItem>
+                <FaChartSimple className="text-bolder fs-5 " />
+                Отчеты
+              </CDBSidebarMenuItem>
+            </Link>
+            <Link
+              className="text-secondary"
+              exact
+              to="/profile"
+              activeClassName="activeClicked"
+            >
+              <CDBSidebarMenuItem>
+                <PiArchiveBoxBold /> Архив
+              </CDBSidebarMenuItem>
+            </Link>
+          </CDBSidebarMenu>
+        </CDBSidebarContent>
+
+        <CDBSidebarFooter style={{ color: "red" }}>
+          <Link
+            className="text-danger"
+            exact
+            to="/login"
+            activeClassName="activeClicked"
+          >
+            <CDBSidebarMenuItem icon={""}>
+              {" "}
+              <FiLogOut />
+              Analytics
+            </CDBSidebarMenuItem>
+          </Link>
+        </CDBSidebarFooter>
+      </CDBSidebar>
+    </div>
   );
 };
 

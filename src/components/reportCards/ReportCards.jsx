@@ -1,7 +1,5 @@
 /* eslint-disable no-unused-vars */
 import React from "react";
-import SideBar from "../sidebar";
-
 const reportsData = [
   { name: "Отчеты", url: "/reports" },
   { name: "Форма 69", url: "/forma69" },
@@ -13,22 +11,26 @@ const reportsData = [
 function ReportCards() {
   return (
     <>
-      <div className="d-flex flex-row">
-        <SideBar />
+      <div className="">
         <div className="container p-5">
           <div className=" p-5">
             <h2 className="text-center">Отчеты</h2>
 
             {/* <h4 className="text-center pb-5">Отправлять отчеты</h4> */}
-            <div className="d-flex justify-content-between">
+            <div className="d-flex justify-content-between g-4 ">
               {reportsData.map((data, index) => (
                 <div
-                  className="card p-3"
+                  className="card p-1 mx-2 border-bottom bg-primary text-white"
                   style={{ width: "12rem" }}
                   key={index}
                 >
-                  <a href={data.url} className="text-decoration-none">
-                    <h5 className="card-title text-center">{data.name}</h5>
+                  <a
+                    href={data.url}
+                    className="text-decoration-none text-white"
+                  >
+                    <h5 className="card-title text-center text-white p-3">
+                      {data.name}
+                    </h5>
                   </a>
                 </div>
               ))}
@@ -58,7 +60,7 @@ function ReportCards() {
             </div>
             {/* <form></form> */}
           </div>
-          <div className="p-5 w-100 ">
+          <div className="px-5 w-100 ">
             <div className="w-100 border-bottom border-secondary d-flex flex-row justify-content-between ">
               <p className=" fw-bold fs-3 text-black">topilgan file</p>
               <button className="btn btn-primary h-25 align-center">
