@@ -1,11 +1,11 @@
 /* eslint-disable no-unused-vars */
 import React from "react";
 const reportsData = [
-  { name: "Отчеты", url: "/reports" },
-  { name: "Форма 69", url: "/forma69" },
-  { name: "Основные инструменты", url: "/tools" },
-  { name: "Материальный отчет", url: "/mreport" },
-  { name: "Налог", url: "/nalog" },
+  { name: "Расходы", url: "/reports", img: "/sum.png" },
+  { name: "Форма 69", url: "/forma69", img: "/doc.png" },
+  { name: "Основные инструменты", url: "/tools", img: "/zarik.png" },
+  { name: "Материальный отчет", url: "/mreport", img: "/block.png" },
+  { name: "Налог", url: "/nalog", img: "/procent.png" },
 ];
 
 function ReportCards() {
@@ -17,23 +17,38 @@ function ReportCards() {
             <h2 className="text-center">Отчеты</h2>
 
             {/* <h4 className="text-center pb-5">Отправлять отчеты</h4> */}
-            <div className="d-flex justify-content-between g-4 ">
+            <div className="d-flex justify-content-between flex-wrap g-4 ">
               {reportsData.map((data, index) => (
                 <div
-                  className="card p-1 mx-2 border-bottom bg-primary text-white"
-                  style={{ width: "12rem" }}
+                  className="card px-4 border-bottom bg-primary text-white m-2"
+                  style={{ width: "16rem" }}
                   key={index}
                 >
                   <a
                     href={data.url}
-                    className="text-decoration-none text-white"
+                    className="text-decoration-none d-flex align-items-center py-4 justify-center text-wrap text-white"
                   >
-                    <h5 className="card-title text-center text-white p-3">
+                    <img src={data.img} alt="no rasm" />
+                    <h5 className="card-title  px-4 text-center text-white ">
                       {data.name}
                     </h5>
                   </a>
                 </div>
               ))}
+              <div
+                className="card p-1 mx-2 border-bottom bg-primary text-white"
+                style={{ width: "16rem", height: "4rem" }}
+              >
+                <a
+                  href="#"
+                  className="text-decoration-none d-flex py-2 align-items-center justify-content-center text-white"
+                >
+                  <h5 className="card-title  px-4 text-center text-white">
+                    pakazat vsyo
+                  </h5>
+                  <img src="/ewo.png" alt="ewo" />
+                </a>
+              </div>
             </div>
           </div>
           <div className=" p-5">

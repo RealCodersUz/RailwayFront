@@ -1,4 +1,5 @@
 import {
+  CDBIcon,
   CDBSidebar,
   CDBSidebarContent,
   CDBSidebarFooter,
@@ -22,54 +23,56 @@ const SideBar = () => {
           <h4 className="text-decoration-none text-secondary">Меню</h4>
         </CDBSidebarHeader>
 
-        <CDBSidebarContent className="sidebar-content text-secondary">
-          <CDBSidebarMenu>
+        <CDBSidebarContent className="sidebar-content text-secondary z-1">
+          <CDBSidebarMenu className="px-4">
             <Link
-              className="text-secondary"
+              className="d-flex flex-row align-items-center justify-center text-secondary"
               exact
               to="/"
               activeClassName="activeClicked"
             >
-              <CDBSidebarMenuItem>
-                <AiOutlineHome className="text-bolder fs-5 " /> Dashboard
-              </CDBSidebarMenuItem>
+              <CDBIcon fab icon="home">
+                <AiOutlineHome className="text-bolder fs-5 z-3 " />
+              </CDBIcon>
+              <CDBSidebarMenuItem>Dashboard</CDBSidebarMenuItem>
             </Link>
             <Link
-              className="text-secondary"
+              className="d-flex flex-row align-items-center justify-center text-secondary"
               exact
               to="/reports"
               activeClassName="activeClicked"
             >
-              <CDBSidebarMenuItem>
-                <FaChartSimple className="text-bolder fs-5 " />
-                Отчеты
-              </CDBSidebarMenuItem>
+              <CDBIcon fab icon="home">
+                <FaChartSimple className="text-bolder fs-5 z-3 " />
+              </CDBIcon>
+
+              <CDBSidebarMenuItem>Отчеты</CDBSidebarMenuItem>
             </Link>
             <Link
-              className="text-secondary"
+              className="d-flex flex-row align-items-center justify-center text-secondary"
               exact
               to="/profile"
               activeClassName="activeClicked"
             >
-              <CDBSidebarMenuItem>
-                <PiArchiveBoxBold /> Архив
-              </CDBSidebarMenuItem>
+              <CDBIcon fab icon="home">
+                <PiArchiveBoxBold className="text-bolder fs-5 z-3 " />
+              </CDBIcon>
+              <CDBSidebarMenuItem>Архив</CDBSidebarMenuItem>
             </Link>
           </CDBSidebarMenu>
         </CDBSidebarContent>
 
         <CDBSidebarFooter style={{ color: "red" }}>
           <Link
-            className="text-danger"
+            className="d-flex flex-row align-items-center justify-center pb-4 px-4 text-danger"
             exact
             to="/login"
             activeClassName="activeClicked"
           >
-            <CDBSidebarMenuItem icon={""}>
-              {" "}
-              <FiLogOut />
-              Analytics
-            </CDBSidebarMenuItem>
+            <CDBIcon fab icon="home">
+              <FiLogOut className="text-bolder fs-5 z-3 " />
+            </CDBIcon>
+            <CDBSidebarMenuItem>Выход</CDBSidebarMenuItem>
           </Link>
         </CDBSidebarFooter>
       </CDBSidebar>
