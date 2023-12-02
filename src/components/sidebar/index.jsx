@@ -51,7 +51,7 @@ const SideBar = () => {
             <Link
               className="d-flex flex-row align-items-center justify-center text-secondary"
               exact
-              to="/profile"
+              to="/reports"
               activeClassName="activeClicked"
             >
               <CDBIcon fab icon="home">
