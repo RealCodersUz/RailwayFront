@@ -1,13 +1,34 @@
 /* eslint-disable no-unused-vars */
-import { Link, useNavigate } from "react-router-dom";
+import { Link, Navigate, useNavigate } from "react-router-dom";
 
 import "./index.scss";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { IoSettingsOutline } from "react-icons/io5";
+import { CDBSidebarMenuItem } from "cdbreact";
+import { FiLogOut } from "react-icons/fi";
+import { toast } from "react-toastify";
 
 const Header = () => {
   const navigate = useNavigate();
+
+  // clock
+  const [time, setTime] = useState(new Date());
+
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+      setTime(new Date());
+    }, 1000);
+
+    // componentWillUnmount
+    return () => clearInterval(intervalId);
+  }, []); // useEffect only runs once on component mount
+
+  const hours = time.getHours();
+  const minutes = time.getMinutes();
+  const seconds = time.getSeconds();
+
+  // end
 
   const token = localStorage.getItem("token");
 
@@ -32,12 +53,19 @@ const Header = () => {
         },
       });
       setData(response.data.data);
+      const userRoleData = response.data.data.role;
+      const userRole = localStorage.setItem("role", userRoleData);
       console.log(response.data, "mana bu");
-      console.log(response.data.data, "data");
     } catch (error) {
       console.error("Error Message:", error.message);
       console.error("Error:", error);
     }
+  }
+
+  function handleLogout() {
+    localStorage.removeItem("token");
+    toast("выход", { type: "info" });
+    navigate("/login");
   }
 
   const options = {
@@ -77,7 +105,10 @@ const Header = () => {
 
         <div className="header-clock">
           <div className="time">
-            {formattedWatch.slice(0, formattedWatch.length - 2)}
+            {/* {formattedWatch.slice(0, formattedWatch.length - 2)}
+             */}
+            {hours}:{minutes < 10 ? `0${minutes}` : minutes}:
+            {seconds < 10 ? `0${seconds}` : seconds}
           </div>
           <div className="time">{formattedDate}</div>
         </div>
@@ -95,6 +126,19 @@ const Header = () => {
             <IoSettingsOutline />
           </Link>
         </div>
+      </div>
+      <div className="vxod-btn" style={{}}>
+        <Link
+          className="text-danger text-end text-decoration-none"
+          exact
+          onClick={handleLogout}
+          activeClassName="activeClicked"
+        >
+          <CDBSidebarMenuItem icon={""}>
+            <FiLogOut />
+            Выход
+          </CDBSidebarMenuItem>
+        </Link>
       </div>
     </header>
   );

@@ -4,6 +4,7 @@ import NotFound from "./pages/notFound";
 import Login from "./pages/login";
 import Main from "./pages/main/main";
 import GetReportsPage from "./pages/reports";
+import SettingsPage from "./pages/settings";
 
 function App() {
   return (
@@ -15,6 +16,9 @@ function App() {
           {/* reports  start*/}
           <Route path="/reports" element={<GetReportsPage />} />
           {/* reports end */}
+
+          <Route path="/settings" element={<SettingsPage />} />
+
           <Route path="/*" element={<NotFound />} />
         </Routes>
       </main>
