@@ -18,6 +18,7 @@ import { toast } from "react-toastify";
 
 const SideBar = () => {
   const userRole = localStorage.getItem("role");
+  const navigate = useNavigate();
 
   function handleLogout() {
     localStorage.removeItem("token");
@@ -25,7 +26,6 @@ const SideBar = () => {
     navigate("/login");
   }
 
-  const navigate = useNavigate();
   return (
     <div
       style={{ display: "flex", height: "100vh", overflow: "scroll initial" }}
@@ -43,7 +43,7 @@ const SideBar = () => {
               to="/"
               activeClassName="activeClicked"
             >
-              <CDBIcon fab>
+              <CDBIcon>
                 <AiOutlineHome className="text-bolder fs-5 z-3 " />
               </CDBIcon>
 
@@ -56,7 +56,7 @@ const SideBar = () => {
               to="/reports"
               activeClassName="activeClicked"
             >
-              <CDBIcon fab>
+              <CDBIcon>
                 <FaChartSimple className="text-bolder fs-5 z-3 " />
               </CDBIcon>
 
@@ -68,12 +68,12 @@ const SideBar = () => {
               to="/reports"
               activeClassName="activeClicked"
             >
-              <CDBIcon fab>
+              <CDBIcon>
                 <PiArchiveBoxBold className="text-bolder fs-5 z-3 " />
               </CDBIcon>
               <CDBSidebarMenuItem>Архив</CDBSidebarMenuItem>
             </Link>
-            {userRole === "super_admin" ? (
+            {/* {userRole === "super_admin" ? (
               <Link
                 className="d-flex flex-row align-items-center justify-center text-secondary"
                 exact
@@ -87,7 +87,7 @@ const SideBar = () => {
               </Link>
             ) : (
               ""
-            )}
+            )} */}
           </CDBSidebarMenu>
         </CDBSidebarContent>
 

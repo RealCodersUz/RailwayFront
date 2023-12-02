@@ -157,14 +157,57 @@ const RasxodXLSXget = () => {
   return (
     <>
       <div className="container">
-        <div>
+        <div className=" p-5">
           <h1 className="text-center">Отчеты</h1>
+          <div className="input-group my-5 ">
+            <select
+              className="form-control mx-3 rounded border-primary"
+              id="reports"
+              onChange={handleMonthChange}
+            >
+              {reportsData.map((data, index) => (
+                <option key={index} value={data.key}>
+                  {data.name}
+                </option>
+              ))}
+            </select>
+            <input
+              type="date"
+              className="form-control mx-3 rounded border-primary"
+            />
+            <button className="btn btn-primary mx-3 w-25 rounded" type="button">
+              Поиск
+            </button>
+          </div>
+          {/* <form></form> */}
+        </div>
+        <p className="text-danger fw-semibold text-center" hidden={false}>
+          Отправка недоступна. Крайний срок истек.
+        </p>
+        <div className="px-5 w-100 ">
+          <div className="w-100 border-bottom border-secondary d-flex flex-row justify-content-between ">
+            <p className=" fw-bold fs-3 text-black">
+              Наманган_12_10_2023_расходы
+            </p>
+            <div className="btngroup d-flex flex-row ">
+              <button className="btn btn-success h-75 mx-2 align-center">
+                Скачать шаблон
+              </button>
+              <button className="btn btn-primary h-75 mx-2 align-center">
+                Загрузить
+              </button>
+            </div>
+            {/* <input className="form-control" type="file" id="formFile" /> */}
+          </div>
+        </div>
+        <div>
+          {/* <h1 className="text-center">Отчеты</h1> */}
 
           <div className="cards ">
             <div className="d-flex justify-content-end gap-5 row">
-              <div className="card p-3 col-3 ">
+              {/*  <div className="card p-3 col-3 ">
                 <div>
-                  <select
+                   <select
                     id="reports"
                     onChange={handleMonthChange}
                     className="col-12 fs-5"
@@ -174,17 +217,17 @@ const RasxodXLSXget = () => {
                         {data.name}
                       </option>
                     ))}
-                  </select>
+                  </select> 
                 </div>
-              </div>
-
+              </div> */}
+              {/* 
               <div className="card p-3 col-3">
                 <div>
                   <input type="date" className="col-12" />
                 </div>
-              </div>
+              </div> */}
 
-              <div className="card p-3 col-2">
+              {/* <div className="card p-3 col-2">
                 <div>
                   <input
                     className="excelInputs btn btn-primary col-12"
@@ -192,10 +235,9 @@ const RasxodXLSXget = () => {
                     value="Поиск"
                   />
                 </div>
-              </div>
+              </div> */}
             </div>
 
-            {/*  */}
             {/* 
             <div className="d-flex justify-content-start gap-1">
               <div className="">

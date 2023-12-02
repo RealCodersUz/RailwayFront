@@ -53,7 +53,7 @@ function ReportCards() {
           </div>
           <div className=" p-5">
             <h2 className="text-center p-3">Архив</h2>
-            <div className="input-group my-5">
+            <div className="input-group my-5 ">
               <select
                 className="form-control mx-3 rounded border-primary"
                 name="fileType"
@@ -69,8 +69,11 @@ function ReportCards() {
                 type="date"
                 className="form-control mx-3 rounded border-primary"
               />
-              <button className="btn btn-primary rounded" type="button">
-                Button
+              <button
+                className="btn btn-primary mx-3 w-25 rounded"
+                type="button"
+              >
+                Поиск
               </button>
             </div>
             {/* <form></form> */}
