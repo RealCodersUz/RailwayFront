@@ -135,7 +135,7 @@ const RasxodXLSXget = () => {
     const url = window.URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = editedFileName || "edited_data.xlsx";
+    a.download = editedFileName || "exampleData.xlsx";
     a.click();
   };
   // Edit data end
@@ -163,7 +163,6 @@ const RasxodXLSXget = () => {
             <select
               className="form-control mx-3 rounded border-primary"
               id="reports"
-              onChange={handleMonthChange}
             >
               {reportsData.map((data, index) => (
                 <option key={index} value={data.key}>
@@ -179,7 +178,6 @@ const RasxodXLSXget = () => {
               Поиск
             </button>
           </div>
-          {/* <form></form> */}
         </div>
         <p className="text-danger fw-semibold text-center" hidden={false}>
           Отправка недоступна. Крайний срок истек.
@@ -193,7 +191,18 @@ const RasxodXLSXget = () => {
               <button className="btn btn-success h-75 mx-2 align-center">
                 Скачать шаблон
               </button>
-              <button className="btn btn-primary h-75 mx-2 align-center">
+              {/* <input
+                className="excelInputs"
+                style={buttonStyle}
+                type="file"
+                accept=".xls, .xlsx"
+                onChange={handleFileChange}
+              /> */}
+
+              <button
+                className="btn btn-primary h-75 mx-2 align-center"
+                onClick={handleSave}
+              >
                 Загрузить
               </button>
             </div>

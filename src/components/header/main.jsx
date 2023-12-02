@@ -9,8 +9,12 @@ import { CDBSidebarMenuItem } from "cdbreact";
 import { FiLogOut } from "react-icons/fi";
 import { toast } from "react-toastify";
 
+import { Collapse, Button } from "react-bootstrap";
+
 const Header = () => {
   const navigate = useNavigate();
+
+  const [open, setOpen] = useState(false);
 
   // clock
   const [time, setTime] = useState(new Date());
@@ -53,8 +57,7 @@ const Header = () => {
         },
       });
       setData(response.data.data);
-      const userRoleData = response.data.data.role;
-      const userRole = localStorage.setItem("role", userRoleData);
+
       console.log(response.data, "mana bu");
     } catch (error) {
       console.error("Error Message:", error.message);
@@ -64,6 +67,7 @@ const Header = () => {
 
   function handleLogout() {
     localStorage.removeItem("token");
+    localStorage.removeItem("role");
     toast("выход", { type: "info" });
     navigate("/login");
   }
@@ -87,8 +91,8 @@ const Header = () => {
     "default",
     optionsWatch
   ).format(date);
-  console.log(formattedDate);
-  console.log(formattedWatch);
+  // console.log(formattedDate);
+  // console.log(formattedWatch);
   return (
     <header className="header w-full bg-body-tertiary sticky-top pb-2">
       <div className="navbar h-25 d-flex flex-row flex-wrap justify-content-between px-5 pb-2  h-100">
@@ -122,23 +126,37 @@ const Header = () => {
               <p>{data.branch_name}</p>
             </div>
           </div>
-          <Link to="/settings" className="settings fw-bold ">
+
+          {/* <Link to="/settings" className="settings fw-bold "></Link> */}
+
+          <Button
+            className="settings fw-bold btn-light"
+            onClick={() => setOpen(!open)}
+            aria-controls="example-collapse-text"
+            aria-expanded={open}
+          >
             <IoSettingsOutline />
-          </Link>
+          </Button>
         </div>
       </div>
-      <div className="vxod-btn" style={{}}>
-        <Link
-          className="text-danger text-end text-decoration-none"
-          exact
-          onClick={handleLogout}
-          activeClassName="activeClicked"
-        >
-          <CDBSidebarMenuItem icon={""}>
-            <FiLogOut />
-            Выход
-          </CDBSidebarMenuItem>
-        </Link>
+      <div className="mx-5" style={{}}>
+        <Collapse in={open}>
+          <div id="example-collapse-text">
+            <div className="vxod-btn" style={{}}>
+              <Link
+                className="text-danger text-end text-decoration-none"
+                exact
+                onClick={handleLogout}
+                activeClassName="activeClicked"
+              >
+                <CDBSidebarMenuItem icon={""}>
+                  <FiLogOut />
+                  Выход
+                </CDBSidebarMenuItem>
+              </Link>
+            </div>
+          </div>
+        </Collapse>
       </div>
     </header>
   );

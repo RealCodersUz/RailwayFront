@@ -17,11 +17,13 @@ import { FiLogOut } from "react-icons/fi";
 import { toast } from "react-toastify";
 
 const SideBar = () => {
-  const userRole = localStorage.getItem("role");
+  let userRole = "";
+  userRole = localStorage.getItem("role");
   const navigate = useNavigate();
 
   function handleLogout() {
     localStorage.removeItem("token");
+    localStorage.removeItem("role");
     toast("выход", { type: "info" });
     navigate("/login");
   }
@@ -65,7 +67,7 @@ const SideBar = () => {
             <Link
               className="d-flex flex-row align-items-center justify-center text-secondary"
               exact
-              to="/reports"
+              to="/archives"
               activeClassName="activeClicked"
             >
               <CDBIcon>
@@ -73,11 +75,13 @@ const SideBar = () => {
               </CDBIcon>
               <CDBSidebarMenuItem>Архив</CDBSidebarMenuItem>
             </Link>
-            {/* {userRole === "super_admin" ? (
+            {userRole == "admin" ? (
+              ""
+            ) : (
               <Link
                 className="d-flex flex-row align-items-center justify-center text-secondary"
                 exact
-                to="/profile"
+                to="/settings"
                 activeClassName="activeClicked"
               >
                 <CDBIcon fab>
@@ -85,13 +89,11 @@ const SideBar = () => {
                 </CDBIcon>
                 <CDBSidebarMenuItem>Настройки</CDBSidebarMenuItem>
               </Link>
-            ) : (
-              ""
-            )} */}
+            )}
           </CDBSidebarMenu>
         </CDBSidebarContent>
 
-        <CDBSidebarFooter style={{ color: "red" }}>
+        <CDBSidebarFooter style={{ color: "red", marginTop: "" }}>
           <Link
             className="d-flex flex-row align-items-center justify-center pb-4 px-4 text-danger"
             // className="text-danger text-decoration-none"
