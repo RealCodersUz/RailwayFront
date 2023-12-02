@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import {
   CDBIcon,
   CDBSidebar,
@@ -7,13 +8,24 @@ import {
   CDBSidebarMenu,
   CDBSidebarMenuItem,
 } from "cdbreact";
-import { Link } from "react-router-dom";
+import { FaPencilRuler } from "react-icons/fa";
+import { Link, Navigate, useNavigate } from "react-router-dom";
 import { FaArrowRightArrowLeft, FaChartSimple } from "react-icons/fa6";
 import { AiOutlineHome } from "react-icons/ai";
 import { PiArchiveBoxBold } from "react-icons/pi";
 import { FiLogOut } from "react-icons/fi";
+import { toast } from "react-toastify";
 
 const SideBar = () => {
+  const userRole = localStorage.getItem("role");
+
+  function handleLogout() {
+    localStorage.removeItem("token");
+    toast("выход", { type: "info" });
+    navigate("/login");
+  }
+
+  const navigate = useNavigate();
   return (
     <div
       style={{ display: "flex", height: "100vh", overflow: "scroll initial" }}
@@ -31,18 +43,20 @@ const SideBar = () => {
               to="/"
               activeClassName="activeClicked"
             >
-              <CDBIcon fab icon="home">
+              <CDBIcon fab>
                 <AiOutlineHome className="text-bolder fs-5 z-3 " />
               </CDBIcon>
+
               <CDBSidebarMenuItem>Dashboard</CDBSidebarMenuItem>
             </Link>
+
             <Link
               className="d-flex flex-row align-items-center justify-center text-secondary"
               exact
               to="/reports"
               activeClassName="activeClicked"
             >
-              <CDBIcon fab icon="home">
+              <CDBIcon fab>
                 <FaChartSimple className="text-bolder fs-5 z-3 " />
               </CDBIcon>
 
@@ -54,24 +68,42 @@ const SideBar = () => {
               to="/profile"
               activeClassName="activeClicked"
             >
-              <CDBIcon fab icon="home">
+              <CDBIcon fab>
                 <PiArchiveBoxBold className="text-bolder fs-5 z-3 " />
               </CDBIcon>
               <CDBSidebarMenuItem>Архив</CDBSidebarMenuItem>
             </Link>
+            {userRole === "super_admin" ? (
+              <Link
+                className="d-flex flex-row align-items-center justify-center text-secondary"
+                exact
+                to="/profile"
+                activeClassName="activeClicked"
+              >
+                <CDBIcon fab>
+                  <FaPencilRuler className="text-bolder fs-5 z-3" />
+                </CDBIcon>
+                <CDBSidebarMenuItem>Настройки</CDBSidebarMenuItem>
+              </Link>
+            ) : (
+              ""
+            )}
           </CDBSidebarMenu>
         </CDBSidebarContent>
 
         <CDBSidebarFooter style={{ color: "red" }}>
           <Link
             className="d-flex flex-row align-items-center justify-center pb-4 px-4 text-danger"
+            // className="text-danger text-decoration-none"
+
             exact
-            to="/login"
+            onClick={handleLogout}
             activeClassName="activeClicked"
           >
-            <CDBIcon fab icon="home">
+            <CDBIcon fab>
               <FiLogOut className="text-bolder fs-5 z-3 " />
             </CDBIcon>
+
             <CDBSidebarMenuItem>Выход</CDBSidebarMenuItem>
           </Link>
         </CDBSidebarFooter>

@@ -49,27 +49,35 @@ const buttonStyle = {
 
 // table styles end
 
-const months = [
-  { key: "monthSelected", name: "Выберите месяц" },
-  { key: "january", name: "Январь" },
-  { key: "february", name: "Февраль" },
-  { key: "march", name: "Март" },
-  { key: "april", name: "Апрель" },
-  { key: "may", name: "Май" },
-  { key: "june", name: "Июнь" },
-  { key: "july", name: "Июль" },
-  { key: "august", name: "Август" },
-  { key: "september", name: "Сентябрь" },
-  { key: "october", name: "Октябрь" },
-  { key: "november", name: "Ноябрь" },
-  { key: "december", name: "Декабрь" },
+const reportsData = [
+  { name: "Отчеты", url: "/reports" },
+  { name: "Форма 69", url: "/forma69" },
+  { name: "Основные инструменты", url: "/insurments" },
+  { name: "Материальный отчет", url: "/material-reports" },
+  { name: "Налог", url: "/nalog" },
 ];
 
-const years = [
-  { key: "yearSelected", name: "Выберите год" },
-  { key: "2022", name: "2022" },
-  { key: "2023", name: "2023" },
-];
+// const months = [
+//   { key: "monthSelected", name: "Выберите месяц" },
+//   { key: "january", name: "Январь" },
+//   { key: "february", name: "Февраль" },
+//   { key: "march", name: "Март" },
+//   { key: "april", name: "Апрель" },
+//   { key: "may", name: "Май" },
+//   { key: "june", name: "Июнь" },
+//   { key: "july", name: "Июль" },
+//   { key: "august", name: "Август" },
+//   { key: "september", name: "Сентябрь" },
+//   { key: "october", name: "Октябрь" },
+//   { key: "november", name: "Ноябрь" },
+//   { key: "december", name: "Декабрь" },
+// ];
+
+// const years = [
+//   { key: "yearSelected", name: "Выберите год" },
+//   { key: "2022", name: "2022" },
+//   { key: "2023", name: "2023" },
+// ];
 
 const RasxodXLSXget = () => {
   const [data, setData] = useState([]);
@@ -148,66 +156,47 @@ const RasxodXLSXget = () => {
   // Select Mont end
   return (
     <>
-      <div className="container-fluid">
+      <div className="container">
         <div>
-          <h1>Отчеты</h1>
+          <h1 className="text-center">Отчеты</h1>
 
-          <div className="cards">
-            <div className="d-flex justify-content-end gap-3">
-              <div className="card p-3" style={{ width: "12rem" }}>
+          <div className="cards ">
+            <div className="d-flex justify-content-end gap-5 row">
+              <div className="card p-3 col-3 ">
                 <div>
                   <select
-                    id="months"
+                    id="reports"
                     onChange={handleMonthChange}
-                    value={selectedMonth}
+                    className="col-12 fs-5"
                   >
-                    {months.map((month, index) => (
-                      <option
-                        key={index}
-                        value={month.key}
-                        disabled={month.key === "selected"}
-                      >
-                        {month.name}
+                    {reportsData.map((data, index) => (
+                      <option key={index} value={data.key}>
+                        {data.name}
                       </option>
                     ))}
                   </select>
                 </div>
               </div>
 
-              <div className="card p-3" style={{ width: "10rem" }}>
+              <div className="card p-3 col-3">
                 <div>
-                  <select
-                    id="years"
-                    onChange={handleYearsChange}
-                    value={selectedYears}
-                  >
-                    {years.map((years, index) => (
-                      <option
-                        key={index}
-                        value={years.key}
-                        disabled={years.key === "selected"}
-                      >
-                        {years.name}
-                      </option>
-                    ))}
-                  </select>
+                  <input type="date" className="col-12" />
                 </div>
               </div>
 
-              <div className="card p-3" style={{ width: "12rem" }}>
+              <div className="card p-3 col-2">
                 <div>
                   <input
-                    className="excelInputs"
-                    type="text"
-                    placeholder="search"
-                    style={{ width: "10rem" }}
+                    className="excelInputs btn btn-primary col-12"
+                    type="submit"
+                    value="Поиск"
                   />
                 </div>
               </div>
             </div>
 
             {/*  */}
-
+            {/* 
             <div className="d-flex justify-content-start gap-1">
               <div className="">
                 <input
@@ -228,7 +217,7 @@ const RasxodXLSXget = () => {
                   Загрузить шаблон
                 </button>
               </div>
-            </div>
+            </div> */}
           </div>
 
           {data.length > 0 && (
