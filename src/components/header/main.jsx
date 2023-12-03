@@ -55,7 +55,7 @@ const Header = () => {
       setData(response.data.data);
       const userRoleData = response.data.data.role;
       const userRole = localStorage.setItem("role", userRoleData);
-      console.log(response.data, "mana bu");
+      // console.log(response.data, "mana bu");
     } catch (error) {
       console.error("Error Message:", error.message);
       console.error("Error:", error);
@@ -87,8 +87,8 @@ const Header = () => {
     "default",
     optionsWatch
   ).format(date);
-  console.log(formattedDate);
-  console.log(formattedWatch);
+  // console.log(formattedDate);
+  // console.log(formattedWatch);
   return (
     <header className="header w-full bg-body-tertiary sticky-top pb-2">
       <div className="navbar h-25 d-flex flex-row flex-wrap justify-content-between px-5 pb-2  h-100">
