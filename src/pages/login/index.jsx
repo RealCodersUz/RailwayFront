@@ -34,8 +34,10 @@ const Login = () => {
         toast("Войти успешно", { type: "success" });
         setValues({ username: "", password: "" });
         console.log(res.data.data.token, "data");
-        // console.log(res.data.data[0].token);
+        console.log(res.data.data.role, "role");
+        localStorage.setItem("role", res.data.data.role);
         localStorage.setItem("token", res.data.data.token);
+
         navigate("/");
       }
     } catch (error) {

@@ -8,6 +8,7 @@ const workbook = new ExcelJS.Workbook();
 const worksheet = workbook.addWorksheet("Math Operations");
 
 import "./index.scss";
+import { Button, Form } from "react-bootstrap";
 
 // table styles start
 const tableStyle = {
@@ -85,6 +86,12 @@ const RasxodXLSXget = () => {
   const [editedFileName, setEditedFileName] = useState("");
   const fileInputRef = useRef(null);
 
+  const [selectedFiles, setSelectedFiles] = useState([]);
+
+  const handleFileSelect = (event) => {
+    setSelectedFiles([...event.target.files]);
+  };
+
   // file change start
   const handleFileChange = (e) => {
     const file = e.target.files[0];
@@ -135,7 +142,7 @@ const RasxodXLSXget = () => {
     const url = window.URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = editedFileName || "edited_data.xlsx";
+    a.download = editedFileName || "exampleData.xlsx";
     a.click();
   };
   // Edit data end
@@ -163,7 +170,6 @@ const RasxodXLSXget = () => {
             <select
               className="form-control mx-3 rounded border-primary"
               id="reports"
-              onChange={handleMonthChange}
             >
               {reportsData.map((data, index) => (
                 <option key={index} value={data.key}>
@@ -179,64 +185,32 @@ const RasxodXLSXget = () => {
               Поиск
             </button>
           </div>
-          {/* <form></form> */}
         </div>
-        <p className="text-danger fw-semibold text-center" hidden={false}>
+        <p className="text-danger fw-semibold text-center" hidden={true}>
           Отправка недоступна. Крайний срок истек.
         </p>
-        <div className="px-5 w-100 ">
-          <div className="w-100 border-bottom border-secondary d-flex flex-row justify-content-between ">
-            <p className=" fw-bold fs-3 text-black">
-              Наманган_12_10_2023_расходы
-            </p>
-            <div className="btngroup d-flex flex-row ">
-              <button className="btn btn-success h-75 mx-2 align-center">
+        <div className="px-5 w-100 py-5">
+          <form className="w-100 border-bottom border-secondary d-flex flex-row justify-content-between pb-2">
+            <div className="file-input-wrapper">
+              <input type="file" id="myFileInput" />
+            </div>
+            <div className="d-flex flex-row align-items-center justify-center h-100">
+              <button
+                onClick={handleSave}
+                className="btn btn-success h-75 mx-2 align-center"
+              >
                 Скачать шаблон
               </button>
+
               <button className="btn btn-primary h-75 mx-2 align-center">
                 Загрузить
               </button>
             </div>
-            {/* <input className="form-control" type="file" id="formFile" /> */}
-          </div>
+          </form>
         </div>
         <div>
-          {/* <h1 className="text-center">Отчеты</h1> */}
-
           <div className="cards ">
-            <div className="d-flex justify-content-end gap-5 row">
-              {/*  <div className="card p-3 col-3 ">
-                <div>
-                   <select
-                    id="reports"
-                    onChange={handleMonthChange}
-                    className="col-12 fs-5"
-                  >
-                    {reportsData.map((data, index) => (
-                      <option key={index} value={data.key}>
-                        {data.name}
-                      </option>
-                    ))}
-                  </select> 
-                </div>
-              </div> */}
-              {/* 
-              <div className="card p-3 col-3">
-                <div>
-                  <input type="date" className="col-12" />
-                </div>
-              </div> */}
-
-              {/* <div className="card p-3 col-2">
-                <div>
-                  <input
-                    className="excelInputs btn btn-primary col-12"
-                    type="submit"
-                    value="Поиск"
-                  />
-                </div>
-              </div> */}
-            </div>
+            <div className="d-flex justify-content-end gap-5 row"></div>
 
             {/* 
             <div className="d-flex justify-content-start gap-1">
