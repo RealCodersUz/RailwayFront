@@ -1,5 +1,6 @@
 /* eslint-disable no-unused-vars */
-import { useState } from "react";
+import axios from "axios";
+import { useEffect, useState } from "react";
 import { Table } from "react-bootstrap";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
@@ -7,6 +8,7 @@ import { FaEdit, FaRegEyeSlash, FaTrashAlt } from "react-icons/fa";
 import { FaRegEye } from "react-icons/fa6";
 
 function UserModal(props) {
+  const [users, setUsers] = useState([]);
   const reportsData = [
     { name: "Филиал", key: "" },
     { name: "Отчеты", key: "reports" },
@@ -26,11 +28,11 @@ function UserModal(props) {
   ];
 
   // Sample user data
-  const users = [
-    { id: 1, name: "John Doe", email: "********" },
-    { id: 2, name: "Jane Smith", email: "********" },
-    { id: 3, name: "Bob Johnson", email: "********" },
-  ];
+  // const users = [
+  //   { id: 1, name: "John Doe", email: "********" },
+  //   { id: 2, name: "Jane Smith", email: "********" },
+  //   { id: 3, name: "Bob Johnson", email: "********" },
+  // ];
 
   const [TypeSelectedValue, setTypeSelectedValue] = useState("");
   const [FilialSelectedValue, setFilialSelectedValue] = useState("");
@@ -42,6 +44,31 @@ function UserModal(props) {
     console.log("delete");
   };
 
+  // let users = [];
+  let config = {
+    method: "get",
+    maxBodyLength: Infinity,
+    url: "https://railwayback.up.railway.app/users",
+    headers: {
+      Authorization: localStorage.getItem("token"),
+      "Content-Type": "application/json",
+    },
+  };
+
+  // let hendleGetUsers=() => {
+  useEffect(() => {
+    axios
+      .request(config)
+      .then((response) => {
+        console.log(JSON.stringify(response.data));
+        if (response.data) setUsers(response.data.data);
+        console.log(users);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, []);
+  // };
   return (
     <Modal
       {...props}
@@ -72,8 +99,8 @@ function UserModal(props) {
             {users.map((user) => (
               <tr key={user.id}>
                 <td>{user.id}</td>
-                <td>{user.name}</td>
-                <td>{user.name}</td>
+                <td>{user.branch_name}</td>
+                <td>{user.username}</td>
                 <td>
                   {user.email} <FaRegEye /> <FaRegEyeSlash />
                 </td>
