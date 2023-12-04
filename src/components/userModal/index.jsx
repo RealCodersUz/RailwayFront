@@ -3,7 +3,7 @@ import { useState } from "react";
 import { Table } from "react-bootstrap";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
-import { FaRegEyeSlash } from "react-icons/fa";
+import { FaEdit, FaRegEyeSlash, FaTrashAlt } from "react-icons/fa";
 import { FaRegEye } from "react-icons/fa6";
 
 function UserModal(props) {
@@ -83,14 +83,16 @@ function UserModal(props) {
                     onClick={() => handleEdit(user.id)}
                     className="mx-2"
                   >
-                    Edit
+                    <FaEdit />
+                    Изменить
                   </Button>
                   <Button
                     variant="danger"
                     onClick={() => handleDelete(user.id)}
                     className="mx-2"
                   >
-                    Delete
+                    <FaTrashAlt />
+                    Удалить
                   </Button>
                 </td>
               </tr>
