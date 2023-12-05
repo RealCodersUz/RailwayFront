@@ -6,9 +6,11 @@ import * as XLSX from "xlsx";
 import ExcelJS from "exceljs";
 const workbook = new ExcelJS.Workbook();
 const worksheet = workbook.addWorksheet("Math Operations");
+const editedWorkbook = new ExcelJS.Workbook();
+const editedSheet = editedWorkbook.addWorksheet("Sheet1");
 
 import "./index.scss";
-import { Button, Form } from "react-bootstrap";
+import { Button, Form, Row } from "react-bootstrap";
 
 // table styles start
 const tableStyle = {
@@ -118,6 +120,7 @@ const RasxodXLSXget = () => {
     setEditingData((prevEditingData) => {
       const updatedData = [...prevEditingData];
       updatedData[rowIndex][columnName] = value;
+      console.log(([rowIndex][columnName] = value), "bu value");
       return updatedData;
     });
   };
@@ -148,6 +151,13 @@ const RasxodXLSXget = () => {
   // Edit data end
 
   // Select Mont start
+  const sumFormula = "B2 + B3";
+  const b2Cell = editedSheet.getCell("B2");
+  const b3Cell = editedSheet.getCell("B3");
+  const b32Cell = editedSheet.getCell("B32");
+  // console.log(worksheet.getRow(Row).getCell(1).value);
+
+  console.log(b2Cell.value);
 
   const [selectedMonth, setSelectedMonth] = useState("selected");
   const [selectedYears, setselectedYears] = useState("selected");
@@ -192,12 +202,17 @@ const RasxodXLSXget = () => {
         <div className="px-5 w-100 py-5">
           <form className="w-100 border-bottom border-secondary d-flex flex-row justify-content-between pb-2">
             <div className="file-input-wrapper">
-              <input type="file" id="myFileInput" />
+              <input
+                type="file"
+                id="myFileInput"
+                accept=".xls, .xlsx"
+                onChange={handleFileChange}
+              />
             </div>
             <div className="d-flex flex-row align-items-center justify-center h-100">
               <button
                 onClick={handleSave}
-                className="btn btn-success h-75 mx-2 align-center"
+                className="btn btn-success h-75 mx-2 align-center onClick={handleSave}"
               >
                 Скачать шаблон
               </button>
