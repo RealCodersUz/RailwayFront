@@ -30,6 +30,7 @@ const Footer = () => {
           </span>
         </div>
       </div>
+      <p className="text-center text-secondary">© 2023 Все права защищены.</p>
     </footer>
   );
 };

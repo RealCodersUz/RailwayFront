@@ -49,7 +49,7 @@ const SideBar = () => {
                 <AiOutlineHome className="text-bolder fs-5 z-3 " />
               </CDBIcon>
 
-              <CDBSidebarMenuItem>Dashboard</CDBSidebarMenuItem>
+              <CDBSidebarMenuItem>Главный</CDBSidebarMenuItem>
             </Link>
 
             <Link

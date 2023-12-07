@@ -5,7 +5,7 @@ import Modal from "react-bootstrap/Modal";
 
 function ChanceModal(props) {
   const reportsData = [
-    { name: "Филиал", key: "" },
+    { name: "Тип", key: "" },
     { name: "Отчеты", key: "reports" },
     { name: "Форма 69", key: "forma69" },
     { name: "Основные инструменты", key: "insurments" },
@@ -14,7 +14,7 @@ function ChanceModal(props) {
   ];
 
   const FilialData = [
-    { name: "Тип", key: "" },
+    { name: "Филиал", key: "" },
     { name: "Sirdaryo", key: "sirdaryo" },
     { name: "Toshkent", key: "tashkent" },
     { name: "Namangan", key: "namangan" },
@@ -39,9 +39,9 @@ function ChanceModal(props) {
       </Modal.Header>
       <Modal.Body>
         <div className=" p-5">
-          <div className="input-group my-5 ">
+          <form className="input-group my-5 ">
             <select
-              className="form-control mx-3 rounded border-primary"
+              className="form-select form-select-lg mb-3 border-primary rounded mx-2"
               id="reports"
               //   value={TypeSelectedValue}
               defaultValue={FilialSelectedValue}
@@ -52,9 +52,8 @@ function ChanceModal(props) {
                 </option>
               ))}
             </select>
-
             <select
-              className="form-control mx-3 rounded border-primary"
+              className="form-select form-select-lg mb-3 border-primary rounded mx-2"
               id="reports"
               //   value={TypeSelectedValue}
               defaultValue={TypeSelectedValue}
@@ -65,14 +64,36 @@ function ChanceModal(props) {
                 </option>
               ))}
             </select>
-            <input
+            {/* <input
               type="date"
               className="form-control mx-3 rounded border-primary"
+            /> */}
+            <select
+              className="form-select form-select-lg mb-3 border-primary rounded mx-2"
+              aria-label="Large select example"
+            >
+              <option selected disabled> Открыть</option>
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+              <option value="5">5</option>
+              <option value="6">6</option>
+              <option value="7">7</option>
+              <option value="8">8</option>
+              <option value="9">9</option>
+              <option value="10">10</option>
+            </select>
+            {/* <button
+              className="btn btn-success rounded-3xl"
+              type="submit"
+            ></button> */}
+            <Button
+              variant="success"
+              style={{ borderRadius: "50%", width: "40px", height: "40px" }}
+              aria-label="rounded-green-button"
             />
-            <button className="btn btn-primary mx-3 w-25 rounded" type="button">
-              Поиск
-            </button>
-          </div>
+          </form>
         </div>
       </Modal.Body>
       <Modal.Footer>
