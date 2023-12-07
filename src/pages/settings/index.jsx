@@ -87,6 +87,7 @@ const SettingsPage = () => {
               show={ChancemodalShow}
               onHide={() => setChanceModalShow(false)}
             />
+            
           </h3>
         </div>
       </div>
