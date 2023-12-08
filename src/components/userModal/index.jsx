@@ -12,17 +12,23 @@ import AdminModal from "../adminModal";
 
 function UserModal(props) {
   const [users, setUsers] = useState([]);
+  const [Count, setCount] = useState(1);
   const [showPasswordModal, setShowPasswordModal] = useState(false);
   const [enteredPassword, setEnteredPassword] = useState("");
   const [currentUser, setCurrentUser] = useState(null);
   const [isPasswordCorrect, setIsPasswordCorrect] = useState(false);
   const [showUserRole, setShowUserRole] = useState(false);
   const [modalShow, setModalShow] = useState(false);
+  const [modalEditShow, setEditModalShow] = useState(false);
   const [name, setName] = useState("");
   const [branch, setBranch] = useState("");
   const [login, setLogin] = useState("");
   const [password, setPassword] = useState("");
   const [password2, setPassword2] = useState("");
+  const [editingBranch, setEditBranch] = useState("");
+  const [editingBranchId, setEditBranchId] = useState("");
+  const [editingPassword, setEditPassword] = useState("");
+  const [editingPassword2, setEditPassword2] = useState("");
 
   const reportsData = [
     { name: "Филиал", key: "" },
@@ -60,13 +66,67 @@ function UserModal(props) {
     data: data,
   };
 
-  const handleEdit = () => {
-    console.log("edit");
-  };
+  function handleEdit() {
+    console.log(editingBranchId);
+    let data = JSON.stringify({
+      password: editingPassword,
+    });
 
-  const handleDelete = () => {
-    console.log("delete");
-  };
+    let config = {
+      method: "patch",
+      maxBodyLength: Infinity,
+      url: `https://railwayback.up.railway.app/users/${editingBranchId}`,
+      headers: {
+        Authorization: localStorage.getItem("token"),
+        "Content-Type": "application/json",
+      },
+      data: data,
+    };
+
+    if (editingPassword === editingPassword2 && editingPassword !== "") {
+      console.log(
+        editingPassword === editingPassword2,
+        editingPassword,
+        editingPassword2
+      );
+      axios
+        .request(config)
+        .then((response) => {
+          console.log(JSON.stringify(response.data));
+          toast("Parol almashdi !!!", { type: "success" });
+        })
+        .catch((error) => {
+          console.log(error);
+          toast("Parol almashtirishda xatolik !!!", { type: "error" });
+        });
+    } else {
+      toast("Parolni noto'g'ri kiritdingiz !!!", { type: "warning" });
+    }
+  }
+
+  function handleDelete(id) {
+    let config = {
+      method: "delete",
+      maxBodyLength: Infinity,
+      url: `https://railwayback.up.railway.app/users/${id}`,
+      headers: {
+        Authorization: localStorage.getItem("token"),
+      },
+    };
+
+    axios
+      .request(config)
+      .then((response) => {
+        console.log(JSON.stringify(response.data));
+        toast("Admin deleted!!!", { type: "info" });
+        setCount(Count + 1);
+      })
+      .catch((error) => {
+        console.log(error);
+        toast("Error!!!", { type: "error" });
+      });
+    // console.log("delete ", id);
+  }
 
   let config = {
     method: "get",
@@ -83,6 +143,9 @@ function UserModal(props) {
   };
   const handleAdminModalClose = () => {
     setModalShow(false);
+  };
+  const handleEditModalClose = () => {
+    setEditModalShow(false);
   };
 
   const handlePasswordSubmit = () => {
@@ -112,9 +175,8 @@ function UserModal(props) {
       .catch((error) => {
         console.log(error);
       });
-  }, []);
+  }, [Count]);
   const handleSubmit = () => {
-    console.log("submit");
     if (password === password2) {
       axios
         .request(configAddAdmin)
@@ -128,9 +190,6 @@ function UserModal(props) {
     } else {
       toast("password is wrong!!!", { type: "warning" });
     }
-
-    // Logic for creating/editing admin. You can perform API calls or state management here.
-    // handleClose();
   };
   return (
     <>
@@ -164,6 +223,78 @@ function UserModal(props) {
         </Modal.Footer>
       </Modal> */}
 
+      <Modal show={modalEditShow} onHide={handleEditModalClose} centered>
+        {/* <Modal {...props}> */}
+        <Modal.Header closeButton>
+          <Modal.Title>Изменить профиль</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <h3>Филиал: {editingBranch}</h3>
+          {/* <Form>
+            <Form.Group controlId="name">
+              <Form.Label>Филиал: </Form.Label>
+              <Form.Control
+                type="text"
+                value={branch}
+                // onChange={(e) => setBranch(e.target.value)}
+              />
+            </Form.Group>
+          </Form> */}
+          {/* <Form>
+            <Form.Group controlId="name">
+              <Form.Label>Ответственное лицо</Form.Label>
+              <Form.Control
+                type="text"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+              />
+            </Form.Group>
+          </Form> */}
+          {/* <Form>
+            <Form.Group controlId="name">
+              <Form.Label>Логин </Form.Label>
+              <Form.Control
+                type="text"
+                value={login}
+                onChange={(e) => setLogin(e.target.value)}
+              />
+            </Form.Group>
+          </Form> */}
+          <Form>
+            <Form.Group controlId="name">
+              <Form.Label>Пароль</Form.Label>
+              <Form.Control
+                type="text"
+                value={editingPassword}
+                onChange={(e) => setEditPassword(e.target.value)}
+              />
+            </Form.Group>
+          </Form>
+          <Form>
+            <Form.Group controlId="name">
+              <Form.Label>Пароль еще раз</Form.Label>
+              <Form.Control
+                type="text"
+                value={editingPassword2}
+                onChange={(e) => setEditPassword2(e.target.value)}
+              />
+            </Form.Group>
+          </Form>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleEditModalClose}>
+            Назад
+          </Button>
+          <Button
+            variant="primary"
+            onClick={() => {
+              handleEdit();
+            }}
+          >
+            Сохранить
+          </Button>
+        </Modal.Footer>
+      </Modal>
       <Modal show={modalShow} onHide={handleAdminModalClose} centered>
         {/* <Modal {...props}> */}
         <Modal.Header closeButton>
@@ -291,7 +422,7 @@ function UserModal(props) {
             </thead>
             <tbody>
               {users.map((user) => (
-                <tr key={user.id}>
+                <tr key={user._id}>
                   <td>{user.id}</td>
                   <td>{user.branch_name}</td>
                   <td>{user.username}</td>
@@ -317,7 +448,11 @@ function UserModal(props) {
                   <td className="text-center ">
                     <Button
                       variant="success"
-                      onClick={() => handleEdit(user.id)}
+                      onClick={() => {
+                        setEditBranch(user.branch_name);
+                        setEditBranchId(user._id);
+                        setEditModalShow(true);
+                      }}
                       className="mx-2"
                     >
                       <FaEdit />
@@ -325,7 +460,7 @@ function UserModal(props) {
                     </Button>
                     <Button
                       variant="danger"
-                      onClick={() => handleDelete(user.id)}
+                      onClick={() => handleDelete(user._id)}
                       className="mx-2"
                     >
                       <FaTrashAlt />
