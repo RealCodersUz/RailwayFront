@@ -9,8 +9,6 @@ const editedSheet = XLSX.utils.aoa_to_sheet([["Sheet1"]]);
 
 import "./index.scss";
 import { Button, Form, Row } from "react-bootstrap";
-import { toast } from "react-toastify";
-import { Workbook } from "exceljs";
 
 // table styles start
 const tableStyle = {
@@ -104,6 +102,7 @@ const RasxodXLSXget = () => {
     }
 
     // Check if the file type is supported (xlsx)
+
     if (!file.name.endsWith(".xlsx")) {
       console.error(
         "Unsupported file type. Please upload an Excel file (.xlsx)."
@@ -123,268 +122,25 @@ const RasxodXLSXget = () => {
 
         console.log(excelData, "bu yerda ");
 
-        try {
-          const worksheet = workbook.Sheets[sheetName];
-
-          // Ustunlarni aniqlash
-          const columns = [];
-          for (let key in worksheet) {
-            if (key[0] === "!") continue;
-
-            const col = key.slice(0, 1);
-
-            console.log(col, "column");
-
-            // Check if the column letter is not A or B
-            if (
-              col !== "A" &&
-              col !== "B" &&
-              col !== "J" &&
-              !columns.includes(col)
-            ) {
-              columns.push(col);
-            }
-          }
-
-          const cellLength = excelData.length;
-
-          console.log(columns);
-
-          // Qatorlarni jamlash
-          for (let i = 0; i < cellLength; i++) {
-            const currentRow = i + 2; // Excel rows are 1-indexed
-
-            const totalSum = columns.reduce((sum, col) => {
-              // Check if the cell exists for the given column and current row
-              const cellKey = col + currentRow;
-              if (worksheet[cellKey]) {
-                const cellValue = worksheet[cellKey].v;
-                // Add the cell value to the sum
-                sum += +cellValue;
-              }
-
-              workbook.Sheets[sheetName]["J" + currentRow] = {
-                t: "n",
-                v: sum,
-              };
-              console.log("Barcha ustunlar jami:", sum, "sum");
-              return sum;
-            }, 0);
-          }
-        } catch (error) {
-          toast.error("Itogoni chiqarishda xato", { type: "error" });
-        }
-
-        //  Boyiga Hisoblash start
-
         const cellLength = excelData.length;
-        let CtotalSum = 0;
-        let DtotalSum = 0;
-        let EtotalSum = 0;
-        let FtotalSum = 0;
-        let GtotalSum = 0;
-        let HtotalSum = 0;
-        let ItotalSum = 0;
-        let JtotalSum = 0;
 
-        for (let i = 2; i < cellLength; i++) {
-          let CcellValueS = `C${i}`;
-          let DcellValueS = `D${i}`;
-          let EcellValueS = `E${i}`;
-          let FcellValueS = `F${i}`;
-          let GcellValueS = `G${i}`;
-          let HcellValueS = `H${i}`;
-          let IcellValueS = `I${i}`;
-          let JcellValueS = `J${i}`;
-
-          // Check if the cell exists in the sheet
-          if (
-            workbook.Sheets[sheetName][CcellValueS] &&
-            workbook.Sheets[sheetName][DcellValueS] &&
-            workbook.Sheets[sheetName][EcellValueS] &&
-            workbook.Sheets[sheetName][FcellValueS] &&
-            workbook.Sheets[sheetName][GcellValueS] &&
-            workbook.Sheets[sheetName][HcellValueS] &&
-            workbook.Sheets[sheetName][IcellValueS] &&
-            workbook.Sheets[sheetName][JcellValueS]
-          ) {
-            // Validate that the values are valid numbers
-            const isValidNumber = (cell) =>
-              typeof cell == "number" && !isNaN(cell);
-
-            // C cell
-            let CvalueS = workbook.Sheets[sheetName][CcellValueS].v;
-            console.log(CvalueS);
-
-            // D cell
-            let DvalueS = workbook.Sheets[sheetName][DcellValueS].v;
-            console.log(DvalueS);
-
-            // E cell
-            let EvalueS = workbook.Sheets[sheetName][EcellValueS].v;
-            console.log(EvalueS);
-
-            // F cell
-            let FvalueS = workbook.Sheets[sheetName][FcellValueS].v;
-            console.log(FvalueS);
-
-            // G cell
-            let GvalueS = workbook.Sheets[sheetName][GcellValueS].v;
-            console.log(GvalueS);
-
-            // H cell
-            let HvalueS = workbook.Sheets[sheetName][HcellValueS].v;
-            console.log(HvalueS);
-
-            // I cell
-            let IvalueS = workbook.Sheets[sheetName][IcellValueS].v;
-            console.log(IvalueS);
-
-            // //J cell
-            let JvalueS = workbook.Sheets[sheetName][JcellValueS].v;
-            console.log(JvalueS);
-
-            // Validate values
-            if (
-              isValidNumber(CvalueS) &&
-              isValidNumber(DvalueS) &&
-              isValidNumber(EvalueS) &&
-              isValidNumber(FvalueS) &&
-              isValidNumber(GvalueS) &&
-              isValidNumber(HvalueS) &&
-              isValidNumber(IvalueS) &&
-              isValidNumber(JvalueS)
-            ) {
-              // Calculate total sums
-              CtotalSum += CvalueS;
-              DtotalSum += DvalueS;
-              EtotalSum += EvalueS;
-              FtotalSum += FvalueS;
-              GtotalSum += GvalueS;
-              HtotalSum += HvalueS;
-              ItotalSum += IvalueS;
-              JtotalSum += JvalueS;
-            } else {
-              return toast(
-                `Faylda Xatolik, Qatorlarda ortiqcha harflar, belgilar yoki boʻsh kataklar mavjud.
-                Iltimos toʻgʻirlab  qayta import qiling.`,
-                { type: "error" }
-              );
-            }
-          }
+        for (let i = 0; i < cellLength; i++) {
+          let JcellCalueS = `J${i}`;
         }
 
-        // Add totalSum
+        // Add totalSum to the last row of column B
         const lastRowIndex = cellLength + 1;
-
-        // C
-        const lastCCell = `C${lastRowIndex}`;
-        workbook.Sheets[sheetName][lastCCell] = {
-          t: "n",
-          v: typeof CtotalSum === "number" ? CtotalSum : 0,
-        };
-
-        // D
-        const lastDCell = `D${lastRowIndex}`;
-        workbook.Sheets[sheetName][lastDCell] = {
-          t: "n",
-          v: typeof DtotalSum === "number" ? DtotalSum : 0,
-        };
-
-        // E
-        const lastECell = `E${lastRowIndex}`;
-        workbook.Sheets[sheetName][lastECell] = {
-          t: "n",
-          v: typeof EtotalSum === "number" ? EtotalSum : 0,
-        };
-
-        // F
-        const lastFCell = `F${lastRowIndex}`;
-        workbook.Sheets[sheetName][lastFCell] = {
-          t: "n",
-          v: typeof FtotalSum === "number" ? FtotalSum : 0,
-        };
-
-        // G
-        const lastGCell = `G${lastRowIndex}`;
-        workbook.Sheets[sheetName][lastGCell] = {
-          t: "n",
-          v: typeof GtotalSum === "number" ? GtotalSum : 0,
-        };
-
-        // H
-        const lastHCell = `H${lastRowIndex}`;
-        workbook.Sheets[sheetName][lastHCell] = {
-          t: "n",
-          v: typeof HtotalSum === "number" ? HtotalSum : 0,
-        };
-
-        // I
-        const lastICell = `I${lastRowIndex}`;
-        workbook.Sheets[sheetName][lastICell] = {
-          t: "n",
-          v: typeof ItotalSum === "number" ? ItotalSum : 0,
-        };
-
-        // J
         const lastJCell = `J${lastRowIndex}`;
-        workbook.Sheets[sheetName][lastJCell] = {
-          t: "n",
-          v: typeof JtotalSum === "number" ? JtotalSum : 0,
-        };
 
-        try {
-          toast(`Muvvafaqiyatli`, { type: "success" });
-          excelData = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName]);
-          setData(excelData);
-          setEditingData([...excelData]);
-        } catch (error) {
-          return toast(
-            `Qoʻshishda Xatolik, Qatorlarda ortiqcha harflar, belgilar yoki boʻsh kataklar mavjud.
-                Iltimos toʻgʻirlab  qayta import qiling.`,
-            { type: "error" }
-          );
-        }
+        let lastJCellValue = workbook.Sheets[sheetName][lastJCell].v;
 
-        // const worksheet = workbook.Sheets[sheetName];
+        console.log(lastJCellValue);
 
-        // // Ustunlarni aniqlash
-        // const columns = [];
-        // for (let key in worksheet) {
-        //   if (key[0] === "!") continue;
-
-        //   const col = key.slice(0, 1);
-
-        //   console.log(col, "column");
-
-        //   // Check if the column letter is not A or B
-        //   if (col !== "A" && col !== "B" && !columns.includes(col)) {
-        //     columns.push(col);
-        //   }
-        // }
-
-        // console.log(columns); // This will log the unique columns excluding A and B
-
-        // // Qatorlarni jamlash
-        // const totalSum = columns.reduce((sum, col) => {
-        //   // Check if the cell exists for the given column and row 2
-        //   if (worksheet[col + "2"]) {
-        //     const cellValue = worksheet[col + "2"].v;
-        //     // Add the cell value to the sum
-        //     sum += +cellValue;
-        //   }
-        //   return sum;
-        // }, 0);
-
-        // console.log("Barcha ustunlar jami:", totalSum);
-
-        //
+        excelData = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName]);
+        setData(excelData);
+        setEditingData([...excelData]);
       } catch (error) {
-        return toast(
-          `Faylda Xatolik, Qatorlarda ortiqcha harflar, belgilar yoki boʻsh kataklar mavjud.
-              Iltimos toʻgʻirlab  qayta import qiling.`,
-          { type: "error" }
-        );
+        console.error("Error reading the Excel file:", error);
       }
     };
 
@@ -413,23 +169,23 @@ const RasxodXLSXget = () => {
     XLSX.utils.book_append_sheet(editedWorkbook, editedSheet, "Sheet1");
 
     // Get the added sheet
-    // const addedSheet = editedWorkbook.Sheets["Sheet1"];
+    const addedSheet = editedWorkbook.Sheets["Sheet1"];
 
-    // // Get the range of the added sheet
-    // const addedRange = XLSX.utils.decode_range(addedSheet["!ref"]);
+    // Get the range of the added sheet
+    const addedRange = XLSX.utils.decode_range(addedSheet["!ref"]);
 
-    // // Get the last row number of the added sheet
-    // const lastRow = addedRange.e.r + 1;
+    // Get the last row number of the added sheet
+    const lastRow = addedRange.e.r + 1;
 
-    // // Add "HAA" to the last row in the first column
-    // XLSX.utils.sheet_add_aoa(
-    //   addedSheet,
-    //   // [["HAA Bu yerda Excel haqida malumot bor "]],
-    //   {
-    //     origin: -1,
-    //     top: lastRow,
-    //   }
-    // );
+    // Add "HAA" to the last row in the first column
+    XLSX.utils.sheet_add_aoa(
+      addedSheet,
+      [["HAA Bu yerda Excel haqida malumot bor "]],
+      {
+        origin: -1,
+        top: lastRow,
+      }
+    );
 
     // Use XLSX.writeFile to create and save the file
     XLSX.writeFile(editedWorkbook, editedFileName || "exampleData.xlsx");
@@ -481,31 +237,26 @@ const RasxodXLSXget = () => {
           Отправка недоступна. Крайний срок истек.
         </p>
         <div className="px-5 w-100 py-5">
-          <h5 className="text-danger">
-            Eslatib oʻtaman faylda ortiqcha belgi, ortiqcha son kiritilishi
-            kerak boʻlgan joyga belgi harf tushib qolmaganini tekshiring!{" "}
-          </h5>
-          <br />
-          <br />
           <form className="w-100 border-bottom border-secondary d-flex flex-row justify-content-between pb-2">
-            <div className="file-input-wrapper"></div>
-
-            <div className="d-flex flex-row align-items-center justify-center h-100">
-              <br />
-
-              <button
-                onClick={handleSave}
-                className="btn btn-success h-75 mx-2 align-center"
-              >
-                Скачать шаблон
-              </button>
-
+            <div className="file-input-wrapper">
               <input
                 type="file"
                 id="myFileInput"
                 accept=".xls, .xlsx"
                 onChange={handleFileChange}
               />
+            </div>
+            <div className="d-flex flex-row align-items-center justify-center h-100">
+              <button
+                onClick={handleSave}
+                className="btn btn-success h-75 mx-2 align-center onClick={handleSave}"
+              >
+                Скачать шаблон
+              </button>
+
+              <button className="btn btn-primary h-75 mx-2 align-center">
+                Загрузить
+              </button>
             </div>
           </form>
         </div>

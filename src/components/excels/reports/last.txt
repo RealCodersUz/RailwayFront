@@ -10,7 +10,6 @@ const editedSheet = XLSX.utils.aoa_to_sheet([["Sheet1"]]);
 import "./index.scss";
 import { Button, Form, Row } from "react-bootstrap";
 import { toast } from "react-toastify";
-import { Workbook } from "exceljs";
 
 // table styles start
 const tableStyle = {
@@ -104,6 +103,7 @@ const RasxodXLSXget = () => {
     }
 
     // Check if the file type is supported (xlsx)
+
     if (!file.name.endsWith(".xlsx")) {
       console.error(
         "Unsupported file type. Please upload an Excel file (.xlsx)."
@@ -123,60 +123,6 @@ const RasxodXLSXget = () => {
 
         console.log(excelData, "bu yerda ");
 
-        try {
-          const worksheet = workbook.Sheets[sheetName];
-
-          // Ustunlarni aniqlash
-          const columns = [];
-          for (let key in worksheet) {
-            if (key[0] === "!") continue;
-
-            const col = key.slice(0, 1);
-
-            console.log(col, "column");
-
-            // Check if the column letter is not A or B
-            if (
-              col !== "A" &&
-              col !== "B" &&
-              col !== "J" &&
-              !columns.includes(col)
-            ) {
-              columns.push(col);
-            }
-          }
-
-          const cellLength = excelData.length;
-
-          console.log(columns);
-
-          // Qatorlarni jamlash
-          for (let i = 0; i < cellLength; i++) {
-            const currentRow = i + 2; // Excel rows are 1-indexed
-
-            const totalSum = columns.reduce((sum, col) => {
-              // Check if the cell exists for the given column and current row
-              const cellKey = col + currentRow;
-              if (worksheet[cellKey]) {
-                const cellValue = worksheet[cellKey].v;
-                // Add the cell value to the sum
-                sum += +cellValue;
-              }
-
-              workbook.Sheets[sheetName]["J" + currentRow] = {
-                t: "n",
-                v: sum,
-              };
-              console.log("Barcha ustunlar jami:", sum, "sum");
-              return sum;
-            }, 0);
-          }
-        } catch (error) {
-          toast.error("Itogoni chiqarishda xato", { type: "error" });
-        }
-
-        //  Boyiga Hisoblash start
-
         const cellLength = excelData.length;
         let CtotalSum = 0;
         let DtotalSum = 0;
@@ -195,23 +141,35 @@ const RasxodXLSXget = () => {
           let GcellValueS = `G${i}`;
           let HcellValueS = `H${i}`;
           let IcellValueS = `I${i}`;
-          let JcellValueS = `J${i}`;
+          // let JcellValueS = `J${i}`;
 
-          // Check if the cell exists in the sheet
+          // Check if the cell exists in the sheet and the value is a valid number
+
+          console.log(workbook.Sheets[sheetName][CcellValueS]);
+
+          console.log(typeof workbook.Sheets[sheetName][CcellValueS].v);
+
           if (
-            workbook.Sheets[sheetName][CcellValueS] &&
-            workbook.Sheets[sheetName][DcellValueS] &&
-            workbook.Sheets[sheetName][EcellValueS] &&
-            workbook.Sheets[sheetName][FcellValueS] &&
-            workbook.Sheets[sheetName][GcellValueS] &&
-            workbook.Sheets[sheetName][HcellValueS] &&
-            workbook.Sheets[sheetName][IcellValueS] &&
-            workbook.Sheets[sheetName][JcellValueS]
+            workbook.Sheets[sheetName][CcellValueS] !== undefined &&
+            // typeof workbook.Sheets[sheetName][CcellValueS].v === "number" &&
+            workbook.Sheets[sheetName][DcellValueS] !== undefined &&
+            // typeof workbook.Sheets[sheetName][DcellValueS].v === "number" &&
+            workbook.Sheets[sheetName][EcellValueS] !== undefined &&
+            // typeof workbook.Sheets[sheetName][EcellValueS].v === "number" &&
+            workbook.Sheets[sheetName][FcellValueS] !== undefined &&
+            // typeof workbook.Sheets[sheetName][FcellValueS].v === "number" &&
+            workbook.Sheets[sheetName][GcellValueS] !== undefined &&
+            // typeof workbook.Sheets[sheetName][GcellValueS].v === "number" &&
+            workbook.Sheets[sheetName][HcellValueS] !== undefined &&
+            // typeof workbook.Sheets[sheetName][HcellValueS].v === "number" &&
+            workbook.Sheets[sheetName][IcellValueS]
+            // &&
+            // typeof workbook.Sheets[sheetName][IcellValueS].v === "number"
+            //  &&
+            // workbook.Sheets[sheetName][JcellValueS] &&
+            // typeof workbook.Sheets[sheetName][JcellValueS].v === "number"
           ) {
-            // Validate that the values are valid numbers
-            const isValidNumber = (cell) =>
-              typeof cell == "number" && !isNaN(cell);
-
+            console.log("iffda");
             // C cell
             let CvalueS = workbook.Sheets[sheetName][CcellValueS].v;
             console.log(CvalueS);
@@ -240,151 +198,141 @@ const RasxodXLSXget = () => {
             let IvalueS = workbook.Sheets[sheetName][IcellValueS].v;
             console.log(IvalueS);
 
-            // //J cell
-            let JvalueS = workbook.Sheets[sheetName][JcellValueS].v;
-            console.log(JvalueS);
+            // // J cell
+            // let JvalueS = workbook.Sheets[sheetName][JcellValueS].v;
+            // console.log(JvalueS);
 
-            // Validate values
-            if (
-              isValidNumber(CvalueS) &&
-              isValidNumber(DvalueS) &&
-              isValidNumber(EvalueS) &&
-              isValidNumber(FvalueS) &&
-              isValidNumber(GvalueS) &&
-              isValidNumber(HvalueS) &&
-              isValidNumber(IvalueS) &&
-              isValidNumber(JvalueS)
-            ) {
-              // Calculate total sums
-              CtotalSum += CvalueS;
-              DtotalSum += DvalueS;
-              EtotalSum += EvalueS;
-              FtotalSum += FvalueS;
-              GtotalSum += GvalueS;
-              HtotalSum += HvalueS;
-              ItotalSum += IvalueS;
-              JtotalSum += JvalueS;
-            } else {
-              return toast(
-                `Faylda Xatolik, Qatorlarda ortiqcha harflar, belgilar yoki boʻsh kataklar mavjud.
-                Iltimos toʻgʻirlab  qayta import qiling.`,
-                { type: "error" }
-              );
-            }
-          }
+            // /
+
+            // total sum
+
+            // C
+            CtotalSum += CvalueS;
+            console.log(CtotalSum, "C total sum");
+
+            // D
+            DtotalSum += DvalueS;
+            console.log(DtotalSum, "D total sum");
+
+            // E
+            EtotalSum += EvalueS;
+            console.log(EtotalSum, "E total sum");
+
+            // F
+            FtotalSum += FvalueS;
+            console.log(FtotalSum, "F total sum");
+
+            // G
+            GtotalSum += GvalueS;
+            console.log(GtotalSum, "G total sum");
+
+            // H
+            HtotalSum += HvalueS;
+            console.log(HtotalSum, "H total sum");
+
+            // I
+            ItotalSum += IvalueS;
+            console.log(ItotalSum, "I total sum");
+
+            // // J
+            // JtotalSum += JvalueS;
+            // console.log(JtotalSum, "J total sum");
+          } else if (
+            workbook.Sheets[sheetName][CcellValueS] == undefined &&
+            // typeof workbook.Sheets[sheetName][CcellValueS].v === "number" &&
+            workbook.Sheets[sheetName][DcellValueS] == undefined &&
+            // typeof workbook.Sheets[sheetName][DcellValueS].v === "number" &&
+            workbook.Sheets[sheetName][EcellValueS] == undefined &&
+            // typeof workbook.Sheets[sheetName][EcellValueS].v === "number" &&
+            workbook.Sheets[sheetName][FcellValueS] == undefined &&
+            // typeof workbook.Sheets[sheetName][FcellValueS].v === "number" &&
+            workbook.Sheets[sheetName][GcellValueS] == undefined &&
+            // typeof workbook.Sheets[sheetName][GcellValueS].v === "number" &&
+            workbook.Sheets[sheetName][HcellValueS] == undefined &&
+            // typeof workbook.Sheets[sheetName][HcellValueS].v === "number" &&
+            workbook.Sheets[sheetName][IcellValueS]
+            // &&
+            // typeof workbook.Sheets[sheetName][IcellValueS].v === "number"
+            //  &&
+            // workbook.Sheets[sheetName][JcellValueS] &&
+            // typeof workbook.Sheets[sheetName][JcellValueS].v === "number"
+          ) {
+            console.log("else iff da");
+            console.log(workbook.Sheets[sheetName][CcellValueS].v, "C ");
+          } else console.log("elseda");
+          return toast(
+            `Faylda Xatolik, Qatorlarda ortiqcha harflar, belgilar yoki boʻsh kataklar mavjud.
+              Iltimos toʻgʻirlab  qayta import qiling.`,
+            { type: "error" }
+          );
         }
 
         // Add totalSum
-        const lastRowIndex = cellLength + 1;
+        const lastRowIndex = cellLength - 0;
 
         // C
         const lastCCell = `C${lastRowIndex}`;
         workbook.Sheets[sheetName][lastCCell] = {
           t: "n",
-          v: typeof CtotalSum === "number" ? CtotalSum : 0,
+          v: typeof CtotalSum === "number" ? CtotalSum : "Xato",
         };
 
         // D
         const lastDCell = `D${lastRowIndex}`;
         workbook.Sheets[sheetName][lastDCell] = {
           t: "n",
-          v: typeof DtotalSum === "number" ? DtotalSum : 0,
+          v: typeof DtotalSum === "number" ? DtotalSum : "Xato",
         };
 
         // E
         const lastECell = `E${lastRowIndex}`;
         workbook.Sheets[sheetName][lastECell] = {
           t: "n",
-          v: typeof EtotalSum === "number" ? EtotalSum : 0,
+          v: typeof EtotalSum === "number" ? EtotalSum : "Xato",
         };
 
         // F
         const lastFCell = `F${lastRowIndex}`;
         workbook.Sheets[sheetName][lastFCell] = {
           t: "n",
-          v: typeof FtotalSum === "number" ? FtotalSum : 0,
+          v: typeof FtotalSum === "number" ? FtotalSum : "Xato",
         };
 
         // G
         const lastGCell = `G${lastRowIndex}`;
         workbook.Sheets[sheetName][lastGCell] = {
           t: "n",
-          v: typeof GtotalSum === "number" ? GtotalSum : 0,
+          v: typeof GtotalSum === "number" ? GtotalSum : "Xato",
         };
 
         // H
         const lastHCell = `H${lastRowIndex}`;
         workbook.Sheets[sheetName][lastHCell] = {
           t: "n",
-          v: typeof HtotalSum === "number" ? HtotalSum : 0,
+          v: typeof HtotalSum === "number" ? HtotalSum : "Xato",
         };
 
         // I
         const lastICell = `I${lastRowIndex}`;
         workbook.Sheets[sheetName][lastICell] = {
           t: "n",
-          v: typeof ItotalSum === "number" ? ItotalSum : 0,
+          v: typeof ItotalSum === "number" ? ItotalSum : "Xato",
         };
 
         // J
-        const lastJCell = `J${lastRowIndex}`;
-        workbook.Sheets[sheetName][lastJCell] = {
-          t: "n",
-          v: typeof JtotalSum === "number" ? JtotalSum : 0,
-        };
+        // const lastJCell = `J${lastRowIndex}`;
+        // workbook.Sheets[sheetName][lastJCell] = {
+        //   t: "n",
+        //   v: JtotalSum,
+        // };
 
-        try {
-          toast(`Muvvafaqiyatli`, { type: "success" });
-          excelData = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName]);
-          setData(excelData);
-          setEditingData([...excelData]);
-        } catch (error) {
-          return toast(
-            `Qoʻshishda Xatolik, Qatorlarda ortiqcha harflar, belgilar yoki boʻsh kataklar mavjud.
-                Iltimos toʻgʻirlab  qayta import qiling.`,
-            { type: "error" }
-          );
-        }
+        ///
 
-        // const worksheet = workbook.Sheets[sheetName];
-
-        // // Ustunlarni aniqlash
-        // const columns = [];
-        // for (let key in worksheet) {
-        //   if (key[0] === "!") continue;
-
-        //   const col = key.slice(0, 1);
-
-        //   console.log(col, "column");
-
-        //   // Check if the column letter is not A or B
-        //   if (col !== "A" && col !== "B" && !columns.includes(col)) {
-        //     columns.push(col);
-        //   }
-        // }
-
-        // console.log(columns); // This will log the unique columns excluding A and B
-
-        // // Qatorlarni jamlash
-        // const totalSum = columns.reduce((sum, col) => {
-        //   // Check if the cell exists for the given column and row 2
-        //   if (worksheet[col + "2"]) {
-        //     const cellValue = worksheet[col + "2"].v;
-        //     // Add the cell value to the sum
-        //     sum += +cellValue;
-        //   }
-        //   return sum;
-        // }, 0);
-
-        // console.log("Barcha ustunlar jami:", totalSum);
-
-        //
+        excelData = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName]);
+        setData(excelData);
+        setEditingData([...excelData]);
       } catch (error) {
-        return toast(
-          `Faylda Xatolik, Qatorlarda ortiqcha harflar, belgilar yoki boʻsh kataklar mavjud.
-              Iltimos toʻgʻirlab  qayta import qiling.`,
-          { type: "error" }
-        );
+        console.error("Error reading the Excel file:", error);
       }
     };
 
@@ -413,23 +361,23 @@ const RasxodXLSXget = () => {
     XLSX.utils.book_append_sheet(editedWorkbook, editedSheet, "Sheet1");
 
     // Get the added sheet
-    // const addedSheet = editedWorkbook.Sheets["Sheet1"];
+    const addedSheet = editedWorkbook.Sheets["Sheet1"];
 
-    // // Get the range of the added sheet
-    // const addedRange = XLSX.utils.decode_range(addedSheet["!ref"]);
+    // Get the range of the added sheet
+    const addedRange = XLSX.utils.decode_range(addedSheet["!ref"]);
 
-    // // Get the last row number of the added sheet
-    // const lastRow = addedRange.e.r + 1;
+    // Get the last row number of the added sheet
+    const lastRow = addedRange.e.r + 1;
 
-    // // Add "HAA" to the last row in the first column
-    // XLSX.utils.sheet_add_aoa(
-    //   addedSheet,
-    //   // [["HAA Bu yerda Excel haqida malumot bor "]],
-    //   {
-    //     origin: -1,
-    //     top: lastRow,
-    //   }
-    // );
+    // Add "HAA" to the last row in the first column
+    XLSX.utils.sheet_add_aoa(
+      addedSheet,
+      // [["HAA Bu yerda Excel haqida malumot bor "]],
+      {
+        origin: -1,
+        top: lastRow,
+      }
+    );
 
     // Use XLSX.writeFile to create and save the file
     XLSX.writeFile(editedWorkbook, editedFileName || "exampleData.xlsx");
@@ -495,7 +443,7 @@ const RasxodXLSXget = () => {
 
               <button
                 onClick={handleSave}
-                className="btn btn-success h-75 mx-2 align-center"
+                className="btn btn-success h-75 mx-2 align-center onClick={handleSave}"
               >
                 Скачать шаблон
               </button>

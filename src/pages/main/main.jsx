@@ -6,6 +6,7 @@ import React, { useEffect } from "react";
 import "./index.scss";
 import ReportCards from "../../components/reportCards/ReportCards";
 import SideBar from "../../components/sidebar";
+
 // import SideBar from "../sidebar";
 
 const Main = () => {
