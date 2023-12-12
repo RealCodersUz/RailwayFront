@@ -5,6 +5,7 @@ import Login from "./pages/login";
 import Main from "./pages/main/main";
 import GetReportsPage from "./pages/reports";
 import SettingsPage from "./pages/settings";
+import ArchivePage from "./pages/archive";
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
           <Route path="/reports" element={<GetReportsPage />} />
           {/* reports end */}
 
+          <Route path="/archives" element={<ArchivePage />} />
           <Route path="/settings" element={<SettingsPage />} />
 
           <Route path="/*" element={<NotFound />} />

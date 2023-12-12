@@ -7,7 +7,7 @@ import Modal from "react-bootstrap/Modal";
 import { FaEdit, FaRegEyeSlash, FaTrashAlt } from "react-icons/fa";
 import { FaRegEye } from "react-icons/fa6";
 import { toast } from "react-toastify";
-import AdminModal from "../adminModal";
+// import AdminModal from "../adminModal";
 // import { Form } from "react-router-dom";
 
 function UserModal(props) {

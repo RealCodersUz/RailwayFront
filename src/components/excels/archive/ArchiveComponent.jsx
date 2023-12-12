@@ -1,7 +1,8 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 /* eslint-disable no-unused-vars */
 // eslint-disable-next-line no-unused-vars
-import React, { useRef } from "react";
-import { useState } from "react";
+import React, { useRef, useState } from "react";
+// import { useState } from "react";
 import * as XLSX from "xlsx";
 // import ExcelJS from "exceljs";
 const editedWorkbook = XLSX.utils.book_new();
@@ -11,6 +12,7 @@ import "./index.scss";
 import { Button, Form, Row } from "react-bootstrap";
 import { toast } from "react-toastify";
 import { Workbook } from "exceljs";
+import axios from "axios";
 
 // table styles start
 const tableStyle = {
@@ -82,20 +84,36 @@ const reportsData = [
 //   { key: "2023", name: "2023" },
 // ];
 
-const RasxodXLSXget = () => {
+const ArchiveComponent = () => {
   const [data, setData] = useState([]);
   const [errorMsg, setErrorMsg] = useState(true);
+  const [search, setSearch] = useState("");
   const [editingData, setEditingData] = useState([]);
   const [editedFileName, setEditedFileName] = useState("");
-  const fileInputRef = useRef(null);
 
-  const [selectedFiles, setSelectedFiles] = useState([]);
+  function handleSubmit() {
+    let config = {
+      method: "get",
+      maxBodyLength: Infinity,
+      url: `https://railwayback.up.railway.app/archive?search=${search}`,
+      headers: {
+        Authorization: localStorage.getItem("token"),
+        "Content-Type": "application/json",
+      },
+    };
 
-  const handleFileSelect = (event) => {
-    setSelectedFiles([...event.target.files]);
-  };
+    axios
+      .request(config)
+      .then((response) => {
+        console.log(JSON.stringify(response.data));
+        toast(JSON.stringify(response.status), { type: "success" });
+      })
+      .catch((error) => {
+        console.log(error);
+        toast(JSON.stringify(error.message), { type: "error" });
+      });
+  }
 
-  // file change start
   const handleFileChange = (e) => {
     const file = e.target.files[0];
 
@@ -346,40 +364,6 @@ const RasxodXLSXget = () => {
             { type: "error" }
           );
         }
-
-        // const worksheet = workbook.Sheets[sheetName];
-
-        // // Ustunlarni aniqlash
-        // const columns = [];
-        // for (let key in worksheet) {
-        //   if (key[0] === "!") continue;
-
-        //   const col = key.slice(0, 1);
-
-        //   console.log(col, "column");
-
-        //   // Check if the column letter is not A or B
-        //   if (col !== "A" && col !== "B" && !columns.includes(col)) {
-        //     columns.push(col);
-        //   }
-        // }
-
-        // console.log(columns); // This will log the unique columns excluding A and B
-
-        // // Qatorlarni jamlash
-        // const totalSum = columns.reduce((sum, col) => {
-        //   // Check if the cell exists for the given column and row 2
-        //   if (worksheet[col + "2"]) {
-        //     const cellValue = worksheet[col + "2"].v;
-        //     // Add the cell value to the sum
-        //     sum += +cellValue;
-        //   }
-        //   return sum;
-        // }, 0);
-
-        // console.log("Barcha ustunlar jami:", totalSum);
-
-        //
       } catch (error) {
         return toast(
           `Faylda Xatolik, Qatorlarda ortiqcha harflar, belgilar yoki boʻsh kataklar mavjud.
@@ -403,42 +387,12 @@ const RasxodXLSXget = () => {
       return updatedData;
     });
   };
-  // handle Edit end
 
-  // Handle Save
   const handleSave = () => {
-    // Convert the edited data to a sheet
     const editedSheet = XLSX.utils.json_to_sheet(editingData);
-
-    // Add the sheet to the workbook
     XLSX.utils.book_append_sheet(editedWorkbook, editedSheet, "Sheet1");
-
-    // Get the added sheet
-    // const addedSheet = editedWorkbook.Sheets["Sheet1"];
-
-    // // Get the range of the added sheet
-    // const addedRange = XLSX.utils.decode_range(addedSheet["!ref"]);
-
-    // // Get the last row number of the added sheet
-    // const lastRow = addedRange.e.r + 1;
-
-    // // Add "HAA" to the last row in the first column
-    // XLSX.utils.sheet_add_aoa(
-    //   addedSheet,
-    //   // [["HAA Bu yerda Excel haqida malumot bor "]],
-    //   {
-    //     origin: -1,
-    //     top: lastRow,
-    //   }
-    // );
-
-    // Use XLSX.writeFile to create and save the file
     XLSX.writeFile(editedWorkbook, editedFileName || "exampleData.xlsx");
   };
-
-  // Save data end
-
-  // Select Mont start
 
   const [selectedMonth, setSelectedMonth] = useState("selected");
   const [selectedYears, setselectedYears] = useState("selected");
@@ -451,18 +405,18 @@ const RasxodXLSXget = () => {
     setselectedYears(event.target.value);
   };
 
-  // Select Mont end
-
   return (
     <>
       <div className="container">
         <div className=" p-5">
-          <h1 className="text-center">Отчеты</h1>
           <div className="input-group my-5 ">
             <select
               className="form-control mx-3 rounded border-primary"
               id="reports"
             >
+              <option selected disabled>
+                Выберите тип
+              </option>
               {reportsData.map((data, index) => (
                 <option key={index} value={data.key}>
                   {data.name}
@@ -473,7 +427,13 @@ const RasxodXLSXget = () => {
               type="date"
               className="form-control mx-3 rounded border-primary"
             />
-            <button className="btn btn-primary mx-3 w-25 rounded" type="button">
+            <button
+              className="btn btn-primary mx-3 w-25 rounded"
+              type="submit"
+              onClick={() => {
+                handleSubmit();
+              }}
+            >
               Поиск
             </button>
           </div>
@@ -481,13 +441,7 @@ const RasxodXLSXget = () => {
         <p className="text-danger fw-semibold text-center" hidden={errorMsg}>
           Отправка недоступна. Крайний срок истек.
         </p>
-        <div className="px-5 w-100 py-5">
-          <h5 className="text-danger">
-            Eslatib oʻtaman faylda ortiqcha belgi, ortiqcha son kiritilishi
-            kerak boʻlgan joyga belgi harf tushib qolmaganini tekshiring!{" "}
-          </h5>
-          <br />
-          <br />
+        {/* <div className="px-5 w-100 py-5">
           <form className="w-100 border-bottom border-secondary d-flex flex-row justify-content-between pb-2">
             <div className="file-input-wrapper"></div>
 
@@ -509,7 +463,7 @@ const RasxodXLSXget = () => {
               />
             </div>
           </form>
-        </div>
+        </div> */}
         <div>
           <div className="cards ">
             <div className="d-flex justify-content-end gap-5 row"></div>
@@ -675,4 +629,4 @@ const RasxodXLSXget = () => {
   );
 };
 
-export default RasxodXLSXget;
+export default ArchiveComponent;
