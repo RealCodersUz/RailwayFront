@@ -1,8 +1,10 @@
 /* eslint-disable no-unused-vars */
 // eslint-disable-next-line no-unused-vars
-import React, { useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import { useState } from "react";
 import * as XLSX from "xlsx";
+import { FaChevronDown } from "react-icons/fa";
+
 // import ExcelJS from "exceljs";
 const editedWorkbook = XLSX.utils.book_new();
 const editedSheet = XLSX.utils.aoa_to_sheet([["Sheet1"]]);
@@ -53,11 +55,12 @@ const buttonStyle = {
 // table styles end
 
 const reportsData = [
-  { name: "Отчеты", url: "/reports" },
-  { name: "Форма 69", url: "/forma69" },
-  { name: "Основные инструменты", url: "/insurments" },
-  { name: "Материальный отчет", url: "/material-reports" },
-  { name: "Налог", url: "/nalog" },
+  { name: "Расходы", url: "/files/rasxod.xlsx" },
+  { name: "Форма 69", url: "/files/forma69.xlsx" },
+  { name: "Debit kredit", url: "/files/Debit_kredit.xlsx" },
+  { name: "Основные инструменты", url: "/files/Osnovnie_sredstvo.xlsx" },
+  { name: "Материальный отчет", url: "/files/Materialni_Otchet.xlsx" },
+  { name: "Налог", url: "/files/Nalog.xlsx" },
 ];
 
 // const months = [
@@ -88,8 +91,21 @@ const RasxodXLSXget = () => {
   const [editingData, setEditingData] = useState([]);
   const [editedFileName, setEditedFileName] = useState("");
   const fileInputRef = useRef(null);
-
+  const [type, setType] = useState("Rasxod");
+  const [selectedType, setSelectedType] = useState({
+    name: "Расходы",
+    url: "/files/rasxod.xlsx",
+  });
   const [selectedFiles, setSelectedFiles] = useState([]);
+  useEffect(() => {
+    const foundReport = reportsData.find((report) => report.name === type);
+    if (foundReport) {
+      console.log("Topilgan ma'lumot: ", foundReport);
+      setSelectedType(foundReport);
+    } else {
+      console.log("Bunday nomli ma'lumot topilmadi");
+    }
+  }, [type]);
 
   const handleFileSelect = (event) => {
     setSelectedFiles([...event.target.files]);
@@ -462,7 +478,11 @@ const RasxodXLSXget = () => {
             <select
               className="form-control mx-3 rounded border-primary"
               id="reports"
+              onChange={(e) => setType(e.target.value)}
             >
+              <option selected disabled value="">
+                <p>Выберите тип</p>
+              </option>
               {reportsData.map((data, index) => (
                 <option key={index} value={data.key}>
                   {data.name}
@@ -471,6 +491,7 @@ const RasxodXLSXget = () => {
             </select>
             <input
               type="date"
+              // placeholder="Выберите дату"
               className="form-control mx-3 rounded border-primary"
             />
             <button className="btn btn-primary mx-3 w-25 rounded" type="button">
@@ -494,12 +515,13 @@ const RasxodXLSXget = () => {
             <div className="d-flex flex-row align-items-center justify-center h-100">
               <br />
 
-              <button
-                onClick={handleSave}
+              <a
+                href={"https://railwayback.up.railway.app" + selectedType.url}
+                // onClick={handleSave}
                 className="btn btn-success h-75 mx-2 align-center"
               >
                 Скачать шаблон
-              </button>
+              </a>
 
               <input
                 type="file"
