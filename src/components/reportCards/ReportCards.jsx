@@ -2,10 +2,10 @@
 import React from "react";
 const reportsData = [
   { name: "Расходы", url: "/reports", img: "/sum.png" },
-  { name: "Форма 69", url: "/forma69", img: "/doc.png" },
+  { name: "Форма 69", url: "/form69", img: "/doc.png" },
   { name: "Основные инструменты", url: "/tools", img: "/zarik.png" },
   { name: "Материальный отчет", url: "/mreport", img: "/block.png" },
-  { name: "Налог", url: "/nalog", img: "/procent.png" },
+  { name: "Налог", url: "/nalogs", img: "/procent.png" },
 ];
 
 function ReportCards() {

@@ -18,8 +18,8 @@ function App() {
           <Route path="/login" element={<Login />} />
           {/* reports  start*/}
           <Route path="/reports" element={<GetReportsPage />} />
-          <Route path="/forma69" element={<Forma69Page />} />{" "}
-          <Route path="/nalog" element={<NalogPage />} />
+          <Route path="/form69" element={<Forma69Page />} />{" "}
+          <Route path="/nalogs" element={<NalogPage />} />
           {/* reports end */}
           <Route path="/archives" element={<ArchivePage />} />
           <Route path="/settings" element={<SettingsPage />} />
