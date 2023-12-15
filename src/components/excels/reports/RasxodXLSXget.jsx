@@ -4,6 +4,8 @@ import React, { useEffect, useRef } from "react";
 import { useState } from "react";
 import * as XLSX from "xlsx";
 import { FaChevronDown } from "react-icons/fa";
+import axios from "axios";
+import FormData from "form-data";
 
 // import ExcelJS from "exceljs";
 const editedWorkbook = XLSX.utils.book_new();
@@ -96,6 +98,8 @@ const RasxodXLSXget = () => {
     name: "Расходы",
     url: "/files/rasxod.xlsx",
   });
+  // const [imageFile, setImageFile] = useState(null);
+
   const [selectedFiles, setSelectedFiles] = useState([]);
   useEffect(() => {
     const foundReport = reportsData.find((report) => report.name === type);
@@ -114,6 +118,7 @@ const RasxodXLSXget = () => {
   // file change start
   const handleFileChange = (e) => {
     const file = e.target.files[0];
+    setSelectedFiles([...e.target.files]);
 
     if (!file) {
       console.error("File not selected.");
@@ -452,12 +457,11 @@ const RasxodXLSXget = () => {
     XLSX.writeFile(editedWorkbook, editedFileName || "exampleData.xlsx");
   };
 
-  // Save data end
-
-  // Select Mont start
-
-  const [selectedMonth, setSelectedMonth] = useState("selected");
-  const [selectedYears, setselectedYears] = useState("selected");
+  const currentYear = new Date().getFullYear(); // Hozirgi yilni olish
+  const years = Array.from({ length: 10 }, (v, i) => currentYear + i); // 10 yil oldinga to‘liq miqdorda yillarni olish
+  console.log(years);
+  const [selectedMonth, setSelectedMonth] = useState("");
+  const [selectedYears, setselectedYears] = useState(currentYear);
 
   const handleMonthChange = (event) => {
     setSelectedMonth(event.target.value);
@@ -467,7 +471,47 @@ const RasxodXLSXget = () => {
     setselectedYears(event.target.value);
   };
 
-  // Select Mont end
+  const months = [
+    "Yanvar",
+    "Fevral",
+    "Mart",
+    "Aprel",
+    "May",
+    "Iyun",
+    "Iyul",
+    "Avgust",
+    "Sentabr",
+    "Oktabr",
+    "Noyabr",
+    "Dekabr",
+  ];
+  let archive = new FormData();
+  archive.append("type", selectedType);
+  archive.append("year", selectedYears);
+  archive.append("month", selectedMonth);
+  archive.append("file", selectedFiles);
+  console.log("file", selectedFiles);
+  let config = {
+    method: "post",
+    maxBodyLength: Infinity,
+    url: "/archive",
+    headers: {
+      "Content-Type": "multipart/form-data",
+      Authorization: localStorage.getItem("token"),
+      ...archive,
+    },
+    data: archive,
+  };
+  const handleSubmit = () => {
+    axios
+      .request(config)
+      .then((response) => {
+        console.log(JSON.stringify(response.data));
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
 
   return (
     <>
@@ -489,54 +533,81 @@ const RasxodXLSXget = () => {
                 </option>
               ))}
             </select>
-            <input
-              type="date"
-              // placeholder="Выберите дату"
+            {/* <label>Month:</label> */}
+            <select
               className="form-control mx-3 rounded border-primary"
-            />
+              value={selectedMonth}
+              onChange={handleMonthChange}
+            >
+              <option selected disabled value="">
+                Выберите месяц
+              </option>
+              {months.map((month) => (
+                <option key={month} value={month}>
+                  {month}
+                </option>
+              ))}
+            </select>
+
+            {/* <label>Year:</label> */}
+            <select
+              className="form-control mx-3 rounded border-primary"
+              // value={selectedYears}
+              onChange={handleYearsChange}
+            >
+              <option selected disabled value="">
+                Выберите год
+              </option>
+              {years.map((year) => (
+                <option key={year} value={year}>
+                  {year}
+                </option>
+              ))}
+            </select>
+
             <button className="btn btn-primary mx-3 w-25 rounded" type="button">
               Поиск
             </button>
           </div>
-        </div>
-        <p className="text-danger fw-semibold text-center" hidden={errorMsg}>
-          Отправка недоступна. Крайний срок истек.
-        </p>
-        <div className="px-5 w-100 py-5">
-          <h5 className="text-danger">
-            Eslatib oʻtaman faylda ortiqcha belgi, ortiqcha son kiritilishi
-            kerak boʻlgan joyga belgi harf tushib qolmaganini tekshiring!{" "}
-          </h5>
-          <br />
-          <br />
-          <form className="w-100 border-bottom border-secondary d-flex flex-row justify-content-between pb-2">
-            <div className="file-input-wrapper"></div>
 
-            <div className="d-flex flex-row align-items-center justify-center h-100">
-              <br />
+          <p className="text-danger fw-semibold text-center" hidden={errorMsg}>
+            Отправка недоступна. Крайний срок истек.
+          </p>
+          <div className="px-5 w-100 py-5">
+            <h5 className="text-danger">
+              Eslatib oʻtaman faylda ortiqcha belgi, ortiqcha son kiritilishi
+              kerak boʻlgan joyga belgi harf tushib qolmaganini tekshiring!{" "}
+            </h5>
+            <br />
+            <br />
+            <form className="w-100 border-bottom border-secondary d-flex flex-row justify-content-between pb-2">
+              <div className="file-input-wrapper"></div>
 
-              <a
-                href={"https://railwayback.up.railway.app" + selectedType.url}
-                // onClick={handleSave}
-                className="btn btn-success h-75 mx-2 align-center"
-              >
-                Скачать шаблон
-              </a>
+              <div className="d-flex flex-row align-items-center justify-center h-100">
+                <br />
 
-              <input
-                type="file"
-                id="myFileInput"
-                accept=".xls, .xlsx"
-                onChange={handleFileChange}
-              />
-            </div>
-          </form>
-        </div>
-        <div>
-          <div className="cards ">
-            <div className="d-flex justify-content-end gap-5 row"></div>
+                <a
+                  href={"https://railwayback.up.railway.app" + selectedType.url}
+                  // onClick={handleSave}
+                  className="btn btn-success h-75 mx-2 align-center"
+                >
+                  Скачать шаблон
+                </a>
 
-            {/* 
+                <input
+                  type="file"
+                  id="myFileInput"
+                  accept=".xls, .xlsx"
+                  onChange={handleFileChange}
+                />
+              </div>
+            </form>
+          </div>
+          <div>
+            <div className="cards ">
+              <div className="d-flex justify-content-end gap-5 row"></div>
+
+              {/* 
             <div className="d-flex justify-content-start gap-1">
               <div className="">
                 <input
@@ -558,139 +629,150 @@ const RasxodXLSXget = () => {
                 </button>
               </div>
             </div> */}
-          </div>
+            </div>
 
-          {data.length > 0 && (
-            <table style={tableStyle}>
-              <thead>
-                <tr>
-                  <th style={headerCellStyle}>№</th>
-                  <th style={headerCellStyle}>Наименование затрать</th>
-                  <th style={headerCellStyle}>Зарплата</th>
-                  <th style={headerCellStyle}>Соц-страх</th>
-                  <th style={headerCellStyle}>Материалы</th>
-                  <th style={headerCellStyle}>Топливо</th>
-                  <th style={headerCellStyle}>Эл/энергия</th>
-                  <th style={headerCellStyle}>Износ осн.ср-в</th>
-                  <th style={headerCellStyle}>Прочие</th>
-                  <th style={headerCellStyle}>Итого</th>
-                </tr>
-              </thead>
-              <tbody>
-                {editingData.map((row, rowIndex) => (
-                  <tr key={rowIndex}>
-                    <td style={cellStyle}>{row["№"]}</td>
-                    <td style={cellStyle}>
-                      <input
-                        className="excelInputs"
-                        style={inputStyle}
-                        type="text"
-                        value={row["Наименование затрать"]}
-                        onChange={(e) =>
-                          handleEdit(
-                            rowIndex,
-                            "Наименование затрать",
-                            e.target.value
-                          )
-                        }
-                      />
-                    </td>
-                    <td style={cellStyle}>
-                      <input
-                        className="excelInputs"
-                        style={inputStyle}
-                        type="text"
-                        value={row["Зарплата"]}
-                        onChange={(e) =>
-                          handleEdit(rowIndex, "Зарплата", e.target.value)
-                        }
-                      />
-                    </td>
-
-                    <td style={cellStyle}>
-                      <input
-                        className="excelInputs"
-                        style={inputStyle}
-                        type="text"
-                        value={row["Соц-страх"]}
-                        onChange={(e) =>
-                          handleEdit(rowIndex, "Соц-страх", e.target.value)
-                        }
-                      />
-                    </td>
-
-                    <td style={cellStyle}>
-                      <input
-                        className="excelInputs"
-                        style={inputStyle}
-                        type="text"
-                        value={row["Материалы"]}
-                        onChange={(e) =>
-                          handleEdit(rowIndex, "Материалы", e.target.value)
-                        }
-                      />
-                    </td>
-                    <td style={cellStyle}>
-                      <input
-                        className="excelInputs"
-                        style={inputStyle}
-                        type="text"
-                        value={row["Топливо"]}
-                        onChange={(e) =>
-                          handleEdit(rowIndex, "Топливо", e.target.value)
-                        }
-                      />
-                    </td>
-                    <td style={cellStyle}>
-                      <input
-                        className="excelInputs"
-                        style={inputStyle}
-                        type="text"
-                        value={row["Эл/энергия"]}
-                        onChange={(e) =>
-                          handleEdit(rowIndex, "Эл/энергия", e.target.value)
-                        }
-                      />
-                    </td>
-                    <td style={cellStyle}>
-                      <input
-                        className="excelInputs"
-                        style={inputStyle}
-                        type="text"
-                        value={row["Износ осн.ср-в"]}
-                        onChange={(e) =>
-                          handleEdit(rowIndex, "Износ осн.ср-в", e.target.value)
-                        }
-                      />
-                    </td>
-                    <td style={cellStyle}>
-                      <input
-                        className="excelInputs"
-                        style={inputStyle}
-                        type="text"
-                        value={row["Прочие"]}
-                        onChange={(e) =>
-                          handleEdit(rowIndex, "Прочие", e.target.value)
-                        }
-                      />
-                    </td>
-
-                    <td style={cellStyle}>
-                      <input
-                        className="excelInputs"
-                        style={inputStyle}
-                        type="text"
-                        value={row["Итого"]}
-                        onChange={(e) =>
-                          handleEdit(rowIndex, "Итого", e.target.value)
-                        }
-                      />
-                    </td>
+            {data.length > 0 && (
+              <table style={tableStyle}>
+                <thead>
+                  <tr>
+                    <th style={headerCellStyle}>№</th>
+                    <th style={headerCellStyle}>Наименование затрать</th>
+                    <th style={headerCellStyle}>Зарплата</th>
+                    <th style={headerCellStyle}>Соц-страх</th>
+                    <th style={headerCellStyle}>Материалы</th>
+                    <th style={headerCellStyle}>Топливо</th>
+                    <th style={headerCellStyle}>Эл/энергия</th>
+                    <th style={headerCellStyle}>Износ осн.ср-в</th>
+                    <th style={headerCellStyle}>Прочие</th>
+                    <th style={headerCellStyle}>Итого</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          )}
+                </thead>
+                <tbody>
+                  {editingData.map((row, rowIndex) => (
+                    <tr key={rowIndex}>
+                      <td style={cellStyle}>{row["№"]}</td>
+                      <td style={cellStyle}>
+                        <input
+                          className="excelInputs"
+                          style={inputStyle}
+                          type="text"
+                          value={row["Наименование затрать"]}
+                          onChange={(e) =>
+                            handleEdit(
+                              rowIndex,
+                              "Наименование затрать",
+                              e.target.value
+                            )
+                          }
+                        />
+                      </td>
+                      <td style={cellStyle}>
+                        <input
+                          className="excelInputs"
+                          style={inputStyle}
+                          type="text"
+                          value={row["Зарплата"]}
+                          onChange={(e) =>
+                            handleEdit(rowIndex, "Зарплата", e.target.value)
+                          }
+                        />
+                      </td>
+
+                      <td style={cellStyle}>
+                        <input
+                          className="excelInputs"
+                          style={inputStyle}
+                          type="text"
+                          value={row["Соц-страх"]}
+                          onChange={(e) =>
+                            handleEdit(rowIndex, "Соц-страх", e.target.value)
+                          }
+                        />
+                      </td>
+
+                      <td style={cellStyle}>
+                        <input
+                          className="excelInputs"
+                          style={inputStyle}
+                          type="text"
+                          value={row["Материалы"]}
+                          onChange={(e) =>
+                            handleEdit(rowIndex, "Материалы", e.target.value)
+                          }
+                        />
+                      </td>
+                      <td style={cellStyle}>
+                        <input
+                          className="excelInputs"
+                          style={inputStyle}
+                          type="text"
+                          value={row["Топливо"]}
+                          onChange={(e) =>
+                            handleEdit(rowIndex, "Топливо", e.target.value)
+                          }
+                        />
+                      </td>
+                      <td style={cellStyle}>
+                        <input
+                          className="excelInputs"
+                          style={inputStyle}
+                          type="text"
+                          value={row["Эл/энергия"]}
+                          onChange={(e) =>
+                            handleEdit(rowIndex, "Эл/энергия", e.target.value)
+                          }
+                        />
+                      </td>
+                      <td style={cellStyle}>
+                        <input
+                          className="excelInputs"
+                          style={inputStyle}
+                          type="text"
+                          value={row["Износ осн.ср-в"]}
+                          onChange={(e) =>
+                            handleEdit(
+                              rowIndex,
+                              "Износ осн.ср-в",
+                              e.target.value
+                            )
+                          }
+                        />
+                      </td>
+                      <td style={cellStyle}>
+                        <input
+                          className="excelInputs"
+                          style={inputStyle}
+                          type="text"
+                          value={row["Прочие"]}
+                          onChange={(e) =>
+                            handleEdit(rowIndex, "Прочие", e.target.value)
+                          }
+                        />
+                      </td>
+
+                      <td style={cellStyle}>
+                        <input
+                          className="excelInputs"
+                          style={inputStyle}
+                          type="text"
+                          value={row["Итого"]}
+                          onChange={(e) =>
+                            handleEdit(rowIndex, "Итого", e.target.value)
+                          }
+                        />
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            )}
+          </div>
+          <div className="d-flex flex-row-reverse gap-3 w-full">
+            <button className="btn btn-danger">Повторить попытку</button>
+            <button className="btn btn-success" onClick={handleSubmit}>
+              Отправить
+            </button>
+          </div>
         </div>
       </div>
     </>

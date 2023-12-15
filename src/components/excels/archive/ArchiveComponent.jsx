@@ -114,7 +114,7 @@ const ArchiveComponent = () => {
       });
   }
 
-  const handleFileChange = (e) => {
+  const Change = (e) => {
     const file = e.target.files[0];
 
     if (!file) {
