@@ -1,5 +1,6 @@
 /* eslint-disable no-unused-vars */
 import React from "react";
+import { Link } from "react-router-dom";
 const reportsData = [
   { name: "Расходы", url: "/reports", img: "/sum.png" },
   { name: "Форма 69", url: "/forma69", img: "/doc.png" },
@@ -24,30 +25,30 @@ function ReportCards() {
                   style={{ width: "16rem" }}
                   key={index}
                 >
-                  <a
-                    href={data.url}
+                  <Link
+                    to={data.url}
                     className="text-decoration-none d-flex align-items-center py-4 justify-center text-wrap text-white"
                   >
                     <img src={data.img} alt="no rasm" />
                     <h5 className="card-title  px-4 text-center text-white ">
                       {data.name}
                     </h5>
-                  </a>
+                  </Link>
                 </div>
               ))}
               <div
                 className="card p-1 mx-2 border-bottom bg-primary text-white"
                 style={{ width: "16rem", height: "4rem" }}
               >
-                <a
-                  href="#"
+                <Link
+                  to="#"
                   className="text-decoration-none d-flex py-2 align-items-center justify-content-center text-white"
                 >
                   <h5 className="card-title  px-4 text-center text-white">
                     pakazat vsyo
                   </h5>
                   <img src="/ewo.png" alt="ewo" />
-                </a>
+                </Link>
               </div>
             </div>
           </div>

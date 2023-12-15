@@ -1,0 +1,463 @@
+/* eslint-disable no-unused-vars */
+// eslint-disable-next-line no-unused-vars
+import React, { useRef } from "react";
+import { useState } from "react";
+import * as XLSX from "xlsx";
+// import ExcelJS from "exceljs";
+const editedWorkbook = XLSX.utils.book_new();
+const editedSheet = XLSX.utils.aoa_to_sheet([["Sheet1"]]);
+
+import "./index.scss";
+import { Button, Form, Row } from "react-bootstrap";
+
+// table styles start
+const tableStyle = {
+  width: "100%",
+  borderCollapse: "collapse",
+  margin: "20px 0",
+};
+
+const cellStyle = {
+  border: "1px solid #000",
+  padding: "8px",
+};
+
+const headerCellStyle = {
+  ...cellStyle,
+  backgroundColor: "#00f",
+  fontWeight: "bold",
+};
+
+const inputStyle = {
+  border: "none",
+  padding: "8px",
+  width: "100%",
+  boxSizing: "border-box",
+};
+
+const buttonStyle = {
+  padding: "10px 20px",
+  fontSize: "16px",
+  marginTop: "20px",
+  width: "15rem",
+  height: "3rem",
+  cursor: "pointer",
+  backgroundColor: "#4CAF50",
+  color: "white",
+  border: "none",
+  borderRadius: "4px",
+};
+
+// table styles end
+
+const reportsData = [
+  { name: "Отчеты", url: "/reports" },
+  { name: "Форма 69", url: "/forma69" },
+  { name: "Основные инструменты", url: "/insurments" },
+  { name: "Материальный отчет", url: "/material-reports" },
+  { name: "Налог", url: "/nalog" },
+];
+
+// const months = [
+//   { key: "monthSelected", name: "Выберите месяц" },
+//   { key: "january", name: "Январь" },
+//   { key: "february", name: "Февраль" },
+//   { key: "march", name: "Март" },
+//   { key: "april", name: "Апрель" },
+//   { key: "may", name: "Май" },
+//   { key: "june", name: "Июнь" },
+//   { key: "july", name: "Июль" },
+//   { key: "august", name: "Август" },
+//   { key: "september", name: "Сентябрь" },
+//   { key: "october", name: "Октябрь" },
+//   { key: "november", name: "Ноябрь" },
+//   { key: "december", name: "Декабрь" },
+// ];
+
+// const years = [
+//   { key: "yearSelected", name: "Выберите год" },
+//   { key: "2022", name: "2022" },
+//   { key: "2023", name: "2023" },
+// ];
+
+const RasxodXLSXget = () => {
+  const [data, setData] = useState([]);
+  const [editingData, setEditingData] = useState([]);
+  const [editedFileName, setEditedFileName] = useState("");
+  const fileInputRef = useRef(null);
+
+  const [selectedFiles, setSelectedFiles] = useState([]);
+
+  const handleFileSelect = (event) => {
+    setSelectedFiles([...event.target.files]);
+  };
+
+  // file change start
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = async (e) => {
+        const binaryData = e.target.result;
+        const workbook = XLSX.read(binaryData, {
+          type: "binary",
+        });
+
+        var sheetNameS = workbook.SheetNames[0];
+        var cellAddress = "B2";
+        var cellValue = workbook.Sheets[sheetNameS][cellAddress].v;
+
+        var cellAddress3 = "B3";
+        var cellValueB3 = workbook.Sheets[sheetNameS][cellAddress3].v;
+
+        console.log("Value in B2 cell:", cellValue);
+        console.log("Value in B3 cell:", cellValueB3);
+
+        // Specify the cell addresses
+        var cellAddressB2 = "B2";
+        var cellAddressB3 = "B3";
+        var cellAddressB4 = "B4";
+        var cellAddressB5 = "B5";
+        var cellAddressB6 = "B6";
+        var cellAddressB7 = "B7";
+
+        var cellAddressB9 = "B9";
+
+        // Get the values from cells B2, B3, and B4
+        var valueB2 = workbook.Sheets[sheetNameS][cellAddressB2].v;
+        var valueB3 = workbook.Sheets[sheetNameS][cellAddressB3].v;
+        var valueB4 = workbook.Sheets[sheetNameS][cellAddressB4].v;
+        var valueB5 = workbook.Sheets[sheetNameS][cellAddressB5].v;
+        var valueB6 = workbook.Sheets[sheetNameS][cellAddressB6].v;
+
+        var valueB7 = workbook.Sheets[sheetNameS][cellAddressB7].v;
+
+        // Calculate the result
+        var result = valueB2 + valueB3 + valueB4 + valueB5 + valueB6 + valueB7;
+
+        console.log(result);
+
+        // Set the formula in cell B9
+        workbook.Sheets[sheetNameS][cellAddressB9] = {
+          t: "n", // 'n' indicates a number
+          v: result,
+          f: `B2+B3+B4+B5+B6`, // The formula
+        };
+
+        const sheetName = workbook.SheetNames[0];
+        const excelData = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName]);
+
+        // const value = workbook.sheet("Sheet1").cell("B2").value();
+        // console.log(value);
+
+        setData(excelData);
+        setEditingData([...excelData]);
+      };
+      reader.readAsBinaryString(file);
+    }
+  };
+
+  // file change end
+
+  // handle Edit start
+  const handleEdit = (rowIndex, columnName, value) => {
+    setEditingData((prevEditingData) => {
+      const updatedData = [...prevEditingData];
+      updatedData[rowIndex][columnName] = value;
+      console.log(([rowIndex][columnName] = value), "bu value");
+      return updatedData;
+    });
+  };
+  // handle Edit end
+
+  // save to excel start
+  const handleSave = () => {
+    // Use XLSX.utils.book_new() to create a new workbook
+    const editedWorkbook = XLSX.utils.book_new();
+    const editedSheet = XLSX.utils.aoa_to_sheet([
+      ["Bu Yerda katta qilib Excel haqida malumot bor"],
+    ]);
+
+    // Add the original header row to the sheet
+    XLSX.utils.sheet_add_aoa(editedSheet, [
+      [
+        "№",
+        "Наименование затрат",
+        "Зарплата",
+        "Соц-страх",
+        "Материалы",
+        "Топливо",
+        "Эл/энергия",
+        "Износ осн.ср-в",
+        "Прочие",
+        "Итого",
+      ],
+    ]);
+
+    // Add data rows to the sheet
+    editingData.forEach((row) => {
+      XLSX.utils.sheet_add_aoa(editedSheet, [Object.values(row)]);
+    });
+
+    // Add the sheet to the workbook
+    XLSX.utils.book_append_sheet(editedWorkbook, editedSheet, "Sheet1");
+
+    // Edit data start
+    const editedFileData = XLSX.write(editedWorkbook, {
+      bookType: "xlsx",
+      mimeType:
+        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      type: "buffer",
+    });
+
+    const blob = new Blob([editedFileData], {
+      type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    });
+
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = editedFileName || "exampleData.xlsx";
+    a.click();
+  };
+
+  // Edit data end
+
+  // Select Mont start
+
+  const [selectedMonth, setSelectedMonth] = useState("selected");
+  const [selectedYears, setselectedYears] = useState("selected");
+
+  const handleMonthChange = (event) => {
+    setSelectedMonth(event.target.value);
+  };
+
+  const handleYearsChange = (event) => {
+    setselectedYears(event.target.value);
+  };
+
+  // Select Mont end
+
+  //
+
+  //
+
+  return (
+    <>
+      <div className="container">
+        <div className=" p-5">
+          <h1 className="text-center">Отчеты</h1>
+          <div className="input-group my-5 ">
+            <select
+              className="form-control mx-3 rounded border-primary"
+              id="reports"
+            >
+              {reportsData.map((data, index) => (
+                <option key={index} value={data.key}>
+                  {data.name}
+                </option>
+              ))}
+            </select>
+            <input
+              type="date"
+              className="form-control mx-3 rounded border-primary"
+            />
+            <button className="btn btn-primary mx-3 w-25 rounded" type="button">
+              Поиск
+            </button>
+          </div>
+        </div>
+        <p className="text-danger fw-semibold text-center" hidden={true}>
+          Отправка недоступна. Крайний срок истек.
+        </p>
+        <div className="px-5 w-100 py-5">
+          <form className="w-100 border-bottom border-secondary d-flex flex-row justify-content-between pb-2">
+            <div className="file-input-wrapper">
+              <input
+                type="file"
+                id="myFileInput"
+                accept=".xls, .xlsx"
+                onChange={handleFileChange}
+              />
+            </div>
+            <div className="d-flex flex-row align-items-center justify-center h-100">
+              <button
+                onClick={handleSave}
+                className="btn btn-success h-75 mx-2 align-center onClick={handleSave}"
+              >
+                Скачать шаблон
+              </button>
+
+              <button className="btn btn-primary h-75 mx-2 align-center">
+                Загрузить
+              </button>
+            </div>
+          </form>
+        </div>
+        <div>
+          <div className="cards ">
+            <div className="d-flex justify-content-end gap-5 row"></div>
+
+            {/* 
+            <div className="d-flex justify-content-start gap-1">
+              <div className="">
+                <input
+                  className="excelInputs"
+                  style={buttonStyle}
+                  type="file"
+                  accept=".xls, .xlsx"
+                  onChange={handleFileChange}
+                />
+              </div>
+              <div className="">
+                <button style={buttonStyle} onClick={handleSave}>
+                  Скачать шаблон
+                </button>
+              </div>{" "}
+              <div className="">
+                <button style={buttonStyle} onClick={handleSave}>
+                  Загрузить шаблон
+                </button>
+              </div>
+            </div> */}
+          </div>
+
+          {data.length > 0 && (
+            <table style={tableStyle}>
+              <thead>
+                <tr>
+                  <th style={headerCellStyle}>№</th>
+                  <th style={headerCellStyle}>Наименование затрать</th>
+                  <th style={headerCellStyle}>Зарплата</th>
+                  <th style={headerCellStyle}>Соц-страх</th>
+                  <th style={headerCellStyle}>Материалы</th>
+                  <th style={headerCellStyle}>Топливо</th>
+                  <th style={headerCellStyle}>Эл/энергия</th>
+                  <th style={headerCellStyle}>Износ осн.ср-в</th>
+                  <th style={headerCellStyle}>Прочие</th>
+                  <th style={headerCellStyle}>Итого</th>
+                </tr>
+              </thead>
+              <tbody>
+                {editingData.map((row, rowIndex) => (
+                  <tr key={rowIndex}>
+                    <td style={cellStyle}>{row["№"]}</td>
+                    <td style={cellStyle}>
+                      <input
+                        className="excelInputs"
+                        style={inputStyle}
+                        type="text"
+                        value={row["Наименование затрать"]}
+                        onChange={(e) =>
+                          handleEdit(
+                            rowIndex,
+                            "Наименование затрать",
+                            e.target.value
+                          )
+                        }
+                      />
+                    </td>
+                    <td style={cellStyle}>
+                      <input
+                        className="excelInputs"
+                        style={inputStyle}
+                        type="text"
+                        value={row["Зарплата"]}
+                        onChange={(e) =>
+                          handleEdit(rowIndex, "Зарплата", e.target.value)
+                        }
+                      />
+                    </td>
+
+                    <td style={cellStyle}>
+                      <input
+                        className="excelInputs"
+                        style={inputStyle}
+                        type="text"
+                        value={row["Соц-страх"]}
+                        onChange={(e) =>
+                          handleEdit(rowIndex, "Соц-страх", e.target.value)
+                        }
+                      />
+                    </td>
+
+                    <td style={cellStyle}>
+                      <input
+                        className="excelInputs"
+                        style={inputStyle}
+                        type="text"
+                        value={row["Материалы"]}
+                        onChange={(e) =>
+                          handleEdit(rowIndex, "Материалы", e.target.value)
+                        }
+                      />
+                    </td>
+                    <td style={cellStyle}>
+                      <input
+                        className="excelInputs"
+                        style={inputStyle}
+                        type="text"
+                        value={row["Топливо"]}
+                        onChange={(e) =>
+                          handleEdit(rowIndex, "Топливо", e.target.value)
+                        }
+                      />
+                    </td>
+                    <td style={cellStyle}>
+                      <input
+                        className="excelInputs"
+                        style={inputStyle}
+                        type="text"
+                        value={row["Эл/энергия"]}
+                        onChange={(e) =>
+                          handleEdit(rowIndex, "Эл/энергия", e.target.value)
+                        }
+                      />
+                    </td>
+                    <td style={cellStyle}>
+                      <input
+                        className="excelInputs"
+                        style={inputStyle}
+                        type="text"
+                        value={row["Износ осн.ср-в"]}
+                        onChange={(e) =>
+                          handleEdit(rowIndex, "Износ осн.ср-в", e.target.value)
+                        }
+                      />
+                    </td>
+                    <td style={cellStyle}>
+                      <input
+                        className="excelInputs"
+                        style={inputStyle}
+                        type="text"
+                        value={row["Прочие"]}
+                        onChange={(e) =>
+                          handleEdit(rowIndex, "Прочие", e.target.value)
+                        }
+                      />
+                    </td>
+
+                    <td style={cellStyle}>
+                      <input
+                        className="excelInputs"
+                        style={inputStyle}
+                        type="text"
+                        value={row["Итого"]}
+                        onChange={(e) =>
+                          handleEdit(rowIndex, "Итого", e.target.value)
+                        }
+                      />
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
+        </div>
+      </div>
+    </>
+  );
+};
+
+export default RasxodXLSXget;
+handleSave funksiyasi ishlaganida exceldagi barcha malumotlar .xlsx faylga saqlab yuklash uchun funksiya qilib koddagi errorlarni togirlab kodni boshidan oxirigacha kodni qayta yozib ber 
