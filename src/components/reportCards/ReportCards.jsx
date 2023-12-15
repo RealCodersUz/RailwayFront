@@ -26,7 +26,7 @@ function ReportCards() {
                   key={index}
                 >
                   <Link
-                    href={data.url}
+                    to={data.url}
                     className="text-decoration-none d-flex align-items-center py-4 justify-center text-wrap text-white"
                   >
                     <img src={data.img} alt="no rasm" />
@@ -41,7 +41,7 @@ function ReportCards() {
                 style={{ width: "16rem", height: "4rem" }}
               >
                 <Link
-                  href="#"
+                  to="#"
                   className="text-decoration-none d-flex py-2 align-items-center justify-content-center text-white"
                 >
                   <h5 className="card-title  px-4 text-center text-white">
