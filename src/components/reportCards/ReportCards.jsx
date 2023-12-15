@@ -1,11 +1,12 @@
 /* eslint-disable no-unused-vars */
 import React from "react";
+import { Link } from "react-router-dom";
 const reportsData = [
   { name: "Расходы", url: "/reports", img: "/sum.png" },
-  { name: "Форма 69", url: "/form69", img: "/doc.png" },
+  { name: "Форма 69", url: "/forma69", img: "/doc.png" },
   { name: "Основные инструменты", url: "/tools", img: "/zarik.png" },
   { name: "Материальный отчет", url: "/mreport", img: "/block.png" },
-  { name: "Налог", url: "/nalogs", img: "/procent.png" },
+  { name: "Налог", url: "/nalog", img: "/procent.png" },
 ];
 
 function ReportCards() {
@@ -24,7 +25,7 @@ function ReportCards() {
                   style={{ width: "16rem" }}
                   key={index}
                 >
-                  <a
+                  <Link
                     href={data.url}
                     className="text-decoration-none d-flex align-items-center py-4 justify-center text-wrap text-white"
                   >
@@ -32,14 +33,14 @@ function ReportCards() {
                     <h5 className="card-title  px-4 text-center text-white ">
                       {data.name}
                     </h5>
-                  </a>
+                  </Link>
                 </div>
               ))}
               <div
                 className="card p-1 mx-2 border-bottom bg-primary text-white"
                 style={{ width: "16rem", height: "4rem" }}
               >
-                <a
+                <Link
                   href="#"
                   className="text-decoration-none d-flex py-2 align-items-center justify-content-center text-white"
                 >
@@ -47,7 +48,7 @@ function ReportCards() {
                     pakazat vsyo
                   </h5>
                   <img src="/ewo.png" alt="ewo" />
-                </a>
+                </Link>
               </div>
             </div>
           </div>
