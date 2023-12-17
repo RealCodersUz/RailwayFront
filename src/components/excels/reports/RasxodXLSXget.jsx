@@ -485,33 +485,45 @@ const RasxodXLSXget = () => {
     "Noyabr",
     "Dekabr",
   ];
-  let archive = new FormData();
-  archive.append("type", selectedType);
-  archive.append("year", selectedYears);
-  archive.append("month", selectedMonth);
-  archive.append("file", selectedFiles);
-  console.log("file", selectedFiles);
-  let config = {
-    method: "post",
-    maxBodyLength: Infinity,
-    url: "/archive",
-    headers: {
-      "Content-Type": "multipart/form-data",
-      Authorization: localStorage.getItem("token"),
-      ...archive,
-    },
-    data: archive,
-  };
-  const handleSubmit = () => {
-    axios
-      .request(config)
-      .then((response) => {
-        console.log(JSON.stringify(response.data));
-      })
-      .catch((error) => {
-        console.log(error);
+  let formData = new FormData();
+  formData.append("type", selectedType);
+  formData.append("year", selectedYears);
+  formData.append("month", selectedMonth);
+  formData.append("file", selectedFiles[0]);
+  // let config = {
+  //   method: "post",
+  //   maxBodyLength: Infinity,
+  //   url: "/archive",
+  //   headers: {
+  //     "Content-Type": "multipart/form-data",
+  //     Authorization: localStorage.getItem("token"),
+  //     // ...archive,
+  //   },
+  //   data: archive,
+  // };
+
+  const handleSubmit = async () => {
+    try {
+      const response = await axios.post("/archive", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Authorization: localStorage.getItem("token"),
+        },
       });
+
+      console.log("Server response:", response.data);
+    } catch (error) {
+      console.error("Error:", error);
+    }
   };
+  // axios
+  //   .request(config)
+  //   .then((response) => {
+  //     console.log(JSON.stringify(response.data));
+  //   })
+  //   .catch((error) => {
+  //     console.log(error);
+  //   });
 
   return (
     <>
@@ -767,7 +779,10 @@ const RasxodXLSXget = () => {
               </table>
             )}
           </div>
-          <div className="d-flex flex-row-reverse gap-3 w-full">
+          <div
+            className="d-flex flex-row-reverse gap-3 w-full"
+            hidden={selectedFiles != []}
+          >
             <button className="btn btn-danger">Повторить попытку</button>
             <button className="btn btn-success" onClick={handleSubmit}>
               Отправить
