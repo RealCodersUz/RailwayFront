@@ -14,7 +14,7 @@ import axios from "axios";
 
 axios.defaults.baseURL = "http://localhost:1111";
 
-// axios.defaults.baseURL = "https://railwayback.up.railway.app/";
+// axios.defaults.baseURL = "https://railwayback.up.railway.app";
 
 // axios.defaults.headers.common["Content-Type"] = "application/json";
 // let token = localStorage.getItem("token");

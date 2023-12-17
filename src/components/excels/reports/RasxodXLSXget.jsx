@@ -15,6 +15,7 @@ import "./index.scss";
 import { Button, Form, Row } from "react-bootstrap";
 import { toast } from "react-toastify";
 import { Workbook } from "exceljs";
+import { Link } from "react-router-dom";
 
 // table styles start
 const tableStyle = {
@@ -96,6 +97,7 @@ const RasxodXLSXget = () => {
   const [type, setType] = useState("Rasxod");
   const [selectedType, setSelectedType] = useState({
     name: "Расходы",
+    type: "rasxod",
     url: "/files/rasxod.xlsx",
   });
   // const [imageFile, setImageFile] = useState(null);
@@ -428,33 +430,14 @@ const RasxodXLSXget = () => {
 
   // Handle Save
   const handleSave = () => {
-    // Convert the edited data to a sheet
-    const editedSheet = XLSX.utils.json_to_sheet(editingData);
-
-    // Add the sheet to the workbook
-    XLSX.utils.book_append_sheet(editedWorkbook, editedSheet, "Sheet1");
-
-    // Get the added sheet
-    // const addedSheet = editedWorkbook.Sheets["Sheet1"];
-
-    // // Get the range of the added sheet
-    // const addedRange = XLSX.utils.decode_range(addedSheet["!ref"]);
-
-    // // Get the last row number of the added sheet
-    // const lastRow = addedRange.e.r + 1;
-
-    // // Add "HAA" to the last row in the first column
-    // XLSX.utils.sheet_add_aoa(
-    //   addedSheet,
-    //   // [["HAA Bu yerda Excel haqida malumot bor "]],
-    //   {
-    //     origin: -1,
-    //     top: lastRow,
-    //   }
-    // );
+    // Check if the workbook is empty
+    if (editedWorkbook.SheetNames.length === 0) {
+      toast.warning("No data to save.", { type: "warning" });
+      return;
+    }
 
     // Use XLSX.writeFile to create and save the file
-    XLSX.writeFile(editedWorkbook, editedFileName || "exampleData.xlsx");
+    XLSX.writeFile(editedWorkbook, editedFileName);
   };
 
   const currentYear = new Date().getFullYear(); // Hozirgi yilni olish
@@ -485,25 +468,28 @@ const RasxodXLSXget = () => {
     "Noyabr",
     "Dekabr",
   ];
-  let formData = new FormData();
-  formData.append("type", selectedType);
-  formData.append("year", selectedYears);
-  formData.append("month", selectedMonth);
-  formData.append("file", selectedFiles[0]);
-  // let config = {
-  //   method: "post",
-  //   maxBodyLength: Infinity,
-  //   url: "/archive",
-  //   headers: {
-  //     "Content-Type": "multipart/form-data",
-  //     Authorization: localStorage.getItem("token"),
-  //     // ...archive,
-  //   },
-  //   data: archive,
-  // };
+
+  // let formData = new FormData();
+
+  // formData.append("branch_name", branchName);
+  // formData.append("type", selectedType);
+  // formData.append("year", selectedYears);
+  // formData.append("month", selectedMonth);
+  // formData.append("file", selectedFiles[0]);
 
   const handleSubmit = async () => {
     try {
+      // Create FormData object and append data
+      let formData = new FormData();
+
+      formData.append("type", selectedType.name);
+      formData.append("year", selectedYears);
+      formData.append("month", selectedMonth);
+      formData.append("file", selectedFiles[0]);
+
+      console.log(selectedType, "selectedType");
+
+      // Make the POST request
       const response = await axios.post("/archive", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
@@ -512,18 +498,17 @@ const RasxodXLSXget = () => {
       });
 
       console.log("Server response:", response.data);
+
+      // Toast message for successful submission
+      toast.success("Data submitted successfully", { type: "success" });
     } catch (error) {
+      // Toast message for submission error
+      toast.error("Error submitting data. Please try again.", {
+        type: "error",
+      });
       console.error("Error:", error);
     }
   };
-  // axios
-  //   .request(config)
-  //   .then((response) => {
-  //     console.log(JSON.stringify(response.data));
-  //   })
-  //   .catch((error) => {
-  //     console.log(error);
-  //   });
 
   return (
     <>
@@ -598,13 +583,13 @@ const RasxodXLSXget = () => {
               <div className="d-flex flex-row align-items-center justify-center h-100">
                 <br />
 
-                <a
-                  href={"https://railwayback.up.railway.app" + selectedType.url}
+                <Link
+                  to={"https://railwayback.up.railway.app" + selectedType.url}
                   // onClick={handleSave}
                   className="btn btn-success h-75 mx-2 align-center"
                 >
                   Скачать шаблон
-                </a>
+                </Link>
 
                 <input
                   type="file"

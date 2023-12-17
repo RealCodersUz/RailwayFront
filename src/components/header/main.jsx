@@ -56,6 +56,7 @@ const Header = () => {
           Authorization: `${token}`,
         },
       });
+
       setData(response.data.data);
 
       console.log(response.data, "mana bu");
