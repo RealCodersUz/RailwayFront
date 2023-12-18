@@ -486,7 +486,7 @@ const RasxodXLSXget = () => {
     "Dekabr",
   ];
   let formData = new FormData();
-  formData.append("type", selectedType);
+  formData.append("type", selectedType.name);
   formData.append("year", selectedYears);
   formData.append("month", selectedMonth);
   formData.append("file", selectedFiles[0]);
