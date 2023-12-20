@@ -44,7 +44,7 @@ function ChanceModal(props) {
               className="form-select form-select-lg mb-3 border-primary rounded mx-2"
               id="reports"
               //   value={TypeSelectedValue}
-              defaultValue={FilialSelectedValue}
+              value={FilialSelectedValue}
             >
               {FilialData.map((data, index) => (
                 <option key={index} value={data.key} disabled={data.key == ""}>
@@ -72,7 +72,10 @@ function ChanceModal(props) {
               className="form-select form-select-lg mb-3 border-primary rounded mx-2"
               aria-label="Large select example"
             >
-              <option selected disabled> Открыть</option>
+              <option selected disabled>
+                {" "}
+                Открыть
+              </option>
               <option value="1">1</option>
               <option value="2">2</option>
               <option value="3">3</option>

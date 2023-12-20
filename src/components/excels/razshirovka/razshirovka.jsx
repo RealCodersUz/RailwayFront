@@ -219,10 +219,10 @@ const Razshirovka = () => {
         <input type="file" onChange={handleFileUpload} className="w-100" />
         <select
           className="form-control mx-3 rounded border-primary"
-          value={selectedMonth}
+          // value={selectedMonth}
           onChange={handleMonthChange}
         >
-          <option selected disabled value="">
+          <option selected disabled>
             Выберите месяц
           </option>
           {months.map((month) => (
