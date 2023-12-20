@@ -18,7 +18,9 @@ import { toast } from "react-toastify";
 
 const SideBar = () => {
   let userRole = "";
+
   userRole = localStorage.getItem("role");
+
   const navigate = useNavigate();
 
   function handleLogout() {
