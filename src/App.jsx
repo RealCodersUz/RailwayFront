@@ -6,7 +6,7 @@ import Main from "./pages/main/main";
 import GetReportsPage from "./pages/reports";
 import SettingsPage from "./pages/settings";
 import ArchivePage from "./pages/archive";
-import Forma69Page from "./pages/forma69";
+import RazshirovkaPage from "./pages/razshirovka";
 import NalogPage from "./pages/nalog";
 
 function App() {
@@ -18,7 +18,7 @@ function App() {
           <Route path="/login" element={<Login />} />
           {/* reports  start*/}
           <Route path="/reports" element={<GetReportsPage />} />
-          <Route path="/forma69" element={<Forma69Page />} />{" "}
+          <Route path="/forma69" element={<RazshirovkaPage />} />{" "}
           <Route path="/nalog" element={<NalogPage />} />
           {/* reports end */}
           <Route path="/archives" element={<ArchivePage />} />

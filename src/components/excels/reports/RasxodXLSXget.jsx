@@ -103,6 +103,7 @@ const RasxodXLSXget = () => {
   // const [imageFile, setImageFile] = useState(null);
 
   const [selectedFiles, setSelectedFiles] = useState([]);
+
   useEffect(() => {
     const foundReport = reportsData.find((report) => report.name === type);
     if (foundReport) {
@@ -601,33 +602,6 @@ const RasxodXLSXget = () => {
             </form>
           </div>
           <div>
-            <div className="cards ">
-              <div className="d-flex justify-content-end gap-5 row"></div>
-
-              {/* 
-            <div className="d-flex justify-content-start gap-1">
-              <div className="">
-                <input
-                  className="excelInputs"
-                  style={buttonStyle}
-                  type="file"
-                  accept=".xls, .xlsx"
-                  onChange={handleFileChange}
-                />
-              </div>
-              <div className="">
-                <button style={buttonStyle} onClick={handleSave}>
-                  Скачать шаблон
-                </button>
-              </div>{" "}
-              <div className="">
-                <button style={buttonStyle} onClick={handleSave}>
-                  Загрузить шаблон
-                </button>
-              </div>
-            </div> */}
-            </div>
-
             {data.length > 0 && (
               <table style={tableStyle}>
                 <thead>
