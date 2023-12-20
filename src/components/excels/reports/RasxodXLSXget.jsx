@@ -103,7 +103,6 @@ const RasxodXLSXget = () => {
   // const [imageFile, setImageFile] = useState(null);
 
   const [selectedFiles, setSelectedFiles] = useState([]);
-
   useEffect(() => {
     const foundReport = reportsData.find((report) => report.name === type);
     if (foundReport) {
@@ -423,7 +422,13 @@ const RasxodXLSXget = () => {
     setEditingData((prevEditingData) => {
       const updatedData = [...prevEditingData];
       updatedData[rowIndex][columnName] = value;
-      console.log(([rowIndex][columnName] = value), "bu value");
+
+      // console.log(
+      //   ([rowIndex][columnName] = value),
+      //   `bu ${rowIndex} ${columnName}`
+      // );
+
+      console.log(updatedData);
       return updatedData;
     });
   };

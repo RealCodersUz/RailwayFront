@@ -8,26 +8,20 @@ import { toast } from "react-toastify";
 
 const Razshirovka = () => {
   const [data, setData] = useState([]);
-  const [flattenedCValues, setFlattenedCValues] = useState([]);
+  const [flattenedCValues, setFlattenedCValues] = useState();
   const [selectedFiles, setSelectedFiles] = useState([]);
 
-  // const handleFileSelect = (e) => {
-  //   const file = [...e.target.files];
+  const handleFileSelect = (e) => {
+    const file = [...e.target.files];
+    setSelectedFiles(file);
 
-  //   console.log(file, "FILE");
-  // };
+    console.log(file, "FILE");
+  };
 
   const handleFileUpload = (e) => {
     const file = e.target.files[0];
-    console.log(
-      ".file",
-      file,
-      "e.target.files",
-      e.target.files,
-      "[...e.target.files]",
-      [...e.target.files]
-    );
-    setSelectedFiles([...e.target.files]);
+
+    setSelectedFiles(file);
 
     if (file) {
       const reader = new FileReader();
@@ -58,6 +52,7 @@ const Razshirovka = () => {
           }
 
           setFlattenedCValues(flattenedCValuesArray);
+          console.log(flattenedCValues, "flattenedCValuesArray");
         } catch (error) {
           console.error("XLSX faylini o'qishda xatolik yuz berdi:", error);
         }
@@ -75,9 +70,9 @@ const Razshirovka = () => {
       formData.append("type", "Расход рашировка");
       formData.append("year", selectedYears);
       formData.append("month", selectedMonth);
-      formData.append("file", selectedFiles[0]);
+      formData.append("file", selectedFiles);
 
-      console.log(selectedFiles[0], "selectedFiles ");
+      console.log(selectedFiles, "selectedFiles ");
 
       // Make the POST request
       const response = await axios.post("/archive", formData, {
@@ -110,7 +105,7 @@ const Razshirovka = () => {
             }
           );
 
-          if (res.status === 200 || res.status === 201) {
+          if (res.status === 200) {
             console.log(res.data);
             toast.success("Muvaffaqiyatli Adminga yuborildi", {
               type: "success",
@@ -123,7 +118,7 @@ const Razshirovka = () => {
         }
       } else {
         // Handle other status codes if needed
-        console.error("Server returned non-200 status:", response.status);
+        console.log("Server returned non-200 status:", response.status);
       }
 
       // Toast message for successful submission
@@ -164,7 +159,7 @@ const Razshirovka = () => {
   const years = Array.from({ length: 10 }, (v, i) => currentYear + i); // 10 yil oldinga to‘liq miqdorda yillarni olish
   console.log(years);
   const [selectedMonth, setSelectedMonth] = useState("");
-  const [selectedYears, setselectedYears] = useState("");
+  const [selectedYears, setselectedYears] = useState(currentYear);
 
   const handleMonthChange = (event) => {
     setSelectedMonth(event.target.value);
