@@ -90,7 +90,7 @@ const Razshirovka = () => {
 
       console.log("Server response:", response.data);
 
-      if (response.status === 200) {
+      if (response.status === 201) {
         // Corrected the property name to 'status'
         try {
           // Use token directly without string interpolation
