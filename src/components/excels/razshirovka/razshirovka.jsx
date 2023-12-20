@@ -11,15 +11,23 @@ const Razshirovka = () => {
   const [flattenedCValues, setFlattenedCValues] = useState([]);
   const [selectedFiles, setSelectedFiles] = useState([]);
 
-  const handleFileSelect = (e) => {
-    const file = [...e.target.files];
-    setSelectedFiles(file);
+  // const handleFileSelect = (e) => {
+  //   const file = [...e.target.files];
 
-    console.log(file, "FILE");
-  };
+  //   console.log(file, "FILE");
+  // };
 
   const handleFileUpload = (e) => {
     const file = e.target.files[0];
+    console.log(
+      ".file",
+      file,
+      "e.target.files",
+      e.target.files,
+      "[...e.target.files]",
+      [...e.target.files]
+    );
+    setSelectedFiles([...e.target.files]);
 
     if (file) {
       const reader = new FileReader();
@@ -67,9 +75,9 @@ const Razshirovka = () => {
       formData.append("type", "Расход рашировка");
       formData.append("year", selectedYears);
       formData.append("month", selectedMonth);
-      formData.append("file", selectedFiles);
+      formData.append("file", selectedFiles[0]);
 
-      console.log(selectedFiles, "selectedFiles ");
+      console.log(selectedFiles[0], "selectedFiles ");
 
       // Make the POST request
       const response = await axios.post("/archive", formData, {
@@ -102,7 +110,7 @@ const Razshirovka = () => {
             }
           );
 
-          if (res.status === 200) {
+          if (res.status === 200 || res.status === 201) {
             console.log(res.data);
             toast.success("Muvaffaqiyatli Adminga yuborildi", {
               type: "success",
@@ -156,7 +164,7 @@ const Razshirovka = () => {
   const years = Array.from({ length: 10 }, (v, i) => currentYear + i); // 10 yil oldinga to‘liq miqdorda yillarni olish
   console.log(years);
   const [selectedMonth, setSelectedMonth] = useState("");
-  const [selectedYears, setselectedYears] = useState(currentYear);
+  const [selectedYears, setselectedYears] = useState("");
 
   const handleMonthChange = (event) => {
     setSelectedMonth(event.target.value);
