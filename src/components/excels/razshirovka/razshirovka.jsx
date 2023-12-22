@@ -5,11 +5,66 @@ import * as XLSX from "xlsx";
 import { saveAs } from "file-saver";
 import axios from "axios"; // Import axios for making HTTP requests
 import { toast } from "react-toastify";
+import { Link, useNavigate } from "react-router-dom";
+
+const reportsData = [
+  { name: "Расходы", url: "/files/rasxodData.xlsx", urlHref: "/reports" },
+  { name: "Форма 69", url: "/files/forma69.xlsx", urlHref: "/forma69" },
+  {
+    name: "Debit kredit",
+    url: "/files/Debit_kredit.xlsx",
+    urlHref: "/debitKridet",
+  },
+  {
+    name: "Основные инструменты",
+    url: "/files/Osnovnie_sredstvo.xlsx",
+    urlHref: "/insurments",
+  },
+  {
+    name: "Материальный отчет",
+    url: "/files/Materialni_Otchet.xlsx",
+    urlHref: "/materialOtchet",
+  },
+  { name: "Налог", url: "/files/Nalog.xlsx", urlHref: "/nalog" },
+  {
+    name: "Расход рашировка",
+    url: "/files/rasxod_rashirovka.xlsx",
+    urlHref: "/rashirovka",
+  },
+];
 
 const Razshirovka = () => {
   const [data, setData] = useState([]);
   const [flattenedCValues, setFlattenedCValues] = useState();
   const [selectedFiles, setSelectedFiles] = useState([]);
+  const [errorMsg, setErrorMsg] = useState(false);
+  const [showButtonClicked, setShowButtonClicked] = useState(false);
+
+  const [type, setType] = useState("Расход рашировка");
+
+  const navigate = useNavigate();
+
+  const [selectedType, setSelectedType] = useState({
+    name: "Расход рашировка",
+    type: "rashirovka",
+    url: "/files/rasxod_rashirovka.xlsx",
+  });
+
+  const handleShowButtonClick = () => {
+    setShowButtonClicked(true);
+  };
+
+  const handleRepeatAttempt = () => {
+    setData([]);
+    setShowButtonClicked(false);
+    setSelectedFiles([]);
+
+    // Clear the input field
+    const inputElement = document.getElementById("fileChangeInput");
+    if (inputElement) {
+      inputElement.value = "";
+    }
+  };
 
   const handleFileSelect = (e) => {
     const file = [...e.target.files];
@@ -18,7 +73,19 @@ const Razshirovka = () => {
     console.log(file, "FILE");
   };
 
+  const handleTypeChange = (e) => {
+    const selectedType = reportsData.find(
+      (data) => data.name === e.target.value
+    );
+
+    if (selectedType) {
+      setSelectedType(selectedType);
+      navigate(selectedType.urlHref); // Redirect to the specified route
+    }
+  };
+
   const handleFileUpload = (e) => {
+    handleShowButtonClick();
     const file = e.target.files[0];
 
     setSelectedFiles(file);
@@ -31,7 +98,7 @@ const Razshirovka = () => {
           const workbook = XLSX.read(data, { type: "array" });
           const sheetName = workbook.SheetNames[0];
           const sheet = workbook.Sheets[sheetName];
-          const jsonData = XLSX.utils.sheet_to_json(sheet, { header: 1 });
+          const jsonData = XLSX.utils.sheet_to_json(sheet);
 
           setData(jsonData);
           console.log(jsonData, "Json Data");
@@ -85,7 +152,7 @@ const Razshirovka = () => {
 
       console.log("Server response:", response.data);
 
-      if (response.status === 201) {
+      if (response.status === 201 || response.status === 200) {
         // Corrected the property name to 'status'
         try {
           // Use token directly without string interpolation
@@ -105,15 +172,15 @@ const Razshirovka = () => {
             }
           );
 
-          if (res.status === 200) {
-            console.log(res.data);
-            toast.success("Muvaffaqiyatli Adminga yuborildi", {
-              type: "success",
-            });
-          }
+          // if (res.status === 200) {
+          //   console.log(res.data);
+          //   toast.success("Muvaffaqiyatli Adminga yuborildi", {
+          //     type: "success",
+          //   });
+          // }
         } catch (error) {
           // Toast message for submission error
-          toast.error("Adminga yuborishda xatolik: " + error.message);
+          // toast.error("Adminga yuborishda xatolik: " + error.message);
           console.error("Error:", error);
         }
       } else {
@@ -121,11 +188,20 @@ const Razshirovka = () => {
         console.log("Server returned non-200 status:", response.status);
       }
 
+      setData([]);
+      setShowButtonClicked(false);
+      setSelectedFiles([]);
+
+      const inputElement = document.getElementById("fileChangeInput");
+      if (inputElement) {
+        inputElement.value = "";
+      }
+
       // Toast message for successful submission
-      toast.success("Maʻlumotlar muvaffaqiyatli saqlandi", { type: "success" });
+      toast.success("Данные успешно сохранены", { type: "success" });
     } catch (error) {
       // Toast message for submission error
-      toast.error(`Maʻlumotlarni yuborishda xatolik: ${error.message}`, {
+      toast.error(`Произошла ошибка при отправке данныхk: ${error.message}`, {
         type: "error",
       });
       console.log("Error:", error.message);
@@ -189,23 +265,21 @@ const Razshirovka = () => {
       return;
     }
 
-    const headers = Object.keys(data[0]);
-
     return (
       <Table striped bordered hover>
         <thead>
           <tr>
-            {headers.map((header, index) => (
-              <th key={index}>{header}</th>
-            ))}
+            <th>СЧЁТ</th>
+            <th>Наименование затраты</th>
+            <th>Текущий месяц</th>
           </tr>
         </thead>
         <tbody>
           {data.map((row, rowIndex) => (
             <tr key={rowIndex}>
-              {headers.map((header, index) => (
-                <td key={index}>{row[header]}</td>
-              ))}
+              <td>{row["СЧЁТ"]}</td>
+              <td>{row["Наименование затраты"]}</td>
+              <td>{row["Текущий месяц"]}</td>
             </tr>
           ))}
         </tbody>
@@ -214,49 +288,106 @@ const Razshirovka = () => {
   };
 
   return (
-    <div>
-      <div className="d-flex w-100 px-5 py-2">
-        <input type="file" onChange={handleFileUpload} className="w-100" />
-        <select
-          className="form-control mx-3 rounded border-primary"
-          // value={selectedMonth}
-          onChange={handleMonthChange}
-        >
-          <option selected disabled>
-            Выберите месяц
-          </option>
-          {months.map((month) => (
-            <option key={month} value={month}>
-              {month}
-            </option>
-          ))}
-        </select>
+    <>
+      <div className="container">
+        <div className=" p-5">
+          <h1 className="text-center">Расход рашировка</h1>
+          <div className="input-group my-5 ">
+            <select
+              className="form-control mx-3 rounded border-primary"
+              id="reports"
+              onChange={handleTypeChange}
+            >
+              <option selected disabled value="">
+                <p>Выберите тип</p>
+              </option>
+              {reportsData.map((data, index) => (
+                <option key={index} value={data.name}>
+                  {data.name}
+                </option>
+              ))}
+            </select>
+            <select
+              className="form-control mx-3 rounded border-primary"
+              value={selectedMonth}
+              onChange={handleMonthChange}
+            >
+              <option selected disabled value="">
+                Выберите месяц
+              </option>
+              {months.map((month) => (
+                <option key={month} value={month}>
+                  {month}
+                </option>
+              ))}
+            </select>
+            <select
+              className="form-control mx-3 rounded border-primary"
+              onChange={handleYearsChange}
+            >
+              <option selected disabled value="">
+                Выберите год
+              </option>
+              {years.map((year) => (
+                <option key={year} value={year}>
+                  {year}
+                </option>
+              ))}
+            </select>
+            <button className="btn btn-primary mx-3 w-25 rounded" type="button">
+              Поиск
+            </button>
+          </div>
+          <p className="text-danger fw-semibold text-center" hidden={errorMsg}>
+            Отправка недоступна. Крайний срок истек.
+          </p>
+          <div className="px-5 w-100 py-5">
+            <h5 className="text-danger">
+              Напоминаю, убедитесь, что в файле нет лишних символов и лишних
+              цифр!{" "}
+            </h5>
+            <br />
+            <br />
+            <form className="w-100  d-flex flex-row justify-content-between pb-2">
+              <div className="file-input-wrapper"></div>
+              <div className="d-flex flex-row align-items-center justify-center h-100">
+                <br />
+                <Link
+                  to={"https://railwayback.up.railway.app" + selectedType.url}
+                  className="btn btn-success h-75 mx-2 align-center"
+                >
+                  Скачать шаблон
+                </Link>
 
-        <select
-          className="form-control mx-3 rounded border-primary"
-          // value={selectedYears}
-          onChange={handleYearsChange}
-        >
-          <option selected disabled value="">
-            Выберите год
-          </option>
-          {years.map((year) => (
-            <option key={year} value={year}>
-              {year}
-            </option>
-          ))}
-        </select>
-        {/* <Button variant="primary" onClick={handleSave} className="w-50">
-          Yuklab Olish
-        </Button> */}
-        <Button variant="primary" onClick={handleSubmit} className="w-50">
-          Joʻnatish
-        </Button>
+                <input
+                  id="fileChangeInput"
+                  type="file"
+                  onChange={handleFileUpload}
+                  className="btn btn-primary mx-3 rounded"
+                />
+              </div>
+            </form>
+          </div>
+
+          {showButtonClicked == true ? (
+            <div className="d-flex flex-row-reverse gap-3 w-full">
+              <button className="btn btn-danger" onClick={handleRepeatAttempt}>
+                Повторить попытку
+              </button>
+              <button className="btn btn-success" onClick={handleSubmit}>
+                Отправить
+              </button>
+            </div>
+          ) : (
+            ""
+          )}
+          <br />
+          <div className="w-100 border-bottom border-secondary"></div>
+          <br />
+          {renderTable()}
+        </div>
       </div>
-      <div className="d-flex px-5 py-2 gap-5 w-100"></div>
-
-      {renderTable()}
-    </div>
+    </>
   );
 };
 

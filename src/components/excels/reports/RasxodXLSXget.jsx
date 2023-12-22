@@ -57,6 +57,11 @@ const reportsData = [
     urlHref: "/materialOtchet",
   },
   { name: "Налог", url: "/files/Nalog.xlsx", urlHref: "/nalog" },
+  {
+    name: "Расход рашировка",
+    url: "/files/Nalog.xlsx",
+    urlHref: "/rashirovka",
+  },
 ];
 
 const RasxodXLSXget = () => {
@@ -64,12 +69,13 @@ const RasxodXLSXget = () => {
   const [errorMsg, setErrorMsg] = useState(false);
   const [editingData, setEditingData] = useState([]);
   const [showButtonClicked, setShowButtonClicked] = useState(false);
-  const [type, setType] = useState("Rasxod");
+  const [type, setType] = useState("Расходы");
   const [selectedType, setSelectedType] = useState({
     name: "Расходы",
     type: "rasxod",
     url: "/files/rasxod.xlsx",
   });
+
   const [selectedFiles, setSelectedFiles] = useState([]);
   const fileInputRef = useRef(null);
   const navigate = useNavigate();
@@ -135,7 +141,17 @@ const RasxodXLSXget = () => {
       const updatedData = [...prevEditingData];
       updatedData[rowIndex][columnName] = value;
 
+      // if (columnName === "Наименование затрать") {
+      //   updatedData[rowIndex][columnName] = value;
+      // } else {
+      //   updatedData[rowIndex][columnName] = +value;
+      // }
+
+      console.log(columnName, "Column name");
+      console.log(rowIndex, "rowIndex");
+
       console.log(updatedData, "updatedData");
+      setEditingData[updatedData];
       return updatedData;
     });
     // setEditingData(updatedData);
@@ -188,7 +204,29 @@ const RasxodXLSXget = () => {
         {
           year: selectedYears,
           month: selectedMonth,
-          values: editingData,
+          file: editingData,
+          values: [
+            { Зарплата: salaries },
+            { Соц_страх: socialInsurance },
+            {
+              Материалы: materials,
+            },
+            {
+              Топливо: fuel,
+            },
+            {
+              Эл_энергия: electricity,
+            },
+            {
+              Износ_осн_ср_в: depreciation,
+            },
+            {
+              Прочие: others,
+            },
+            {
+              Итого: total,
+            },
+          ],
         },
         {
           headers: {
@@ -197,7 +235,7 @@ const RasxodXLSXget = () => {
         }
       );
 
-      if (res.status === 201) {
+      if (res.status === 201 || res.status === 200) {
         setShowButtonClicked(false);
 
         setData([]);
@@ -212,9 +250,32 @@ const RasxodXLSXget = () => {
       toast.error("Error submitting data. Please try again.", {
         type: "error",
       });
-      console.error("Error:", error);
+      console.log("Error:", error);
     }
   };
+
+  // Extracting values from each row
+  const numberedValues = data.map((row) => row["№"]);
+  const namesOfExpenses = data.map((row) => row["Наименование затрать"] || "");
+  const salaries = data.map((row) => row["Зарплата"] || 0);
+  const socialInsurance = data.map((row) => row["Соц-страх"] || 0);
+  const materials = data.map((row) => row["Материалы"] || 0);
+  const fuel = data.map((row) => row["Топливо"] || 0);
+  const electricity = data.map((row) => row["Эл/энергия"] || 0);
+  const depreciation = data.map((row) => row["Износ осн.ср-в"] || 0);
+  const others = data.map((row) => row["Прочие"] || 0);
+  const total = data.map((row) => row["Итого"] || 0);
+
+  console.log(numberedValues, "№");
+  console.log(namesOfExpenses, "Наименование затрать");
+  console.log(salaries, "Зарплата");
+  console.log(socialInsurance, "Соц_страх");
+  console.log(materials, "Материалы");
+  console.log(fuel, "Топливо");
+  console.log(electricity, "Эл/энергия");
+  console.log(depreciation, "Износ осн.ср-в");
+  console.log(others, "Прочие");
+  console.log(total, "Итого");
 
   return (
     <>
@@ -276,8 +337,8 @@ const RasxodXLSXget = () => {
           </p>
           <div className="px-5 w-100 py-5">
             <h5 className="text-danger">
-              Eslatib oʻtaman faylda ortiqcha belgi, ortiqcha son kiritilishi
-              kerak boʻlgan joyga belgi harf tushib qolmaganini tekshiring!{" "}
+              Напоминаю, убедитесь, что в файле нет лишних символов и лишних
+              цифр!{" "}
             </h5>
             <br />
             <br />

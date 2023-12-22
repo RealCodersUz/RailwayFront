@@ -18,7 +18,7 @@ function App() {
           <Route path="/login" element={<Login />} />
           {/* reports  start*/}
           <Route path="/reports" element={<GetReportsPage />} />
-          <Route path="/forma69" element={<RazshirovkaPage />} />{" "}
+          <Route path="/rashirovka" element={<RazshirovkaPage />} />{" "}
           <Route path="/nalog" element={<NalogPage />} />
           {/* reports end */}
           <Route path="/archives" element={<ArchivePage />} />
