@@ -184,7 +184,7 @@ const RasxodXLSXget = () => {
       );
 
       const res = await axios.post(
-        "/admdata",
+        "/rasxod",
         {
           year: selectedYears,
           month: selectedMonth,
