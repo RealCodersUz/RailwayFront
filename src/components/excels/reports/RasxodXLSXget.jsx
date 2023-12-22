@@ -139,22 +139,36 @@ const RasxodXLSXget = () => {
   const handleEdit = (rowIndex, columnName, value) => {
     setEditingData((prevEditingData) => {
       const updatedData = [...prevEditingData];
+
+      // Loop through rows and set the same value for specific columns
+      for (let i = 0; i < updatedData.length; i++) {
+        let columnsToSet = [
+          "Зарплата",
+          "Износ осн.ср-в",
+          "Итого",
+          "Материалы",
+          "Наименование затрат",
+          "Прочие",
+          "Соц-страх",
+          "Топливо",
+        ];
+
+        // Set the value for each specified column
+        columnsToSet.forEach((column) => {
+          updatedData[i][column] = "";
+        });
+      }
+
+      // Set the value for the specified column
       updatedData[rowIndex][columnName] = value;
 
-      // if (columnName === "Наименование затрать") {
-      //   updatedData[rowIndex][columnName] = value;
-      // } else {
-      //   updatedData[rowIndex][columnName] = +value;
-      // }
+      console.log(updatedData, "edingData");
 
-      console.log(columnName, "Column name");
-      console.log(rowIndex, "rowIndex");
+      // Update the state with the modified data
+      setEditingData(updatedData);
 
-      console.log(updatedData, "updatedData");
-      setEditingData[updatedData];
       return updatedData;
     });
-    // setEditingData(updatedData);
   };
 
   const currentYear = new Date().getFullYear();
