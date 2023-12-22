@@ -143,14 +143,15 @@ const RasxodXLSXget = () => {
       // Loop through rows and set the same value for specific columns
       for (let i = 0; i < updatedData.length; i++) {
         let columnsToSet = [
-          "Зарплата",
-          "Износ осн.ср-в",
-          "Итого",
-          "Материалы",
           "Наименование затрат",
-          "Прочие",
+          "Зарплата",
           "Соц-страх",
+          "Материалы",
           "Топливо",
+          "Эл/энергия",
+          "Износ осн.ср-в",
+          "Прочие",
+          "Итого",
         ];
 
         // Set the value for each specified column
