@@ -5,7 +5,7 @@ import { FaChevronDown } from "react-icons/fa";
 import axios from "axios";
 import FormData from "form-data";
 import { toast } from "react-toastify";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 import "./index.scss";
 import { Button, Form, Row } from "react-bootstrap";
@@ -39,12 +39,24 @@ const inputStyle = {
 // table styles end
 
 const reportsData = [
-  { name: "Расходы", url: "/files/rasxod.xlsx" },
-  { name: "Форма 69", url: "/files/forma69.xlsx" },
-  { name: "Debit kredit", url: "/files/Debit_kredit.xlsx" },
-  { name: "Основные инструменты", url: "/files/Osnovnie_sredstvo.xlsx" },
-  { name: "Материальный отчет", url: "/files/Materialni_Otchet.xlsx" },
-  { name: "Налог", url: "/files/Nalog.xlsx" },
+  { name: "Расходы", url: "/files/rasxod.xlsx", urlHref: "/reports" },
+  { name: "Форма 69", url: "/files/forma69.xlsx", urlHref: "/forma69" },
+  {
+    name: "Debit kredit",
+    url: "/files/Debit_kredit.xlsx",
+    urlHref: "/debitKridet",
+  },
+  {
+    name: "Основные инструменты",
+    url: "/files/Osnovnie_sredstvo.xlsx",
+    urlHref: "/insurments",
+  },
+  {
+    name: "Материальный отчет",
+    url: "/files/Materialni_Otchet.xlsx",
+    urlHref: "/materialOtchet",
+  },
+  { name: "Налог", url: "/files/Nalog.xlsx", urlHref: "/nalog" },
 ];
 
 const RasxodXLSXget = () => {
@@ -60,16 +72,19 @@ const RasxodXLSXget = () => {
   });
   const [selectedFiles, setSelectedFiles] = useState([]);
   const fileInputRef = useRef(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const foundReport = reportsData.find((report) => report.name === type);
     if (foundReport) {
       console.log("Topilgan ma'lumot: ", foundReport);
       setSelectedType(foundReport);
+
+      navigate(foundReport.urlHref);
     } else {
       console.log("Bunday nomli ma'lumot topilmadi");
     }
-  }, [type]);
+  }, [type, navigate]);
 
   useEffect(() => {
     if (showButtonClicked) {
@@ -89,7 +104,9 @@ const RasxodXLSXget = () => {
     // Reset state or perform any other necessary actions
     setShowButtonClicked(false);
     // Reload the page
-    window.location.reload();
+    // window.location.reload();
+    setData([]);
+    setEditingData([]);
   };
 
   const handleReadLocalFile = () => {
@@ -155,24 +172,6 @@ const RasxodXLSXget = () => {
 
   const handleSubmit = async () => {
     try {
-      // let formData = new FormData();
-
-      // formData.append("type", selectedType.name);
-      // formData.append("year", selectedYears);
-      // formData.append("month", selectedMonth);
-      // formData.append("file", selectedFiles[0]);
-
-      // const response = await axios.post("/archive", formData, {
-      //   headers: {
-      //     "Content-Type": "multipart/form-data",
-      //     Authorization: localStorage.getItem("token"),
-      //   },
-      // });
-
-      // console.log("Server response:", response.data);
-
-      //
-
       const token = localStorage.getItem("token");
 
       console.log(
@@ -199,6 +198,11 @@ const RasxodXLSXget = () => {
       );
 
       if (res.status === 201) {
+        setShowButtonClicked(false);
+
+        setData([]);
+        setEditingData([]);
+
         console.log(res.data);
         toast.success("Muvaffaqiyatli Adminga yuborildi", {
           type: "success",
