@@ -85,23 +85,23 @@ const SideBar = () => {
               <CDBSidebarMenuItem>Архив</CDBSidebarMenuItem>
             </Link>
             {/*{userRole == "admin" ? (
-              ""
-            ) : (
-              <Link
-                className="d-flex flex-row align-items-center justify-center text-secondary"
-                exact
-                to="/settings"
-                activeClassName="activeClicked"
-              >
-                <CDBIcon fab>
-                  <FaPencilRuler className="text-bolder fs-5 z-3" />
-                </CDBIcon>
-                <CDBSidebarMenuItem>Настройки</CDBSidebarMenuItem>
-              </Link>
-            )}*/}
+                ""
+              ) : (
+                <Link
+                  className="d-flex flex-row align-items-center justify-center text-secondary"
+                  exact
+                  to="/settings"
+                  activeClassName="activeClicked"
+                >
+                  <CDBIcon fab>
+                    <FaPencilRuler className="text-bolder fs-5 z-3" />
+                  </CDBIcon>
+                  <CDBSidebarMenuItem>Настройки</CDBSidebarMenuItem>
+                </Link>
+              )}*/}
             {/* {userRole !== "admin" ? (
-              ""
-            ) : ( */}
+                ""
+              ) : ( */}
             <Link
               className="d-flex flex-row align-items-center justify-center text-secondary"
               exact
