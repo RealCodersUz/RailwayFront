@@ -95,71 +95,76 @@ const Header = () => {
   // console.log(formattedDate);
   // console.log(formattedWatch);
   return (
-    <header className="header w-full bg-body-tertiary sticky-top pb-2">
-      <div className="navbar h-25 d-flex flex-row flex-wrap justify-content-between px-5 pb-2  h-100">
-        <div className="header-logo-main d-flex flex-row flex-wrap-reverse align-items-center">
-          <Link
-            to="/"
-            className="text-decoration-none text-dark d-flex flex-wrap w-100"
-          >
-            <div className="header-logo">
-              <img src="/logo_full_text.png" alt="logo" className="" />
-            </div>
-          </Link>
-        </div>
-
-        <div className="header-clock">
-          <div className="time">
-            {/* {formattedWatch.slice(0, formattedWatch.length - 2)}
-             */}
-            {hours}:{minutes < 10 ? `0${minutes}` : minutes}:
-            {seconds < 10 ? `0${seconds}` : seconds}
-          </div>
-          <div className="time">{formattedDate}</div>
-        </div>
-
-        <div className="user-settings d-flex flex-row justify-center align-items-center">
-          <div className="names">
-            <div className="name">
-              <p className="fw-bold">{data.name}</p>
-            </div>
-            <div className="branch_name">
-              <p>{data.branch_name}</p>
-            </div>
+    <>
+      <header className="header w-full bg-body-tertiary sticky-top pb-2">
+        <div className="navbar h-25 d-flex flex-row flex-wrap justify-content-between px-5 pb-2  h-100">
+          <div className="header-logo-main d-flex flex-row flex-wrap-reverse align-items-center">
+            <Link
+              to="/"
+              className="text-decoration-none text-dark d-flex flex-wrap w-100"
+            >
+              <div className="header-logo">
+                <img src="/logo_full_text.png" alt="logo" className="" />
+              </div>
+            </Link>
           </div>
 
-          {/* <Link to="/settings" className="settings fw-bold "></Link> */}
-
-          <Button
-            className="settings fw-bold btn-light"
-            onClick={() => setOpen(!open)}
-            aria-controls="example-collapse-text"
-            aria-expanded={open}
-          >
-            <IoSettingsOutline />
-          </Button>
-        </div>
-      </div>
-      <div className="mx-5" style={{}}>
-        <Collapse in={open}>
-          <div id="example-collapse-text">
-            <div className="vxod-btn" style={{}}>
-              <Link
-                className="text-danger text-end text-decoration-none"
-                exact
-                onClick={handleLogout}
-                activeClassName="activeClicked"
-              >
-                <CDBSidebarMenuItem icon={""}>
-                  <FiLogOut />
-                  Выход
-                </CDBSidebarMenuItem>
-              </Link>
+          <div className="header-clock">
+            <div className="time">
+              {/* {formattedWatch.slice(0, formattedWatch.length - 2)}
+               */}
+              {hours}:{minutes < 10 ? `0${minutes}` : minutes}:
+              {seconds < 10 ? `0${seconds}` : seconds}
             </div>
+            <div className="time">{formattedDate}</div>
           </div>
-        </Collapse>
-      </div>
-    </header>
+
+          <div className="user-settings d-flex flex-row justify-center align-items-center">
+            <div className="names">
+              <div className="name">
+                <p className="fw-bold">{data.name}</p>
+              </div>
+              <div className="branch_name">
+                <p>{data.branch_name}</p>
+              </div>
+            </div>
+
+            {/* <Link to="/settings" className="settings fw-bold "></Link> */}
+
+            <Button
+              className="settings fw-bold btn-light"
+              onClick={() => setOpen(!open)}
+              aria-controls="example-collapse-text"
+              aria-expanded={open}
+            >
+              <IoSettingsOutline />
+            </Button>
+          </div>
+        </div>
+        <div className="mx-5" style={{}}>
+          <Collapse in={open}>
+            <div id="example-collapse-text">
+              <div className="vxod-btn" style={{}}>
+                <Link
+                  className="text-danger text-end text-decoration-none"
+                  exact
+                  onClick={handleLogout}
+                  activeClassName="activeClicked"
+                >
+                  <CDBSidebarMenuItem icon={""}>
+                    <FiLogOut />
+                    Выход
+                  </CDBSidebarMenuItem>
+                </Link>
+              </div>
+            </div>
+          </Collapse>
+        </div>
+      </header>
+      <marquee direction="" className="text-danger">
+        <h5> Этот сайт находится в тестовом режиме ...</h5>
+      </marquee>
+    </>
   );
 };
 
