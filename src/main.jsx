@@ -13,7 +13,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { ToastContainer } from "react-toastify";
 import axios from "axios";
 
-axios.defaults.baseURL = "http://localhost:1111/";
+axios.defaults.baseURL = "https://railwayback.up.railway.app/";
 
 // axios.defaults.baseURL = "https://railwayback.up.railway.app/";
 

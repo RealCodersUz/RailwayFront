@@ -59,7 +59,7 @@ const ArchiveComponent = () => {
         let config = {
           method: "get",
           maxBodyLength: Infinity,
-          url: "http://localhost:1111/users",
+          url: "https://railwayback.up.railway.app/users",
           headers: {
             Authorization: localStorage.getItem("token"),
             "Content-Type": "application/json",
@@ -192,7 +192,7 @@ const ArchiveComponent = () => {
   const handleSubmit = async () => {
     setData([]);
     excelBtnHidden();
-    let url = `http://localhost:1111/archive?type=${type}&branch_name=${branchName}&year=${selectedYears}&month=${selectedMonth}`;
+    let url = `https://railwayback.up.railway.app/archive?type=${type}&branch_name=${branchName}&year=${selectedYears}&month=${selectedMonth}`;
 
     try {
       let response = await axios.get(url, {
@@ -212,7 +212,7 @@ const ArchiveComponent = () => {
         response.data.data[0].file &&
         response.data.data[0].file != []
       ) {
-        const file = "http://localhost:1111/" + response.data.data[0].file;
+        const file = "https://railwayback.up.railway.app/" + response.data.data[0].file;
 
         try {
           excelBtnShow();
@@ -237,7 +237,7 @@ const ArchiveComponent = () => {
           setErrorMsg(true);
         }
       } else if (response.data.data.file && response.data.data.file != []) {
-        const file = "http://localhost:1111/" + response.data.data[0].file;
+        const file = "https://railwayback.up.railway.app/" + response.data.data[0].file;
 
         try {
           excelBtnShow();
