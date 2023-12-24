@@ -15,14 +15,21 @@ import { AiOutlineHome } from "react-icons/ai";
 import { PiArchiveBoxBold } from "react-icons/pi";
 import { FiLogOut } from "react-icons/fi";
 import { toast } from "react-toastify";
+import { useState, useEffect } from "react";
 
+let userRole = "";
+
+userRole = localStorage.getItem("role");
 const SideBar = () => {
-  let userRole = "";
-
-  userRole = localStorage.getItem("role");
-
+  const [hidden, setHidden] = useState(true);
+  useEffect(() => {
+    setHidden(userRole !== "super_admin");
+  }, []);
+  // if (userRole) {
+  // }
+  console.log(hidden);
   const navigate = useNavigate();
-
+  console.log(userRole);
   function handleLogout() {
     localStorage.removeItem("token");
     localStorage.removeItem("role");
@@ -77,7 +84,7 @@ const SideBar = () => {
               </CDBIcon>
               <CDBSidebarMenuItem>Архив</CDBSidebarMenuItem>
             </Link>
-            {userRole == "admin" ? (
+            {/*{userRole == "admin" ? (
               ""
             ) : (
               <Link
@@ -91,7 +98,24 @@ const SideBar = () => {
                 </CDBIcon>
                 <CDBSidebarMenuItem>Настройки</CDBSidebarMenuItem>
               </Link>
-            )}
+            )}*/}
+            {/* {userRole !== "admin" ? (
+              ""
+            ) : ( */}
+            <Link
+              className="d-flex flex-row align-items-center justify-center text-secondary"
+              exact
+              to="/settings"
+              activeClassName="activeClicked"
+              style={{ display: userRole !== "super_admin" ? "none" : "flex" }}
+              hidden={hidden}
+            >
+              <CDBIcon fab hidden={hidden}>
+                <FaPencilRuler className="text-bolder fs-5 z-3" />
+              </CDBIcon>
+              <CDBSidebarMenuItem hidden={hidden}>Настройки</CDBSidebarMenuItem>
+            </Link>
+            {/* )} */}
           </CDBSidebarMenu>
         </CDBSidebarContent>
 
