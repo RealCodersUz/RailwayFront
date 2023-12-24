@@ -69,6 +69,7 @@ const RasxodXLSXget = () => {
   const [errorMsg, setErrorMsg] = useState(false);
   const [editingData, setEditingData] = useState([]);
   const [showButtonClicked, setShowButtonClicked] = useState(false);
+  const [showColInfo, setShowColInfo] = useState(false);
   const [type, setType] = useState("Расходы");
   const [selectedType, setSelectedType] = useState({
     name: "Расходы",
@@ -107,12 +108,21 @@ const RasxodXLSXget = () => {
   };
 
   const handleRepeatAttempt = () => {
-    // Reset state or perform any other necessary actions
     setShowButtonClicked(false);
-    // Reload the page
-    // window.location.reload();
     setData([]);
     setEditingData([]);
+
+    const yilSelect = document.getElementById("yilSelect");
+    if (yilSelect) {
+      yilSelect.value = "";
+    }
+
+    setSelectedMonth("");
+
+    const reports = document.getElementById("reports");
+    if (reports) {
+      reports.value = "Расходы";
+    }
   };
 
   const handleReadLocalFile = () => {
@@ -127,6 +137,19 @@ const RasxodXLSXget = () => {
         const sheetName = workbook.SheetNames[0];
         const excelData = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName]);
 
+        for (let i = 0; i < excelData.length; i++) {
+          excelData[i]["Наименование затрать"] = "";
+          excelData[i]["Зарплата"] = "";
+          excelData[i]["Соц-страх"] = "";
+          excelData[i]["Материалы"] = "";
+          excelData[i]["Топливо"] = "";
+          excelData[i]["Эл/энергия"] = "";
+          excelData[i]["Износ осн.ср-в"] = "";
+          excelData[i]["Прочие"] = "";
+          excelData[i]["Итого"] = "";
+        }
+
+        console.log(excelData, "excelData");
         setData(excelData);
         setEditingData([...excelData]);
       })
@@ -140,34 +163,38 @@ const RasxodXLSXget = () => {
     setEditingData((prevEditingData) => {
       const updatedData = [...prevEditingData];
 
-      // Loop through rows and set the same value for specific columns
-      for (let i = 0; i < updatedData.length; i++) {
-        let columnsToSet = [
-          "Наименование затрат",
-          "Зарплата",
-          "Соц-страх",
-          "Материалы",
-          "Топливо",
-          "Эл/энергия",
-          "Износ осн.ср-в",
-          "Прочие",
-          "Итого",
-        ];
-
-        // Set the value for each specified column
-        columnsToSet.forEach((column) => {
-          updatedData[i][column] = "";
-        });
-      }
-
-      // Set the value for the specified column
+      // If showColInfo is already true, only update the current cell
+      // if (showColInfo) {
       updatedData[rowIndex][columnName] = value;
+      // }
+      //     else {
+      //       // Set the value only for the selected column, clear others
 
-      console.log(updatedData, "edingData");
+      //       updatedData[rowIndex][columnName] = value;
+      //       const columnsToSet = [
+      //         "Наименование затрать",
+      //         "Зарплата",
+      //         "Соц-страх",
+      //         "Материалы",
+      //         "Топливо",
+      //         "Эл/энергия",
+      //         "Износ осн.ср-в",
+      //         "Прочие",
+      //         "Итого",
+      //       ];
+      //       columnsToSet.forEach((column) => {
+      //         if (column !== columnName) {
+      //           updatedData[rowIndex][column] = "";
+      //         }
+      //       });
+      //       console.log("Elseda");
 
-      // Update the state with the modified data
+      //       setShowColInfo(true);
+      //       console.log("ShowColInfo true");
+      //     }
+
       setEditingData(updatedData);
-
+      console.log(updatedData, "UpdatedData");
       return updatedData;
     });
   };
@@ -257,11 +284,13 @@ const RasxodXLSXget = () => {
         setEditingData([]);
 
         console.log(res.data);
+        handleRepeatAttempt();
         toast.success("Muvaffaqiyatli Adminga yuborildi", {
           type: "success",
         });
       }
     } catch (error) {
+      handleRepeatAttempt();
       toast.error("Error submitting data. Please try again.", {
         type: "error",
       });
@@ -303,9 +332,9 @@ const RasxodXLSXget = () => {
               id="reports"
               onChange={(e) => setType(e.target.value)}
             >
-              <option selected disabled value="">
+              {/* <option selected disabled value="">
                 <p>Выберите тип</p>
-              </option>
+              </option> */}
               {reportsData.map((data, index) => (
                 <option key={index} value={data.name}>
                   {data.name}
@@ -329,6 +358,7 @@ const RasxodXLSXget = () => {
             <select
               className="form-control mx-3 rounded border-primary"
               onChange={handleYearsChange}
+              id="yilSelect"
             >
               <option selected disabled value="">
                 Выберите год
@@ -377,6 +407,20 @@ const RasxodXLSXget = () => {
               </div>
             </form>
           </div>
+
+          {showButtonClicked == true ? (
+            <div className="d-flex flex-row-reverse gap-3 w-full">
+              <button className="btn btn-danger" onClick={handleRepeatAttempt}>
+                Повторить попытку
+              </button>
+              <button className="btn btn-success" onClick={handleSubmit}>
+                Отправить
+              </button>
+            </div>
+          ) : (
+            ""
+          )}
+
           <div>
             {data.length > 0 && (
               <table style={tableStyle}>
@@ -408,7 +452,7 @@ const RasxodXLSXget = () => {
                             handleEdit(
                               rowIndex,
                               "Наименование затрать",
-                              e.target.value
+                              e.target.value == 0 ? "" : e.target.value
                             )
                           }
                         />
@@ -420,7 +464,11 @@ const RasxodXLSXget = () => {
                           type="text"
                           value={row["Зарплата"]}
                           onChange={(e) =>
-                            handleEdit(rowIndex, "Зарплата", e.target.value)
+                            handleEdit(
+                              rowIndex,
+                              "Зарплата",
+                              e.target.value == 0 ? "" : e.target.value
+                            )
                           }
                         />
                       </td>
@@ -431,7 +479,11 @@ const RasxodXLSXget = () => {
                           type="text"
                           value={row["Соц-страх"]}
                           onChange={(e) =>
-                            handleEdit(rowIndex, "Соц-страх", e.target.value)
+                            handleEdit(
+                              rowIndex,
+                              "Соц-страх",
+                              e.target.value == 0 ? "" : e.target.value
+                            )
                           }
                         />
                       </td>
@@ -442,7 +494,11 @@ const RasxodXLSXget = () => {
                           type="text"
                           value={row["Материалы"]}
                           onChange={(e) =>
-                            handleEdit(rowIndex, "Материалы", e.target.value)
+                            handleEdit(
+                              rowIndex,
+                              "Материалы",
+                              e.target.value == 0 ? "" : e.target.value
+                            )
                           }
                         />
                       </td>
@@ -453,7 +509,12 @@ const RasxodXLSXget = () => {
                           type="text"
                           value={row["Топливо"]}
                           onChange={(e) =>
-                            handleEdit(rowIndex, "Топливо", e.target.value)
+                            handleEdit(
+                              rowIndex,
+                              "Топливо",
+
+                              e.target.value == 0 ? "" : e.target.value
+                            )
                           }
                         />
                       </td>
@@ -464,7 +525,11 @@ const RasxodXLSXget = () => {
                           type="text"
                           value={row["Эл/энергия"]}
                           onChange={(e) =>
-                            handleEdit(rowIndex, "Эл/энергия", e.target.value)
+                            handleEdit(
+                              rowIndex,
+                              "Эл/энергия",
+                              e.target.value == 0 ? "" : e.target.value
+                            )
                           }
                         />
                       </td>
@@ -478,7 +543,7 @@ const RasxodXLSXget = () => {
                             handleEdit(
                               rowIndex,
                               "Износ осн.ср-в",
-                              e.target.value
+                              e.target.value == 0 ? "" : e.target.value
                             )
                           }
                         />
@@ -490,7 +555,11 @@ const RasxodXLSXget = () => {
                           type="text"
                           value={row["Прочие"]}
                           onChange={(e) =>
-                            handleEdit(rowIndex, "Прочие", e.target.value)
+                            handleEdit(
+                              rowIndex,
+                              "Прочие",
+                              e.target.value == 0 ? "" : e.target.value
+                            )
                           }
                         />
                       </td>
@@ -501,7 +570,11 @@ const RasxodXLSXget = () => {
                           type="text"
                           value={row["Итого"]}
                           onChange={(e) =>
-                            handleEdit(rowIndex, "Итого", e.target.value)
+                            handleEdit(
+                              rowIndex,
+                              "Итого",
+                              e.target.value == 0 ? "" : e.target.value
+                            )
                           }
                         />
                       </td>
@@ -511,19 +584,6 @@ const RasxodXLSXget = () => {
               </table>
             )}
           </div>
-
-          {showButtonClicked == true ? (
-            <div className="d-flex flex-row-reverse gap-3 w-full">
-              <button className="btn btn-danger" onClick={handleRepeatAttempt}>
-                Повторить попытку
-              </button>
-              <button className="btn btn-success" onClick={handleSubmit}>
-                Отправить
-              </button>
-            </div>
-          ) : (
-            ""
-          )}
         </div>
       </div>
     </>
