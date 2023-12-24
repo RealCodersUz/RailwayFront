@@ -8,6 +8,11 @@ import { toast } from "react-toastify";
 import { Link, useNavigate } from "react-router-dom";
 
 const reportsData = [
+  {
+    name: "Расход рашировка",
+    url: "/files/rasxod_rashirovka.xlsx",
+    urlHref: "/rashirovka",
+  },
   { name: "Расходы", url: "/files/rasxodData.xlsx", urlHref: "/reports" },
   { name: "Форма 69", url: "/files/forma69.xlsx", urlHref: "/forma69" },
   {
@@ -26,11 +31,6 @@ const reportsData = [
     urlHref: "/materialOtchet",
   },
   { name: "Налог", url: "/files/Nalog.xlsx", urlHref: "/nalog" },
-  {
-    name: "Расход рашировка",
-    url: "/files/rasxod_rashirovka.xlsx",
-    urlHref: "/rashirovka",
-  },
 ];
 
 const Razshirovka = () => {
@@ -59,10 +59,21 @@ const Razshirovka = () => {
     setShowButtonClicked(false);
     setSelectedFiles([]);
 
-    // Clear the input field
     const inputElement = document.getElementById("fileChangeInput");
     if (inputElement) {
       inputElement.value = "";
+    }
+
+    const yilSelect = document.getElementById("yilSelect");
+    if (yilSelect) {
+      yilSelect.value = "";
+    }
+
+    setSelectedMonth("");
+
+    const reports = document.getElementById("reports");
+    if (reports) {
+      reports.value = "Расход рашировка";
     }
   };
 
@@ -134,7 +145,7 @@ const Razshirovka = () => {
       // Create FormData object and append data
       let formData = new FormData();
 
-      formData.append("type", "Расход рашировка");
+      formData.append("type", selectedType.name);
       formData.append("year", selectedYears);
       formData.append("month", selectedMonth);
       formData.append("file", selectedFiles);
@@ -188,19 +199,12 @@ const Razshirovka = () => {
         console.log("Server returned non-200 status:", response.status);
       }
 
-      setData([]);
-      setShowButtonClicked(false);
-      setSelectedFiles([]);
-
-      const inputElement = document.getElementById("fileChangeInput");
-      if (inputElement) {
-        inputElement.value = "";
-      }
-
       // Toast message for successful submission
+      handleRepeatAttempt();
       toast.success("Данные успешно сохранены", { type: "success" });
     } catch (error) {
       // Toast message for submission error
+      handleRepeatAttempt();
       toast.error(`Произошла ошибка при отправке данныхk: ${error.message}`, {
         type: "error",
       });
@@ -298,9 +302,9 @@ const Razshirovka = () => {
               id="reports"
               onChange={handleTypeChange}
             >
-              <option selected disabled value="">
+              {/* <option selected disabled value="">
                 <p>Выберите тип</p>
-              </option>
+              </option> */}
               {reportsData.map((data, index) => (
                 <option key={index} value={data.name}>
                   {data.name}
@@ -308,6 +312,7 @@ const Razshirovka = () => {
               ))}
             </select>
             <select
+              id="oySelect"
               className="form-control mx-3 rounded border-primary"
               value={selectedMonth}
               onChange={handleMonthChange}
@@ -324,6 +329,7 @@ const Razshirovka = () => {
             <select
               className="form-control mx-3 rounded border-primary"
               onChange={handleYearsChange}
+              id="yilSelect"
             >
               <option selected disabled value="">
                 Выберите год
