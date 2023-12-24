@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 /* eslint-disable no-unused-vars */
 // eslint-disable-next-line no-unused-vars
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import * as XLSX from "xlsx";
 import { saveAs } from "file-saver";
 import "./index.scss";
@@ -46,6 +46,56 @@ const ArchiveComponent = () => {
   const [selectedYears, setSelectedYears] = useState("");
 
   const [type, setType] = useState("");
+  const [branchNames, setBranchNames] = useState([]);
+  const [hidden, setHidden] = useState(true);
+
+  useEffect(() => {
+    let userRole = localStorage.getItem("role");
+    if (userRole) {
+      setHidden(userRole !== "super_admin" ? true : false);
+    }
+    if (!hidden) {
+      const fetchData = async () => {
+        let config = {
+          method: "get",
+          maxBodyLength: Infinity,
+          url: "http://localhost:1111/users",
+          headers: {
+            Authorization: localStorage.getItem("token"),
+            "Content-Type": "application/json",
+          },
+        };
+
+        try {
+          const response = await axios
+            .request(config)
+            .then((response) => {
+              console.log(JSON.stringify(response.data));
+              console.log(response.data.data);
+              const usersData = response.data.data || [];
+
+              const allBranchNames = usersData
+                .map((user) => user.branch_name)
+                .filter(Boolean);
+
+              // Unikalligini tekshirib, state ga saqlash
+              const uniqueBranchNames = [...new Set(allBranchNames)];
+              console.log(uniqueBranchNames);
+              setBranchNames(uniqueBranchNames);
+            })
+            .catch((error) => {
+              console.log(error);
+            });
+
+          // Har bir "user" elementidagi "branch_name" larni olish
+        } catch (error) {
+          console.error("Ma'lumotlarni olishda xatolik:", error);
+        }
+      };
+
+      fetchData();
+    }
+  }, []);
 
   const handleShowButtonClick = () => {
     setShowButtonClicked(true);
@@ -71,6 +121,10 @@ const ArchiveComponent = () => {
     const reports = document.getElementById("reports");
     if (reports) {
       reports.value = "Выберите тип";
+    }
+    const filials = document.getElementById("filials");
+    if (filials) {
+      filials.value = "Выберите филиал";
     }
     const yilSelect = document.getElementById("yilSelect");
     if (yilSelect) {
@@ -136,6 +190,8 @@ const ArchiveComponent = () => {
   };
 
   const handleSubmit = async () => {
+    setData([]);
+    excelBtnHidden();
     let url = `http://localhost:1111/archive?type=${type}&branch_name=${branchName}&year=${selectedYears}&month=${selectedMonth}`;
 
     try {
@@ -146,7 +202,16 @@ const ArchiveComponent = () => {
         },
       });
 
-      if (response.data.data[0].file) {
+      if (
+        response.data.data[0] === undefined ||
+        response.data.data === undefined
+      ) {
+        toast("Нет в наличии", { type: "error" });
+        <h5>Отправка недоступна. Крайний срок истек.</h5>;
+      } else if (
+        response.data.data[0].file &&
+        response.data.data[0].file != []
+      ) {
         const file = "http://localhost:1111/" + response.data.data[0].file;
 
         try {
@@ -168,13 +233,41 @@ const ArchiveComponent = () => {
 
           setData(excelData);
         } catch (error) {
-          console.error("Error reading local file:", error);
+          console.error("Нет в наличии", error);
           setErrorMsg(true);
         }
+      } else if (response.data.data.file && response.data.data.file != []) {
+        const file = "http://localhost:1111/" + response.data.data[0].file;
+
+        try {
+          excelBtnShow();
+          // handleRepeatAttempt();
+          toast("Успешный", { type: "success" });
+
+          let arrayBuffer = await fetch(file).then((response) =>
+            response.arrayBuffer()
+          );
+
+          const data = new Uint8Array(arrayBuffer);
+          const workbook = XLSX.read(data, { type: "array" });
+
+          const sheetName = workbook.SheetNames[0];
+          const excelData = XLSX.utils.sheet_to_json(
+            workbook.Sheets[sheetName]
+          );
+
+          setData(excelData);
+        } catch (error) {
+          console.error("Нет в наличии", error);
+          setErrorMsg(true);
+        }
+      } else {
+        toast("Нет в наличии", { type: "error" });
+        <h5>Отправка недоступна. Крайний срок истек.</h5>;
       }
     } catch (error) {
       console.log(error);
-      toast(JSON.stringify(error.message), { type: "error" });
+      toast(`Ошибка : ${error.message}`, { type: "error" });
     }
   };
 
@@ -249,14 +342,20 @@ const ArchiveComponent = () => {
       <div className="container">
         <div className="p-5">
           <div className="input-group my-5 ">
-            <input
+            <select
               className="form-control mx-3 rounded border-primary"
-              placeholder="филиал"
-              id="filialSelect"
-              onChange={(e) => {
-                setBranchName(e.target.value);
-              }}
-            />
+              id="filials"
+              hidden={hidden}
+            >
+              <option selected disabled>
+                Выберите филиал
+              </option>
+              {branchNames.map((data, index) => (
+                <option key={index} value={data.key}>
+                  {data}
+                </option>
+              ))}
+            </select>
             <select
               className="form-control mx-3 rounded border-primary"
               id="reports"
@@ -310,6 +409,7 @@ const ArchiveComponent = () => {
             </button>
           </div>
         </div>
+
         <p className="text-danger fw-semibold text-center" hidden={errorMsg}>
           Отправка недоступна. Крайний срок истек.
         </p>

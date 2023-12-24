@@ -8,7 +8,7 @@ import { toast } from "react-toastify";
 import { Link, useNavigate } from "react-router-dom";
 
 import "./index.scss";
-import { Button, Form, Row } from "react-bootstrap";
+import { Button, Form, Row, Table } from "react-bootstrap";
 import { Workbook } from "exceljs";
 
 // table styles start
@@ -389,7 +389,7 @@ const RasxodXLSXget = () => {
             </h5>
             <br />
             <br />
-            <form className="w-100 border-bottom border-secondary d-flex flex-row justify-content-between pb-2">
+            <form className="w-100 border-bottom border-secondary d-flex flex-row justify-content-between pb-5">
               <div className="file-input-wrapper"></div>
               <div className="d-flex flex-row align-items-center justify-center h-100">
                 <br />
@@ -411,8 +411,11 @@ const RasxodXLSXget = () => {
           </div>
 
           {showButtonClicked == true ? (
-            <div className="d-flex flex-row-reverse gap-3 w-full">
-              <button className="btn btn-danger" onClick={handleRepeatAttempt}>
+            <div className="d-flex flex-row-reverse gap-3 w-full mb-5">
+              <button
+                className="btn btn-warning text-light"
+                onClick={handleRepeatAttempt}
+              >
                 Повторить попытку
               </button>
               <button className="btn btn-success" onClick={handleSubmit}>
@@ -425,19 +428,19 @@ const RasxodXLSXget = () => {
 
           <div>
             {data.length > 0 && (
-              <table style={tableStyle}>
+              <Table striped bordered hover>
                 <thead>
                   <tr>
-                    <th style={headerCellStyle}>№</th>
-                    <th style={headerCellStyle}>Наименование затрать</th>
-                    <th style={headerCellStyle}>Зарплата</th>
-                    <th style={headerCellStyle}>Соц-страх</th>
-                    <th style={headerCellStyle}>Материалы</th>
-                    <th style={headerCellStyle}>Топливо</th>
-                    <th style={headerCellStyle}>Эл/энергия</th>
-                    <th style={headerCellStyle}>Износ осн.ср-в</th>
-                    <th style={headerCellStyle}>Прочие</th>
-                    <th style={headerCellStyle}>Итого</th>
+                    <th style={cellStyle}>№</th>
+                    <th style={cellStyle}>Наименование затрать</th>
+                    <th style={cellStyle}>Зарплата</th>
+                    <th style={cellStyle}>Соц-страх</th>
+                    <th style={cellStyle}>Материалы</th>
+                    <th style={cellStyle}>Топливо</th>
+                    <th style={cellStyle}>Эл/энергия</th>
+                    <th style={cellStyle}>Износ осн.ср-в</th>
+                    <th style={cellStyle}>Прочие</th>
+                    <th style={cellStyle}>Итого</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -454,7 +457,7 @@ const RasxodXLSXget = () => {
                             handleEdit(
                               rowIndex,
                               "Наименование затрать",
-                              e.target.value == 0 ? "" : e.target.value
+                              e.target.value
                             )
                           }
                         />
@@ -466,11 +469,7 @@ const RasxodXLSXget = () => {
                           type="text"
                           value={row["Зарплата"]}
                           onChange={(e) =>
-                            handleEdit(
-                              rowIndex,
-                              "Зарплата",
-                              e.target.value == 0 ? "" : e.target.value
-                            )
+                            handleEdit(rowIndex, "Зарплата", e.target.value)
                           }
                         />
                       </td>
@@ -481,11 +480,7 @@ const RasxodXLSXget = () => {
                           type="text"
                           value={row["Соц-страх"]}
                           onChange={(e) =>
-                            handleEdit(
-                              rowIndex,
-                              "Соц-страх",
-                              e.target.value == 0 ? "" : e.target.value
-                            )
+                            handleEdit(rowIndex, "Соц-страх", e.target.value)
                           }
                         />
                       </td>
@@ -496,11 +491,7 @@ const RasxodXLSXget = () => {
                           type="text"
                           value={row["Материалы"]}
                           onChange={(e) =>
-                            handleEdit(
-                              rowIndex,
-                              "Материалы",
-                              e.target.value == 0 ? "" : e.target.value
-                            )
+                            handleEdit(rowIndex, "Материалы", e.target.value)
                           }
                         />
                       </td>
@@ -511,12 +502,7 @@ const RasxodXLSXget = () => {
                           type="text"
                           value={row["Топливо"]}
                           onChange={(e) =>
-                            handleEdit(
-                              rowIndex,
-                              "Топливо",
-
-                              e.target.value == 0 ? "" : e.target.value
-                            )
+                            handleEdit(rowIndex, "Топливо", e.target.value)
                           }
                         />
                       </td>
@@ -527,11 +513,7 @@ const RasxodXLSXget = () => {
                           type="text"
                           value={row["Эл/энергия"]}
                           onChange={(e) =>
-                            handleEdit(
-                              rowIndex,
-                              "Эл/энергия",
-                              e.target.value == 0 ? "" : e.target.value
-                            )
+                            handleEdit(rowIndex, "Эл/энергия", e.target.value)
                           }
                         />
                       </td>
@@ -545,7 +527,7 @@ const RasxodXLSXget = () => {
                             handleEdit(
                               rowIndex,
                               "Износ осн.ср-в",
-                              e.target.value == 0 ? "" : e.target.value
+                              e.target.value
                             )
                           }
                         />
@@ -557,11 +539,7 @@ const RasxodXLSXget = () => {
                           type="text"
                           value={row["Прочие"]}
                           onChange={(e) =>
-                            handleEdit(
-                              rowIndex,
-                              "Прочие",
-                              e.target.value == 0 ? "" : e.target.value
-                            )
+                            handleEdit(rowIndex, "Прочие", e.target.value)
                           }
                         />
                       </td>
@@ -572,18 +550,14 @@ const RasxodXLSXget = () => {
                           type="text"
                           value={row["Итого"]}
                           onChange={(e) =>
-                            handleEdit(
-                              rowIndex,
-                              "Итого",
-                              e.target.value == 0 ? "" : e.target.value
-                            )
+                            handleEdit(rowIndex, "Итого", e.target.value)
                           }
                         />
                       </td>
                     </tr>
                   ))}
                 </tbody>
-              </table>
+              </Table>
             )}
           </div>
         </div>
