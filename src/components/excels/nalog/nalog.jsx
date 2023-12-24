@@ -189,11 +189,12 @@ const NalogSaver = () => {
       );
 
       const res = await axios.post(
-        "/rasxod",
+        "/nalog_value",
         {
           year: selectedYears,
           month: selectedMonth,
           values: editingData,
+          file: editingData,
         },
         {
           headers: {

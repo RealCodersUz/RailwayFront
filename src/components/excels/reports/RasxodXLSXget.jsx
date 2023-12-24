@@ -139,6 +139,8 @@ const RasxodXLSXget = () => {
   const handleEdit = (rowIndex, columnName, value) => {
     setEditingData((prevEditingData) => {
       const updatedData = [...prevEditingData];
+      // const isFirstColumn = columnName === "№";
+      const isNumericColumn = columnName === "№" || !isNaN(value);
 
       // Loop through rows and set the same value for specific columns
       for (let i = 0; i < updatedData.length; i++) {
@@ -155,9 +157,15 @@ const RasxodXLSXget = () => {
         ];
 
         // Set the value for each specified column
-        columnsToSet.forEach((column) => {
-          updatedData[i][column] = "";
-        });
+        // columnsToSet.forEach((column) => {
+        //   updatedData[i][column] = "";
+        // });
+        // for (let i = 0; i < updatedData.length; i++) {
+        // Set the value for the specified column if it's either the first column or numeric
+        if (isNumericColumn) {
+          updatedData[i][columnName] = value;
+        }
+        // }
       }
 
       // Set the value for the specified column

@@ -55,11 +55,29 @@ const buttonStyle = {
 // table styles end
 
 const reportsData = [
-  { name: "Отчеты", url: "/reports" },
-  { name: "Форма 69", url: "/forma69" },
-  { name: "Основные инструменты", url: "/insurments" },
-  { name: "Материальный отчет", url: "/material-reports" },
-  { name: "Налог", url: "/nalog" },
+  { name: "Расходы", url: "/files/rasxodData.xlsx", urlHref: "/reports" },
+  { name: "Форма 69", url: "/files/forma69.xlsx", urlHref: "/forma69" },
+  {
+    name: "Debit kredit",
+    url: "/files/Debit_kredit.xlsx",
+    urlHref: "/debitKridet",
+  },
+  {
+    name: "Основные инструменты",
+    url: "/files/Osnovnie_sredstvo.xlsx",
+    urlHref: "/insurments",
+  },
+  {
+    name: "Материальный отчет",
+    url: "/files/Materialni_Otchet.xlsx",
+    urlHref: "/materialOtchet",
+  },
+  { name: "Налог", url: "/files/Nalog.xlsx", urlHref: "/nalog" },
+  {
+    name: "Расход рашировка",
+    url: "/files/rasxod_rashirovka.xlsx",
+    urlHref: "/rashirovka",
+  },
 ];
 
 // const months = [
@@ -87,32 +105,174 @@ const reportsData = [
 const ArchiveComponent = () => {
   const [data, setData] = useState([]);
   const [errorMsg, setErrorMsg] = useState(true);
-  const [search, setSearch] = useState("");
+  const [branchName, setbranchName] = useState("");
   const [editingData, setEditingData] = useState([]);
   const [editedFileName, setEditedFileName] = useState("");
+  // const [, setData] = useState([]);
+  const [flattenedCValues, setFlattenedCValues] = useState();
+  const [selectedFiles, setSelectedFiles] = useState([]);
+  // const [errorMsg, setErrorMsg] = useState(false);
+  const [showButtonClicked, setShowButtonClicked] = useState(false);
 
-  function handleSubmit() {
+  const [selectedMonth, setSelectedMonth] = useState("");
+  const [selectedYears, setselectedYears] = useState("");
+  const [type, setType] = useState("");
+
+  // const navigate = useNavigate();
+
+  // const [selectedType, setSelectedType] = useState({
+  //   name: "Расход рашировка",
+  //   type: "rashirovka",
+  //   url: "/files/rasxod_rashirovka.xlsx",
+  // });
+
+  const handleShowButtonClick = () => {
+    setShowButtonClicked(true);
+  };
+
+  const handleRepeatAttempt = () => {
+    setData([]);
+    setShowButtonClicked(false);
+    setSelectedFiles([]);
+
+    // Clear the input field
+    const inputElement = document.getElementById("fileChangeInput");
+    if (inputElement) {
+      inputElement.value = "";
+    }
+  };
+
+  // const handleFileSelect = (e) => {
+  //   const file = [...e.target.files];
+  //   setSelectedFiles(file);
+
+  //   console.log(file, "FILE");
+  // };
+
+  // const handleTypeChange = (e) => {
+  //   const selectedType = reportsData.find(
+  //     (data) => data.name === e.target.value
+  //   );
+
+  //   if (selectedType) {
+  //     setSelectedType(selectedType);
+  //     navigate(selectedType.urlHref); // Redirect to the specified route
+  //   }
+  // };
+
+  const handleFileUpload = (e) => {
+    handleShowButtonClick();
+    const file = e.target.files[0];
+
+    setSelectedFiles(file);
+
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = async (e) => {
+        try {
+          const data = new Uint8Array(e.target.result);
+          const workbook = XLSX.read(data, { type: "array" });
+          const sheetName = workbook.SheetNames[0];
+          const sheet = workbook.Sheets[sheetName];
+          const jsonData = XLSX.utils.sheet_to_json(sheet);
+
+          setData(jsonData);
+          console.log(jsonData, "Json Data");
+
+          const cellLength = jsonData.length;
+          const worksheet = workbook.Sheets[sheetName];
+
+          const flattenedCValuesArray = [];
+
+          for (let i = 2; i <= cellLength; i++) {
+            let cellValue = worksheet[`C${i}`]?.v;
+            if (cellValue === undefined) {
+              cellValue = 0;
+              flattenedCValuesArray.push(cellValue);
+            } else {
+              flattenedCValuesArray.push(cellValue);
+            }
+          }
+
+          setFlattenedCValues(flattenedCValuesArray);
+          console.log(flattenedCValues, "flattenedCValuesArray");
+        } catch (error) {
+          console.error("XLSX faylini o'qishda xatolik yuz berdi:", error);
+        }
+      };
+
+      reader.readAsArrayBuffer(file);
+    }
+  };
+
+  const handleSubmit = async () => {
+    let url = `http://localhost:1111/archive?type=${type}&branch_name=${branchName}&year=${selectedYears}&month=${selectedMonth}`;
+    // if (
+    //   branchName !== "" &&
+    //   selectedMonth !== "" &&
+    //   selectedYears !== "" &&
+    //   type !== ""
+    // ) {
+    //   url += `?branch_name=${branchName}&month=${selectedMonth}&year=${selectedYears}`;
+    // } else if (branchName !== "") {
+    //   url += `?branch_name=${branchName}`;
+    // } else if (selectedMonth !== "" && selectedYears !== "") {
+    //   url += `?month=${selectedMonth}&year=${selectedYears}`;
+    // } else if (selectedMonth !== "") {
+    //   url += `?month=${selectedMonth}`;
+    // } else if (selectedYears !== "") {
+    //   url += `?year=${selectedYears}`;
+    // } else if (type !== "") {
+    //   url += `?type=${type}`;
+    // }
+    console.log(url);
     let config = {
       method: "get",
       maxBodyLength: Infinity,
-      url: `https://railwayback.up.railway.app/archive?search=${search}`,
+      url: url,
       headers: {
         Authorization: localStorage.getItem("token"),
         "Content-Type": "application/json",
       },
     };
-
+    // console.log(url);
     axios
       .request(config)
       .then((response) => {
         console.log(JSON.stringify(response.data));
         toast(JSON.stringify(response.status), { type: "success" });
+        console.log(response.data.data[0].file);
+        if (response.data.data[0].file) {
+          const file = "http://localhost:1111/" + response.data.data[0].file;
+          console.log(file);
+          fetch(file)
+            .then((response) => response.arrayBuffer())
+            .then((arrayBuffer) => {
+              const data = new Uint8Array(arrayBuffer);
+              const workbook = XLSX.read(data, { type: "array" });
+
+              const sheetName = workbook.SheetNames[0];
+              const excelData = XLSX.utils.sheet_to_json(
+                workbook.Sheets[sheetName]
+              );
+
+              setData(excelData);
+              setEditingData([...excelData]);
+            })
+            .catch((error) => {
+              console.error("Error reading local file:", error);
+              setErrorMsg(true);
+            });
+        }
       })
       .catch((error) => {
         console.log(error);
         toast(JSON.stringify(error.message), { type: "error" });
       });
-  }
+  };
+  // };
+  console.log(branchName, selectedMonth, selectedYears);
+  // let url = `https://railwayback.up.railway.app/archive`;
 
   const Change = (e) => {
     const file = e.target.files[0];
@@ -394,9 +554,34 @@ const ArchiveComponent = () => {
     XLSX.writeFile(editedWorkbook, editedFileName || "exampleData.xlsx");
   };
 
-  const [selectedMonth, setSelectedMonth] = useState("selected");
-  const [selectedYears, setselectedYears] = useState("selected");
+  const currentYear = new Date().getFullYear(); // Hozirgi yilni olish
+  const years = Array.from({ length: 10 }, (v, i) => currentYear + i); // 10 yil oldinga to‘liq miqdorda yillarni olish
+  console.log(years);
+  // const [selectedMonth, setSelectedMonth] = useState("");
+  // const [selectedYears, setselectedYears] = useState(currentYear);
 
+  // const handleMonthChange = (event) => {
+  //   setSelectedMonth(event.target.value);
+  // };
+
+  // const handleYearsChange = (event) => {
+  //   setselectedYears(event.target.value);
+  // };
+
+  const months = [
+    "Yanvar",
+    "Fevral",
+    "Mart",
+    "Aprel",
+    "May",
+    "Iyun",
+    "Iyul",
+    "Avgust",
+    "Sentabr",
+    "Oktabr",
+    "Noyabr",
+    "Dekabr",
+  ];
   const handleMonthChange = (event) => {
     setSelectedMonth(event.target.value);
   };
@@ -410,7 +595,7 @@ const ArchiveComponent = () => {
       <div className="container">
         <div className=" p-5">
           <div className="input-group my-5 ">
-            <select
+            {/* <select
               className="form-control mx-3 rounded border-primary"
               id="reports"
             >
@@ -422,11 +607,69 @@ const ArchiveComponent = () => {
                   {data.name}
                 </option>
               ))}
-            </select>
+            </select> */}
             <input
+              className="form-control mx-3 rounded border-primary"
+              // defaultValue={selectedMonth}
+              placeholder="филиал"
+              onChange={(e) => {
+                setType(e.target.value);
+              }}
+            />
+            <select
+              className="form-control mx-3 rounded border-primary"
+              id="reports"
+              // onChange={handleTypeChange}
+            >
+              <option selected disabled value="">
+                <p>Выберите тип</p>
+              </option>
+              {reportsData.map((data, index) => (
+                <option key={index} value={data.name}>
+                  {data.name}
+                </option>
+              ))}
+            </select>
+            {/* <option selected disabled value="">
+                Выберите месяц
+              </option>
+              {months.map((month) => (
+                <option key={month} value={month}>
+                  {month}
+                </option>
+              ))}
+            </select> */}
+            <select
+              className="form-control mx-3 rounded border-primary"
+              value={selectedMonth}
+              onChange={handleMonthChange}
+            >
+              <option selected disabled value="">
+                Выберите месяц
+              </option>
+              {months.map((month) => (
+                <option key={month} value={month}>
+                  {month}
+                </option>
+              ))}
+            </select>
+            <select
+              className="form-control mx-3 rounded border-primary"
+              onChange={handleYearsChange}
+            >
+              <option selected disabled value="">
+                Выберите год
+              </option>
+              {years.map((year) => (
+                <option key={year} value={year}>
+                  {year}
+                </option>
+              ))}
+            </select>
+            {/* <input
               type="date"
               className="form-control mx-3 rounded border-primary"
-            />
+            /> */}
             <button
               className="btn btn-primary mx-3 w-25 rounded"
               type="submit"
