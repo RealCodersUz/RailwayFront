@@ -213,12 +213,29 @@ const ObshiyArchiveComponent = () => {
           if (Array.isArray(responseData)) {
             const valuesData = responseData;
 
-            console.log(branchData, "BranchData");
+            console.log(valuesData, "BranchData");
 
-            const groupedBranchData = valuesData.map((item) => ({
-              branch_name: item.branch_name,
-              values: item.values,
-            }));
+            const groupedBranchData = valuesData.map((item) => {
+              let itemVal = item.values;
+
+              const summedValues = itemVal.reduce((values, innerArray) => {
+                Object.keys(innerArray).forEach((key) => {
+                  const lastDigit = parseInt(innerArray[key].slice(-1), 10);
+                  values[key] = (values[key] || 0) + lastDigit;
+                });
+                return values;
+              }, {});
+
+              let filial = item.branch_name;
+              return { filial, values: summedValues };
+            });
+
+            console.log(groupedBranchData, "groupedBranchData");
+
+            // const groupedBranchData = valuesData.map((item) => ({
+            //   branch_name: item.branch_name,
+            //   values: item.values,
+            // }));
 
             setBranchData(groupedBranchData);
           }
@@ -257,49 +274,34 @@ const ObshiyArchiveComponent = () => {
     setSelectedYears(event.target.value);
   };
 
-  const renderTable = (values) => {
-    if (!values || values.length === 0) {
+  const renderTable = (filials) => {
+    if (!filials || filials.length === 0) {
       return <p>No values available.</p>;
     }
 
-    const headers = Object.keys(values[0]); // Assuming values is an array of objects
+    const headers = Object.keys(filials[0]?.values || {});
 
     return (
       <Table striped bordered hover>
         <thead>
           <tr>
-            {headers.map((header, index) => (
-              <th key={index}>{header}</th>
+            <th>Филиалы</th>
+            {filials.map((filial, index) => (
+              <th key={index}>{filial.filial}</th>
             ))}
           </tr>
         </thead>
         <tbody>
-          {values.map((row, rowIndex) => (
+          {headers.map((header, rowIndex) => (
             <tr key={rowIndex}>
-              {headers.map((header, index) => (
-                <td key={index}>{row[header]}</td>
+              <td>{header}</td>
+              {filials.map((filial, index) => (
+                <td key={index}>{filial.values?.[header]}</td>
               ))}
             </tr>
           ))}
         </tbody>
       </Table>
-    );
-  };
-
-  const renderBranchTable = () => {
-    if (branchData.length === 0) {
-      return <h5 className="text-danger">No data available.</h5>;
-    }
-
-    return (
-      <div>
-        {branchData.map((branchItem, index) => (
-          <div key={index}>
-            <h3 className="text-center">{branchItem.branch_name}</h3>
-            {renderTable(branchItem.values)}
-          </div>
-        ))}
-      </div>
     );
   };
 
@@ -426,7 +428,7 @@ const ObshiyArchiveComponent = () => {
             </div>
           </div>
 
-          {renderBranchTable()}
+          {renderTable(branchData)}
         </div>
       </div>
     </>
