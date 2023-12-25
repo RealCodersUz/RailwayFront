@@ -52,6 +52,13 @@ const ArchiveComponent = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
+    if (branchName === "Общий" && type === "Расходы") {
+      navigate("/obshiy-archive");
+    } else if (branchName === "Общий" && type === "Расход рашировка") {
+      navigate("/obshiy-rashirovka");
+    }
+  }, [branchName, type]);
+  useEffect(() => {
     let userRole = localStorage.getItem("role");
     if (userRole) {
       setHidden(userRole !== "super_admin" ? true : false);
@@ -408,11 +415,6 @@ const ArchiveComponent = () => {
               hidden={hidden}
               onChange={(e) => {
                 setBranchName(e.target.value);
-                if (e.target.value === "Общий") {
-                  navigate("/obshiy-archive");
-                } else {
-                  navigate("/archives");
-                }
               }}
             >
               <option selected disabled>

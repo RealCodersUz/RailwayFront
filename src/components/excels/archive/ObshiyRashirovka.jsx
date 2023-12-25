@@ -36,7 +36,7 @@ const reportsData = [
   },
 ];
 
-const ObshiyArchiveComponent = () => {
+const ObshiyRashirovkaComponent = () => {
   const [data, setData] = useState([]);
   const [errorMsg, setErrorMsg] = useState(true);
   const [branchName, setBranchName] = useState("");
@@ -45,9 +45,7 @@ const ObshiyArchiveComponent = () => {
   const [showButtonClicked, setShowButtonClicked] = useState(false);
   const [selectedMonth, setSelectedMonth] = useState("");
   const [selectedYears, setSelectedYears] = useState("");
-
   const [branchData, setBranchData] = useState([]);
-
   const [type, setType] = useState("");
   const [branchNames, setBranchNames] = useState([]);
   const [hidden, setHidden] = useState(true);
@@ -99,15 +97,6 @@ const ObshiyArchiveComponent = () => {
     if (!hidden && branchName == "Общий") {
       console.log("hiddendan otti");
       const fetchData = async () => {
-        let aperativniyConfig = {
-          method: "get",
-          maxBodyLength: Infinity,
-          url: `https://railwayback.up.railway.app/rasxod?month=${selectedMonth}&year=${selectedYears}&type=${type}&branch_name=${branchName}`,
-          headers: {
-            Authorization: localStorage.getItem("token"),
-            "Content-Type": "application/json",
-          },
-        };
         let rashirovkaConfig = {
           method: "get",
           maxBodyLength: Infinity,
@@ -120,19 +109,10 @@ const ObshiyArchiveComponent = () => {
 
         try {
           const response = await axios
-            .request(type == "Расходы" ? aperativniyConfig : rashirovkaConfig)
+            .request(rashirovkaConfig)
             .then((response) => {
               console.log(JSON.stringify(response.data));
-              console.log(response.data.data, "archives");
-              // const usersData = response.data.data || [];
-
-              // const allBranchNames = usersData
-              //   .map((user) => user.branch_name)
-              //   .filter(Boolean);
-
-              // const uniqueBranchNames = [...new Set(allBranchNames)];
-              // console.log(uniqueBranchNames);
-              // setBranchNames(uniqueBranchNames);
+              console.log(response.data.data, "rashirovka");
             })
             .catch((error) => {
               console.log(error);
@@ -254,7 +234,7 @@ const ObshiyArchiveComponent = () => {
         let config = {
           method: "get",
           maxBodyLength: Infinity,
-          url: `https://railwayback.up.railway.app/rasxod?month=${selectedMonth}&year=${selectedYears}&type=${type}&branch_name=${branchName}`,
+          url: `https://railwayback.up.railway.app/value?month=${selectedMonth}&year=${selectedYears}&type=${type}&branch_name=${branchName}`,
           headers: {
             Authorization: localStorage.getItem("token"),
             "Content-Type": "application/json",
@@ -266,7 +246,7 @@ const ObshiyArchiveComponent = () => {
           console.log(JSON.stringify(response.data));
 
           const responseData = response.data.data;
-
+          console.log(responseData);
           if (Array.isArray(responseData)) {
             const valuesData = responseData;
 
@@ -409,10 +389,8 @@ const ObshiyArchiveComponent = () => {
               hidden={hidden}
               onChange={(e) => {
                 setBranchName(e.target.value);
-                if (e.target.value === "Общий") {
+                if (e.target.value === "Общий" && type === "Расходы") {
                   navigate("/obshiy-archive");
-                } else {
-                  navigate("/archives");
                 }
               }}
             >
@@ -510,11 +488,30 @@ const ObshiyArchiveComponent = () => {
             </div>
           </div>
 
-          {renderBranchTable()}
+          <Table>
+            {/* <Table> */}
+            <thead>
+              <tr>
+                {branchNames.map((data, index) => (
+                  <th key={index} scope="col">
+                    {data}
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                {/* {Object.values(tableData).map((el, i) => (
+                  <td key={i}>{el}</td>
+                ))} */}
+              </tr>
+            </tbody>
+          </Table>
+          {/* {renderBranchTable()} */}
         </div>
       </div>
     </>
   );
 };
 
-export default ObshiyArchiveComponent;
+export default ObshiyRashirovkaComponent;
