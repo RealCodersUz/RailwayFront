@@ -220,28 +220,6 @@ const ObshiyArchiveComponent = () => {
               values: item.values,
             }));
 
-            const firstElementsArray = [];
-
-            for (let i = 0; i < groupedBranchData.length; i++) {
-              let sum = 0;
-
-              for (let j = 0; j < groupedBranchData[i].values.length; j++) {
-                const salaryValue =
-                  groupedBranchData[i].values[j]?.Зарплата || 0;
-
-                console.log(salaryValue, "Salary");
-
-                sum += salaryValue;
-              }
-
-              // Log the result
-              console.log(sum);
-
-              // Collect the sums into a new array
-              firstElementsArray.push(sum);
-            }
-
-            console.log(firstElementsArray, "First Elements Array");
             setBranchData(groupedBranchData);
           }
         } catch (error) {
@@ -284,7 +262,7 @@ const ObshiyArchiveComponent = () => {
       return <p>No values available.</p>;
     }
 
-    const headers = Object.keys(values[0] || {}); // Assuming values is an array of objects
+    const headers = Object.keys(values[0]); // Assuming values is an array of objects
 
     return (
       <Table striped bordered hover>
@@ -299,7 +277,7 @@ const ObshiyArchiveComponent = () => {
           {values.map((row, rowIndex) => (
             <tr key={rowIndex}>
               {headers.map((header, index) => (
-                <td key={index}>{row?.[header]}</td>
+                <td key={index}>{row[header]}</td>
               ))}
             </tr>
           ))}
@@ -318,12 +296,7 @@ const ObshiyArchiveComponent = () => {
         {branchData.map((branchItem, index) => (
           <div key={index}>
             <h3 className="text-center">{branchItem.branch_name}</h3>
-            {Object.keys(branchItem.values[0]).map((category, catIndex) => (
-              <div key={catIndex}>
-                <h4 className="text-center">{category}</h4>
-                {renderTable(branchItem.values.map((item) => item[category]))}
-              </div>
-            ))}
+            {renderTable(branchItem.values)}
           </div>
         ))}
       </div>

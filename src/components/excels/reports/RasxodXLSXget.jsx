@@ -138,7 +138,7 @@ const RasxodXLSXget = () => {
         const excelData = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName]);
 
         for (let i = 0; i < excelData.length; i++) {
-          excelData[i]["Наименование затрать"] = "";
+          // excelData[i]["Наименование затрать"] = "";
           excelData[i]["Зарплата"] = "";
           excelData[i]["Соц-страх"] = "";
           excelData[i]["Материалы"] = "";
@@ -162,12 +162,9 @@ const RasxodXLSXget = () => {
   const handleEdit = (rowIndex, columnName, value) => {
     setEditingData((prevEditingData) => {
       const updatedData = [...prevEditingData];
-      // const isFirstColumn = columnName === "№";
-      const isNumericColumn = columnName === "№" || !isNaN(value);
 
-      // If showColInfo is already true, only update the current cell
       // if (showColInfo) {
-      updatedData[rowIndex][columnName] = value;
+      updatedData[rowIndex][columnName] = value * 1;
       // }
       //     else {
       //       // Set the value only for the selected column, clear others
@@ -301,8 +298,8 @@ const RasxodXLSXget = () => {
   };
 
   // Extracting values from each row
-  const numberedValues = data.map((row) => row["№"]);
-  const namesOfExpenses = data.map((row) => row["Наименование затрать"] || "");
+
+  // const namesOfExpenses = data.map((row) => row["Наименование затрать"] || "");
   const salaries = data.map((row) => row["Зарплата"] || 0);
   const socialInsurance = data.map((row) => row["Соц-страх"] || 0);
   const materials = data.map((row) => row["Материалы"] || 0);
@@ -312,8 +309,7 @@ const RasxodXLSXget = () => {
   const others = data.map((row) => row["Прочие"] || 0);
   const total = data.map((row) => row["Итого"] || 0);
 
-  console.log(numberedValues, "№");
-  console.log(namesOfExpenses, "Наименование затрать");
+  // console.log(namesOfExpenses, "Наименование затрать");
   console.log(salaries, "Зарплата");
   console.log(socialInsurance, "Соц_страх");
   console.log(materials, "Материалы");
@@ -431,7 +427,6 @@ const RasxodXLSXget = () => {
               <Table striped bordered hover>
                 <thead>
                   <tr>
-                    <th style={cellStyle}>№</th>
                     <th style={cellStyle}>Наименование затрать</th>
                     <th style={cellStyle}>Зарплата</th>
                     <th style={cellStyle}>Соц-страх</th>
@@ -446,9 +441,12 @@ const RasxodXLSXget = () => {
                 <tbody>
                   {editingData.map((row, rowIndex) => (
                     <tr key={rowIndex}>
-                      <td style={cellStyle}>{row["№"]}</td>
-                      <td style={cellStyle}>
-                        <input
+                      {/* <td style={cellStyle} className="text-center">{row["№"]}</td> */}
+
+                      <td style={cellStyle} className="text-center">
+                        {row["Наименование затрать"]}
+
+                        {/* <input
                           className="excelInputs"
                           style={inputStyle}
                           type="text"
@@ -460,9 +458,10 @@ const RasxodXLSXget = () => {
                               e.target.value
                             )
                           }
-                        />
+                        /> */}
                       </td>
-                      <td style={cellStyle}>
+
+                      <td style={cellStyle} className="text-center">
                         <input
                           className="excelInputs"
                           style={inputStyle}
@@ -473,7 +472,7 @@ const RasxodXLSXget = () => {
                           }
                         />
                       </td>
-                      <td style={cellStyle}>
+                      <td style={cellStyle} className="text-center">
                         <input
                           className="excelInputs"
                           style={inputStyle}
@@ -484,7 +483,7 @@ const RasxodXLSXget = () => {
                           }
                         />
                       </td>
-                      <td style={cellStyle}>
+                      <td style={cellStyle} className="text-center">
                         <input
                           className="excelInputs"
                           style={inputStyle}
@@ -495,7 +494,7 @@ const RasxodXLSXget = () => {
                           }
                         />
                       </td>
-                      <td style={cellStyle}>
+                      <td style={cellStyle} className="text-center">
                         <input
                           className="excelInputs"
                           style={inputStyle}
@@ -506,7 +505,7 @@ const RasxodXLSXget = () => {
                           }
                         />
                       </td>
-                      <td style={cellStyle}>
+                      <td style={cellStyle} className="text-center">
                         <input
                           className="excelInputs"
                           style={inputStyle}
@@ -517,7 +516,7 @@ const RasxodXLSXget = () => {
                           }
                         />
                       </td>
-                      <td style={cellStyle}>
+                      <td style={cellStyle} className="text-center">
                         <input
                           className="excelInputs"
                           style={inputStyle}
@@ -532,7 +531,7 @@ const RasxodXLSXget = () => {
                           }
                         />
                       </td>
-                      <td style={cellStyle}>
+                      <td style={cellStyle} className="text-center">
                         <input
                           className="excelInputs"
                           style={inputStyle}
@@ -543,7 +542,7 @@ const RasxodXLSXget = () => {
                           }
                         />
                       </td>
-                      <td style={cellStyle}>
+                      <td style={cellStyle} className="text-center">
                         <input
                           className="excelInputs"
                           style={inputStyle}
