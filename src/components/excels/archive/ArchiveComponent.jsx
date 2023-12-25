@@ -94,6 +94,60 @@ const ArchiveComponent = () => {
       fetchData();
     }
   }, [hidden]);
+  useEffect(() => {
+    let userRole = localStorage.getItem("role");
+    if (userRole) {
+      setHidden(userRole !== "super_admin" ? true : false);
+    }
+    if (!hidden && branchName == "Общий") {
+      console.log("hiddendan otti");
+      const fetchData = async () => {
+        let aperativniyConfig = {
+          method: "get",
+          maxBodyLength: Infinity,
+          url: `http://localhost:1111/rasxod?month=${selectedMonth}&year=${selectedYears}&type=${type}&branch_name=${branchName}`,
+          headers: {
+            Authorization: localStorage.getItem("token"),
+            "Content-Type": "application/json",
+          },
+        };
+        let rashirovkaConfig = {
+          method: "get",
+          maxBodyLength: Infinity,
+          url: `http://localhost:1111/value?month=${selectedMonth}&year=${selectedYears}&type=${type}&branch_name=${branchName}`,
+          headers: {
+            Authorization: localStorage.getItem("token"),
+            "Content-Type": "application/json",
+          },
+        };
+
+        try {
+          const response = await axios
+            .request(type == "Расходы" ? aperativniyConfig : rashirovkaConfig)
+            .then((response) => {
+              console.log(JSON.stringify(response.data));
+              console.log(response.data.data, "archives");
+              // const usersData = response.data.data || [];
+
+              // const allBranchNames = usersData
+              //   .map((user) => user.branch_name)
+              //   .filter(Boolean);
+
+              // const uniqueBranchNames = [...new Set(allBranchNames)];
+              // console.log(uniqueBranchNames);
+              // setBranchNames(uniqueBranchNames);
+            })
+            .catch((error) => {
+              console.log(error);
+            });
+        } catch (error) {
+          console.error("Ma'lumotlarni olishda xatolik:", error);
+        }
+      };
+
+      fetchData();
+    }
+  }, [hidden, branchName, selectedMonth, selectedYears, type]);
 
   const handleShowButtonClick = () => {
     setShowButtonClicked(true);
