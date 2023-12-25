@@ -55,6 +55,7 @@ const ArchiveComponent = () => {
       setHidden(userRole !== "super_admin" ? true : false);
     }
     if (!hidden) {
+      console.log("hiddendan otti");
       const fetchData = async () => {
         let config = {
           method: "get",
@@ -78,7 +79,6 @@ const ArchiveComponent = () => {
                 .map((user) => user.branch_name)
                 .filter(Boolean);
 
-              // Unikalligini tekshirib, state ga saqlash
               const uniqueBranchNames = [...new Set(allBranchNames)];
               console.log(uniqueBranchNames);
               setBranchNames(uniqueBranchNames);
@@ -86,8 +86,6 @@ const ArchiveComponent = () => {
             .catch((error) => {
               console.log(error);
             });
-
-          // Har bir "user" elementidagi "branch_name" larni olish
         } catch (error) {
           console.error("Ma'lumotlarni olishda xatolik:", error);
         }
@@ -95,7 +93,7 @@ const ArchiveComponent = () => {
 
       fetchData();
     }
-  }, []);
+  }, [hidden]);
 
   const handleShowButtonClick = () => {
     setShowButtonClicked(true);
@@ -201,18 +199,17 @@ const ArchiveComponent = () => {
           "Content-Type": "application/json",
         },
       });
-
-      if (
-        response.data.data[0] === undefined ||
-        response.data.data === undefined
-      ) {
+      console.log(response.data.data);
+      console.log(!response.data.data);
+      console.log(Boolean(response.data.data[0].file));
+      if (!response.data.data) {
+        console.log("ifda");
         toast("Нет в наличии", { type: "error" });
         <h5>Отправка недоступна. Крайний срок истек.</h5>;
-      } else if (
-        response.data.data[0].file &&
-        response.data.data[0].file != []
-      ) {
-        const file = "https://railwayback.up.railway.app/" + response.data.data[0].file;
+      } else if (response.data.data[0].file) {
+        console.log("elseda");
+        const file =
+          "https://railwayback.up.railway.app/" + response.data.data[0].file;
 
         try {
           excelBtnShow();
@@ -237,7 +234,8 @@ const ArchiveComponent = () => {
           setErrorMsg(true);
         }
       } else if (response.data.data.file && response.data.data.file != []) {
-        const file = "https://railwayback.up.railway.app/" + response.data.data[0].file;
+        const file =
+          "https://railwayback.up.railway.app/" + response.data.data[0].file;
 
         try {
           excelBtnShow();
@@ -336,7 +334,10 @@ const ArchiveComponent = () => {
     XLSX.utils.book_append_sheet(wb, ws, "Sheet1");
     XLSX.writeFile(wb, "example.xlsx");
   };
-
+  console.log(branchName);
+  console.log(type);
+  console.log(selectedMonth);
+  console.log(selectedYears);
   return (
     <>
       <div className="container">
@@ -346,6 +347,9 @@ const ArchiveComponent = () => {
               className="form-control mx-3 rounded border-primary"
               id="filials"
               hidden={hidden}
+              onChange={(e) => {
+                setBranchName(e.target.value);
+              }}
             >
               <option selected disabled>
                 Выберите филиал
@@ -355,6 +359,7 @@ const ArchiveComponent = () => {
                   {data}
                 </option>
               ))}
+              <option>Общий</option>
             </select>
             <select
               className="form-control mx-3 rounded border-primary"

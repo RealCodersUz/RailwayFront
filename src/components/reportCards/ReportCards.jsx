@@ -1,6 +1,8 @@
 /* eslint-disable no-unused-vars */
 import React from "react";
 import { Link } from "react-router-dom";
+import ArchiveComponent from "../excels/archive/ArchiveComponent";
+
 const reportsData = [
   { name: "Расходы", url: "/reports", img: "/sum.png" },
   { name: "Форма 69", url: "/forma69", img: "/doc.png" },
@@ -52,8 +54,10 @@ function ReportCards() {
               </div>
             </div>
           </div>
-          <div className=" p-5">
-            <h2 className="text-center p-3">Архив</h2>
+          <div className=" pt-5">
+            <h2 className="text-center">Архив</h2>
+            <ArchiveComponent />
+            {/* <h2 className="text-center p-3">Архив</h2>
             <div className="input-group my-5 ">
               <select
                 className="form-control mx-3 rounded border-primary"
@@ -76,18 +80,17 @@ function ReportCards() {
               >
                 Поиск
               </button>
-            </div>
-            {/* <form></form> */}
+            </div>*/}
           </div>
-          <div className="px-5 w-100 ">
+          {/* <div className="px-5 w-100 ">
             <div className="w-100 border-bottom border-secondary d-flex flex-row justify-content-between ">
               <p className=" fw-bold fs-3 text-black">topilgan file</p>
               <button className="btn btn-primary h-25 align-center">
                 Pakazat
               </button>
-              {/* <input className="form-control" type="file" id="formFile" /> */}
+              {/* <input className="form-control" type="file" id="formFile" /> 
             </div>
-          </div>
+          </div> */}
         </div>
       </div>
     </>
