@@ -223,6 +223,7 @@ const ObshiyRashirovkaComponent = () => {
     excelBtnHidden();
     let url = `https://railwayback.up.railway.app/archive?type=${type}&branch_name=${branchName}&year=${selectedYears}&month=${selectedMonth}`;
     let userRole = localStorage.getItem("role");
+
     if (userRole) {
       setHidden(userRole !== "super_admin");
     }
@@ -257,18 +258,30 @@ const ObshiyRashirovkaComponent = () => {
 
               console.log(itemVal, "itemVal");
 
+              let valArray = [];
+
+              // Process the values array and return the filial and values properties
+              for (let i = 0; i < itemVal.length; i++) {
+                const values = { [itemVal[i]]: itemVal[i] };
+                valArray.push(values);
+              }
+
+              console.log(valArray, "valuesArray");
               let filial = item.branch_name;
-              return { filial };
+
+              // Combine the array of objects into a single object using reduce
+              let valuesObject = valArray.reduce((acc, obj) => {
+                const key = Object.keys(obj)[0];
+                acc[key] = obj[key];
+                return acc;
+              });
+
+              return { filial, values: valuesObject };
             });
 
             console.log(groupedBranchData, "groupedBranchData");
 
-            // const groupedBranchData = valuesData.map((item) => ({
-            //   branch_name: item.branch_name,
-            //   values: item.values,
-            // }));
-
-            setBranchData(groupedBranchData);
+            // setBranchData(groupedBranchData);
           }
         } catch (error) {
           console.error("Error fetching data:", error);
@@ -327,7 +340,7 @@ const ObshiyRashirovkaComponent = () => {
             <tr key={rowIndex}>
               <td>{header}</td>
               {filials.map((filial, index) => (
-                <td key={index}>{filial.values?.[header]}</td>
+                <td key={index}>{filial.values[header] || ""}</td>
               ))}
             </tr>
           ))}
@@ -335,6 +348,7 @@ const ObshiyRashirovkaComponent = () => {
       </Table>
     );
   };
+
   const handleDownload = () => {
     const ws = XLSX.utils.json_to_sheet(data);
     const wb = XLSX.utils.book_new();
