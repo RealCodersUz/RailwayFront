@@ -95,6 +95,7 @@ const ObshiyRashirovkaComponent = () => {
       setHidden(userRole !== "super_admin" ? true : false);
     }
     if (!hidden && branchName == "Общий") {
+      excelBtnHidden();
       console.log("hiddendan otti");
       const fetchData = async () => {
         let rashirovkaConfig = {
@@ -219,8 +220,8 @@ const ObshiyRashirovkaComponent = () => {
   };
 
   const handleSubmit = async () => {
+    excelBtnShow();
     setData([]);
-    excelBtnHidden();
     let url = `https://railwayback.up.railway.app/archive?type=${type}&branch_name=${branchName}&year=${selectedYears}&month=${selectedMonth}`;
     let userRole = localStorage.getItem("role");
     if (userRole) {
@@ -462,32 +463,31 @@ const ObshiyRashirovkaComponent = () => {
           Отправка недоступна. Крайний срок истек.
         </p>
 
-        <div>
-          <div className="cards ">
-            <div className="d-flex justify-content-end gap-5 pb-3">
-              <Button
-                variant="warning"
-                className="text-light"
-                style={{ display: "none" }}
-                id="btnRetry"
-                onClick={() => {
-                  handleRepeatAttempt(), excelBtnHidden();
-                }}
-              >
-                Повторить попытку
-              </Button>
+        <div className="cards ">
+          <div className="d-flex justify-content-end gap-5 pb-3">
+            <Button
+              variant="warning"
+              className="text-light"
+              style={{ display: "none" }}
+              id="btnRetry"
+              onClick={() => {
+                handleRepeatAttempt(), excelBtnHidden();
+              }}
+            >
+              Повторить попытку
+            </Button>
 
-              <Button
-                variant="primary"
-                style={{ display: "none" }}
-                id="btnExcelHidden"
-                onClick={handleDownload}
-              >
-                Загрузка файла Excel
-              </Button>
-            </div>
+            <Button
+              variant="primary"
+              style={{ display: "none" }}
+              id="btnExcelHidden"
+              onClick={handleDownload}
+            >
+              Загрузка файла Excel
+            </Button>
           </div>
-
+        </div>
+        <div>
           <Table>
             {/* <Table> */}
             <thead>
