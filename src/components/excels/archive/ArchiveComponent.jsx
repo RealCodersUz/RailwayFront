@@ -60,7 +60,7 @@ const ArchiveComponent = () => {
         let config = {
           method: "get",
           maxBodyLength: Infinity,
-          url: "https://railwayback.up.railway.app/users",
+          url: "http://localhost:1111/users",
           headers: {
             Authorization: localStorage.getItem("token"),
             "Content-Type": "application/json",
@@ -190,7 +190,7 @@ const ArchiveComponent = () => {
   const handleSubmit = async () => {
     setData([]);
     excelBtnHidden();
-    let url = `https://railwayback.up.railway.app/archive?type=${type}&branch_name=${branchName}&year=${selectedYears}&month=${selectedMonth}`;
+    let url = `http://localhost:1111/archive?type=${type}&branch_name=${branchName}&year=${selectedYears}&month=${selectedMonth}`;
 
     try {
       let response = await axios.get(url, {
@@ -206,8 +206,10 @@ const ArchiveComponent = () => {
         console.log("ifda");
         toast("Нет в наличии", { type: "error" });
         <h5>Отправка недоступна. Крайний срок истек.</h5>;
-      } else if (response.data.data[0].file) {
-        console.log("elseda");
+      } else if (
+        response.data.data[0].file &&
+        response.data.data[0].file != []
+      ) {
         const file =
           "https://railwayback.up.railway.app/" + response.data.data[0].file;
 

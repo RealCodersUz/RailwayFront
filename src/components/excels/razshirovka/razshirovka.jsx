@@ -359,7 +359,7 @@ const Razshirovka = () => {
               <div className="d-flex flex-row align-items-center justify-center h-100">
                 <br />
                 <Link
-                  to={"https://railwayback.up.railway.app" + selectedType.url}
+                  to={"http://localhost:1111" + selectedType.url}
                   className="btn btn-success h-75 mx-2 align-center"
                 >
                   Скачать шаблон

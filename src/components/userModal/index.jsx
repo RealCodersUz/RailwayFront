@@ -48,6 +48,18 @@ function UserModal(props) {
     { name: "Samarqand", key: "samarqand" },
   ];
 
+  const handleRepeatAttempt = () => {
+    setName("");
+    setBranch("");
+    setLogin("");
+    setPassword("");
+    setPassword2("");
+    setEditBranch("");
+    setEditBranchId("");
+    setEditPassword("");
+    setEditPassword2("");
+  };
+
   let data = JSON.stringify({
     name: name,
     branch_name: branch,
@@ -58,7 +70,7 @@ function UserModal(props) {
   let configAddAdmin = {
     method: "post",
     maxBodyLength: Infinity,
-    url: "https://railwayback.up.railway.app/users",
+    url: "http://localhost:1111/users",
     headers: {
       Authorization: localStorage.getItem("token"),
       "Content-Type": "application/json",
@@ -75,7 +87,7 @@ function UserModal(props) {
     let config = {
       method: "patch",
       maxBodyLength: Infinity,
-      url: `https://railwayback.up.railway.app/users/${editingBranchId}`,
+      url: `http://localhost:1111/users/editpass/${editingBranchId}`,
       headers: {
         Authorization: localStorage.getItem("token"),
         "Content-Type": "application/json",
@@ -92,14 +104,17 @@ function UserModal(props) {
       axios
         .request(config)
         .then((response) => {
+          handleRepeatAttempt();
           console.log(JSON.stringify(response.data));
           toast("Parol almashdi !!!", { type: "success" });
         })
         .catch((error) => {
+          handleRepeatAttempt();
           console.log(error);
           toast("Parol almashtirishda xatolik !!!", { type: "error" });
         });
     } else {
+      handleRepeatAttempt();
       toast("Parolni noto'g'ri kiritdingiz !!!", { type: "warning" });
     }
   }
@@ -108,7 +123,7 @@ function UserModal(props) {
     let config = {
       method: "delete",
       maxBodyLength: Infinity,
-      url: `https://railwayback.up.railway.app/users/${id}`,
+      url: `http://localhost:1111/users/${id}`,
       headers: {
         Authorization: localStorage.getItem("token"),
       },
@@ -131,7 +146,7 @@ function UserModal(props) {
   let config = {
     method: "get",
     maxBodyLength: Infinity,
-    url: "https://railwayback.up.railway.app/users",
+    url: "http://localhost:1111/users",
     headers: {
       Authorization: localStorage.getItem("token"),
       "Content-Type": "application/json",
@@ -152,9 +167,11 @@ function UserModal(props) {
     // Check if the entered password is correct (e.g., "1234")
     if (enteredPassword === "1234") {
       setIsPasswordCorrect(true);
+      setModalShow(false);
       toast("Siz kiritgan parol to'g'ri :)", { type: "warning" });
     } else {
       setIsPasswordCorrect(false);
+      setModalShow(false);
       toast("Yaxshimas... Xack qilmoqchimisan mol :(", { type: "warning" });
     }
 
@@ -187,8 +204,10 @@ function UserModal(props) {
           console.log(error);
         });
       toast("Admin added!!!", { type: "success" });
+      handleRepeatAttempt();
     } else {
       toast("password is wrong!!!", { type: "warning" });
+      handleRepeatAttempt();
     }
   };
   return (
@@ -264,6 +283,7 @@ function UserModal(props) {
             <Form.Group controlId="name">
               <Form.Label>Пароль</Form.Label>
               <Form.Control
+                id="passwordInput"
                 type="text"
                 value={editingPassword}
                 onChange={(e) => setEditPassword(e.target.value)}
@@ -275,6 +295,7 @@ function UserModal(props) {
               <Form.Label>Пароль еще раз</Form.Label>
               <Form.Control
                 type="text"
+                id="passwordInput2"
                 value={editingPassword2}
                 onChange={(e) => setEditPassword2(e.target.value)}
               />
@@ -306,6 +327,7 @@ function UserModal(props) {
               <Form.Label>Филиал: </Form.Label>
               <Form.Control
                 type="text"
+                id="filial"
                 value={branch}
                 onChange={(e) => setBranch(e.target.value)}
               />
@@ -315,6 +337,7 @@ function UserModal(props) {
             <Form.Group controlId="name">
               <Form.Label>Ответственное лицо</Form.Label>
               <Form.Control
+                id="name"
                 type="text"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
@@ -325,6 +348,7 @@ function UserModal(props) {
             <Form.Group controlId="name">
               <Form.Label>Логин </Form.Label>
               <Form.Control
+                id="login"
                 type="text"
                 value={login}
                 onChange={(e) => setLogin(e.target.value)}
@@ -335,6 +359,7 @@ function UserModal(props) {
             <Form.Group controlId="name">
               <Form.Label>Пароль</Form.Label>
               <Form.Control
+                id="password"
                 type="text"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
@@ -345,6 +370,7 @@ function UserModal(props) {
             <Form.Group controlId="name">
               <Form.Label>Пароль еще раз</Form.Label>
               <Form.Control
+                id="password2"
                 type="text"
                 value={password2}
                 onChange={(e) => setPassword2(e.target.value)}
@@ -426,7 +452,7 @@ function UserModal(props) {
                   <td>{user.id}</td>
                   <td>{user.branch_name}</td>
                   <td>{user.username}</td>
-                  <td>
+                  {/* <td>
                     {isPasswordCorrect
                       ? showUserRole
                         ? user.role
@@ -437,6 +463,7 @@ function UserModal(props) {
                         setCurrentUser(user);
                         setShowUserRole(true);
                         setShowPasswordModal(true);
+
                       }}
                     />
                     <FaRegEyeSlash
@@ -444,7 +471,7 @@ function UserModal(props) {
                         setShowUserRole(false);
                       }}
                     />
-                  </td>
+                  </td> */}
                   <td className="text-center ">
                     <Button
                       variant="success"
