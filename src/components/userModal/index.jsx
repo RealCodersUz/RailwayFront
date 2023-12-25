@@ -70,7 +70,7 @@ function UserModal(props) {
   let configAddAdmin = {
     method: "post",
     maxBodyLength: Infinity,
-    url: "http://localhost:1111/users",
+    url: "https://railwayback.up.railway.app/users",
     headers: {
       Authorization: localStorage.getItem("token"),
       "Content-Type": "application/json",
@@ -87,7 +87,7 @@ function UserModal(props) {
     let config = {
       method: "patch",
       maxBodyLength: Infinity,
-      url: `http://localhost:1111/users/editpass/${editingBranchId}`,
+      url: `https://railwayback.up.railway.app/users/editpass/${editingBranchId}`,
       headers: {
         Authorization: localStorage.getItem("token"),
         "Content-Type": "application/json",
@@ -123,7 +123,7 @@ function UserModal(props) {
     let config = {
       method: "delete",
       maxBodyLength: Infinity,
-      url: `http://localhost:1111/users/${id}`,
+      url: `https://railwayback.up.railway.app/users/${id}`,
       headers: {
         Authorization: localStorage.getItem("token"),
       },
@@ -146,7 +146,7 @@ function UserModal(props) {
   let config = {
     method: "get",
     maxBodyLength: Infinity,
-    url: "http://localhost:1111/users",
+    url: "https://railwayback.up.railway.app/users",
     headers: {
       Authorization: localStorage.getItem("token"),
       "Content-Type": "application/json",

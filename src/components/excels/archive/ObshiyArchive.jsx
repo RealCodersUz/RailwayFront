@@ -62,7 +62,7 @@ const ObshiyArchiveComponent = () => {
         let config = {
           method: "get",
           maxBodyLength: Infinity,
-          url: "http://localhost:1111/users",
+          url: "https://railwayback.up.railway.app/users",
           headers: {
             Authorization: localStorage.getItem("token"),
             "Content-Type": "application/json",
@@ -107,7 +107,7 @@ const ObshiyArchiveComponent = () => {
         let aperativniyConfig = {
           method: "get",
           maxBodyLength: Infinity,
-          url: `http://localhost:1111/rasxod?month=${selectedMonth}&year=${selectedYears}&type=${type}&branch_name=${branchName}`,
+          url: `https://railwayback.up.railway.app/rasxod?month=${selectedMonth}&year=${selectedYears}&type=${type}&branch_name=${branchName}`,
           headers: {
             Authorization: localStorage.getItem("token"),
             "Content-Type": "application/json",
@@ -116,7 +116,7 @@ const ObshiyArchiveComponent = () => {
         let rashirovkaConfig = {
           method: "get",
           maxBodyLength: Infinity,
-          url: `http://localhost:1111/value?month=${selectedMonth}&year=${selectedYears}&type=${type}&branch_name=${branchName}`,
+          url: `https://railwayback.up.railway.app/value?month=${selectedMonth}&year=${selectedYears}&type=${type}&branch_name=${branchName}`,
           headers: {
             Authorization: localStorage.getItem("token"),
             "Content-Type": "application/json",
@@ -246,7 +246,7 @@ const ObshiyArchiveComponent = () => {
   const handleSubmit = async () => {
     setData([]);
     excelBtnHidden();
-    let url = `http://localhost:1111/archive?type=${type}&branch_name=${branchName}&year=${selectedYears}&month=${selectedMonth}`;
+    let url = `https://railwayback.up.railway.app/archive?type=${type}&branch_name=${branchName}&year=${selectedYears}&month=${selectedMonth}`;
 
     try {
       let response = await axios.get(url, {
