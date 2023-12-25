@@ -286,16 +286,16 @@ const ObshiyArchiveComponent = () => {
         <thead>
           <tr>
             <th>Филиалы</th>
-            {filials.map((filial, index) => (
-              <th key={index}>{filial.filial}</th>
+            {headers.map((header, index) => (
+              <th key={index}>{header}</th>
             ))}
           </tr>
         </thead>
         <tbody>
-          {headers.map((header, rowIndex) => (
+          {filials.map((filial, rowIndex) => (
             <tr key={rowIndex}>
-              <td>{header}</td>
-              {filials.map((filial, index) => (
+              <td>{filial.filial}</td>
+              {headers.map((header, index) => (
                 <td key={index}>{filial.values?.[header]}</td>
               ))}
             </tr>
