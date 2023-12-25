@@ -36,7 +36,7 @@ const reportsData = [
   },
 ];
 
-const ArchiveComponent = () => {
+const ObshiyArchiveComponent = () => {
   const [data, setData] = useState([]);
   const [errorMsg, setErrorMsg] = useState(true);
   const [branchName, setBranchName] = useState("");
@@ -400,7 +400,7 @@ const ArchiveComponent = () => {
     <>
       <div className="container">
         <div className="p-5">
-          <h1 className="text-center">Aрхивы</h1>
+          <h1 className="text-center">Общий aрхивы</h1>
           <div className="input-group my-5 ">
             <select
               className="form-control mx-3 rounded border-primary"
@@ -516,4 +516,4 @@ const ArchiveComponent = () => {
   );
 };
 
-export default ArchiveComponent;
+export default ObshiyArchiveComponent;
