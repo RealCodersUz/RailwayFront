@@ -247,39 +247,28 @@ const ObshiyRashirovkaComponent = () => {
           console.log(JSON.stringify(response.data));
 
           const responseData = response.data.data;
-          console.log(responseData);
+
           if (Array.isArray(responseData)) {
             const valuesData = responseData;
 
-            console.log(branchData, "BranchData");
+            console.log(valuesData, "values");
 
-            const groupedBranchData = valuesData.map((item) => ({
-              branch_name: item.branch_name,
-              values: item.values,
-            }));
+            const groupedBranchData = valuesData.map((item) => {
+              let itemVal = item.values;
 
-            const firstElementsArray = [];
+              console.log(itemVal, "itemVal");
 
-            for (let i = 0; i < groupedBranchData.length; i++) {
-              let sum = 0;
+              let filial = item.branch_name;
+              return { filial };
+            });
 
-              for (let j = 0; j < groupedBranchData[i].values.length; j++) {
-                const salaryValue =
-                  groupedBranchData[i].values[j]?.Зарплата || 0;
+            console.log(groupedBranchData, "groupedBranchData");
 
-                console.log(salaryValue, "Salary");
+            // const groupedBranchData = valuesData.map((item) => ({
+            //   branch_name: item.branch_name,
+            //   values: item.values,
+            // }));
 
-                sum += salaryValue;
-              }
-
-              // Log the result
-              console.log(sum);
-
-              // Collect the sums into a new array
-              firstElementsArray.push(sum);
-            }
-
-            console.log(firstElementsArray, "First Elements Array");
             setBranchData(groupedBranchData);
           }
         } catch (error) {
@@ -317,27 +306,29 @@ const ObshiyRashirovkaComponent = () => {
     setSelectedYears(event.target.value);
   };
 
-  const renderTable = (values) => {
-    if (!values || values.length === 0) {
+  const renderTable = (filials) => {
+    if (!filials || filials.length === 0) {
       return <p>No values available.</p>;
     }
 
-    const headers = Object.keys(values[0] || {}); // Assuming values is an array of objects
+    const headers = Object.keys(filials[0]?.values || {});
 
     return (
       <Table striped bordered hover>
         <thead>
           <tr>
-            {headers.map((header, index) => (
-              <th key={index}>{header}</th>
+            <th>Филиалы</th>
+            {filials.map((filial, index) => (
+              <th key={index}>{filial.filial}</th>
             ))}
           </tr>
         </thead>
         <tbody>
-          {values.map((row, rowIndex) => (
+          {headers.map((header, rowIndex) => (
             <tr key={rowIndex}>
-              {headers.map((header, index) => (
-                <td key={index}>{row?.[header]}</td>
+              <td>{header}</td>
+              {filials.map((filial, index) => (
+                <td key={index}>{filial.values?.[header]}</td>
               ))}
             </tr>
           ))}
@@ -345,29 +336,6 @@ const ObshiyRashirovkaComponent = () => {
       </Table>
     );
   };
-
-  const renderBranchTable = () => {
-    if (branchData.length === 0) {
-      return <h5 className="text-danger">No data available.</h5>;
-    }
-
-    return (
-      <div>
-        {branchData.map((branchItem, index) => (
-          <div key={index}>
-            <h3 className="text-center">{branchItem.branch_name}</h3>
-            {Object.keys(branchItem.values[0]).map((category, catIndex) => (
-              <div key={catIndex}>
-                <h4 className="text-center">{category}</h4>
-                {renderTable(branchItem.values.map((item) => item[category]))}
-              </div>
-            ))}
-          </div>
-        ))}
-      </div>
-    );
-  };
-
   const handleDownload = () => {
     const ws = XLSX.utils.json_to_sheet(data);
     const wb = XLSX.utils.book_new();
@@ -486,28 +454,8 @@ const ObshiyRashirovkaComponent = () => {
               Загрузка файла Excel
             </Button>
           </div>
-        </div>
-        <div>
-          <Table>
-            {/* <Table> */}
-            <thead>
-              <tr>
-                {branchNames.map((data, index) => (
-                  <th key={index} scope="col">
-                    {data}
-                  </th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                {/* {Object.values(tableData).map((el, i) => (
-                  <td key={i}>{el}</td>
-                ))} */}
-              </tr>
-            </tbody>
-          </Table>
-          {/* {renderBranchTable()} */}
+
+          {renderTable(branchData)}
         </div>
       </div>
     </>

@@ -55,7 +55,7 @@ function ReportCards() {
             </div>
           </div>
           <div className=" pt-5">
-            <h2 className="text-center">Архив</h2>
+            {/* <h2 className="text-center">Архив</h2> */}
             <ArchiveComponent />
             {/* <h2 className="text-center p-3">Архив</h2>
             <div className="input-group my-5 ">

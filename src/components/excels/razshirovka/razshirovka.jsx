@@ -36,6 +36,8 @@ const reportsData = [
 const Razshirovka = () => {
   const [data, setData] = useState([]);
   const [flattenedCValues, setFlattenedCValues] = useState();
+  const [flattenedCNameArray, setFlattenedCNameArray] = useState();
+  const [values, setValues] = useState();
   const [selectedFiles, setSelectedFiles] = useState([]);
   const [errorMsg, setErrorMsg] = useState(false);
   const [showButtonClicked, setShowButtonClicked] = useState(false);
@@ -115,22 +117,46 @@ const Razshirovka = () => {
           console.log(jsonData, "Json Data");
 
           const cellLength = jsonData.length;
+
           const worksheet = workbook.Sheets[sheetName];
 
-          const flattenedCValuesArray = [];
+          let flattenedCValuesArray = [];
+          let flattenedCNameArray = [];
 
-          for (let i = 2; i <= cellLength; i++) {
+          // Store key words in an array
+          const keyWordsArray = ["Наименование затраты"]; // Add more key words if needed
+
+          for (let i = 0; i < cellLength; i++) {
+            let jsonName = jsonData[i][keyWordsArray[0]];
+            console.log(jsonName, "jsonName");
+            flattenedCNameArray.push(jsonName);
+          }
+          console.log(flattenedCNameArray, "flattenedCNameArray");
+
+          for (let i = 2; i <= cellLength + 1; i++) {
+            // Fix index out of bounds error
             let cellValue = worksheet[`C${i}`]?.v;
             if (cellValue === undefined) {
               cellValue = 0;
-              flattenedCValuesArray.push(cellValue);
-            } else {
-              flattenedCValuesArray.push(cellValue);
             }
+            flattenedCValuesArray.push(cellValue);
           }
 
+          setFlattenedCNameArray(flattenedCNameArray);
           setFlattenedCValues(flattenedCValuesArray);
-          console.log(flattenedCValues, "flattenedCValuesArray");
+
+          const values = [];
+
+          for (let i = 0; i < flattenedCNameArray.length; i++) {
+            // Fix the syntax error here
+            values.push({ [flattenedCNameArray[i]]: flattenedCValuesArray[i] });
+          }
+
+          console.log(values, "values");
+
+          setValues(values);
+
+          console.log(flattenedCValuesArray, "flattenedCValuesArray");
         } catch (error) {
           console.error("XLSX faylini o'qishda xatolik yuz berdi:", error);
         }
@@ -167,6 +193,7 @@ const Razshirovka = () => {
         // Corrected the property name to 'status'
         try {
           // Use token directly without string interpolation
+
           const token = localStorage.getItem("token");
 
           const res = await axios.post(
@@ -174,7 +201,7 @@ const Razshirovka = () => {
             {
               year: selectedYears,
               month: selectedMonth,
-              values: flattenedCValues,
+              values: values,
             },
             {
               headers: {
@@ -183,12 +210,7 @@ const Razshirovka = () => {
             }
           );
 
-          // if (res.status === 200) {
-          //   console.log(res.data);
-          //   toast.success("Muvaffaqiyatli Adminga yuborildi", {
-          //     type: "success",
-          //   });
-          // }
+          console.log(res, "res");
         } catch (error) {
           // Toast message for submission error
           // toast.error("Adminga yuborishda xatolik: " + error.message);
