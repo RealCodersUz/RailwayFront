@@ -84,6 +84,10 @@ const ObshiyArchiveComponent = () => {
           console.log(uniqueBranchNames);
           setBranchNames(uniqueBranchNames);
         } catch (error) {
+          toast(
+            `Hech narsa topilmadi yana urinib ko'ring yoki tekshirib ko'ring!`,
+            { type: "warning" }
+          );
           console.error("Error fetching data:", error);
         }
       };
@@ -297,6 +301,10 @@ const ObshiyArchiveComponent = () => {
             setBranchData(groupedBranchData);
           }
         } catch (error) {
+          toast(
+            `Hech narsa topilmadi yana urinib ko'ring yoki tekshirib ko'ring!`,
+            { type: "warning" }
+          );
           console.error("Error fetching data:", error);
         }
       };

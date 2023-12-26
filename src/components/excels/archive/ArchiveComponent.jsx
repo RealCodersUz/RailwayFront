@@ -150,6 +150,10 @@ const ArchiveComponent = () => {
               console.log(error);
             });
         } catch (error) {
+          toast(
+            `Hech narsa topilmadi yana urinib ko'ring yoki tekshirib ko'ring!`,
+            { type: "warning" }
+          );
           console.error("Ma'lumotlarni olishda xatolik:", error);
         }
       };
@@ -397,7 +401,7 @@ const ArchiveComponent = () => {
     const ws = XLSX.utils.json_to_sheet(data);
     const wb = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, "Sheet1");
-  const filename = `${branchName}_${type}_${selectedYears}_${selectedMonth}.xlsx`;
+    const filename = `${branchName}_${type}_${selectedYears}_${selectedMonth}.xlsx`;
 
     XLSX.writeFile(wb, filename);
   };

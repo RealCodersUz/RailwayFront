@@ -11,6 +11,11 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
 const reportsData = [
+  {
+    name: "Расход рашировка",
+    url: "/files/rasxod_rashirovka.xlsx",
+    urlHref: "/rashirovka",
+  },
   { name: "Расходы", url: "/files/rasxodData.xlsx", urlHref: "/reports" },
   { name: "Форма 69", url: "/files/forma69.xlsx", urlHref: "/forma69" },
   {
@@ -29,17 +34,12 @@ const reportsData = [
     urlHref: "/materialOtchet",
   },
   { name: "Налог", url: "/files/Nalog.xlsx", urlHref: "/nalog" },
-  {
-    name: "Расход рашировка",
-    url: "/files/rasxod_rashirovka.xlsx",
-    urlHref: "/rashirovka",
-  },
 ];
 
 const ObshiyRashirovkaComponent = () => {
   const [data, setData] = useState([]);
   const [errorMsg, setErrorMsg] = useState(true);
-  const [branchName, setBranchName] = useState("");
+  const [branchName, setBranchName] = useState("Общий");
   const [flattenedCValues, setFlattenedCValues] = useState();
   const [selectedFiles, setSelectedFiles] = useState([]);
   const [showButtonClicked, setShowButtonClicked] = useState(false);
@@ -47,7 +47,7 @@ const ObshiyRashirovkaComponent = () => {
   const [selectedYears, setSelectedYears] = useState("");
   const [branchData, setBranchData] = useState([]);
   const [itogo, setItogo] = useState([]);
-  const [type, setType] = useState("");
+  const [type, setType] = useState("Расход рашировка");
   const [branchNames, setBranchNames] = useState([]);
   const [hidden, setHidden] = useState(true);
   const navigate = useNavigate();
@@ -83,7 +83,14 @@ const ObshiyRashirovkaComponent = () => {
           console.log(uniqueBranchNames);
           setBranchNames(uniqueBranchNames);
         } catch (error) {
+          toast(
+            `Hech narsa topilmadi yana urinib ko'ring yoki tekshirib ko'ring!`,
+            { type: "warning" }
+          );
           console.error("Error fetching data:", error);
+          console.log(
+            "Hech narsa topilmadi yana urinib ko'ring yoki tekshirib ko'ring!"
+          );
         }
       };
 
@@ -384,6 +391,11 @@ const ObshiyRashirovkaComponent = () => {
             setBranchData(groupedBranchData);
           }
         } catch (error) {
+          // toast("M")
+          toast(
+            `Hech narsa topilmadi yana urinib ko'ring yoki tekshirib ko'ring!`,
+            { type: "warning" }
+          );
           console.error("Error fetching data:", error);
         }
       };
@@ -487,15 +499,15 @@ const ObshiyRashirovkaComponent = () => {
                 }
               }}
             >
-              <option selected disabled>
+              {/* <option selected disabled>
                 Выберите филиал
-              </option>
+              </option> */}
+              <option selected>Общий</option>
               {branchNames.map((data, index) => (
                 <option key={index} value={data.key}>
                   {data}
                 </option>
               ))}
-              <option>Общий</option>
             </select>
             <select
               className="form-control mx-3 rounded border-primary"
@@ -504,9 +516,9 @@ const ObshiyRashirovkaComponent = () => {
                 setType(e.target.value);
               }}
             >
-              <option selected disabled>
+              {/* <option selected disabled>
                 Выберите тип
-              </option>
+              </option> */}
               {reportsData.map((data, index) => (
                 <option key={index} value={data.name}>
                   {data.name}
