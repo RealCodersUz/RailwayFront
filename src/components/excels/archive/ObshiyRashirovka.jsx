@@ -262,13 +262,13 @@ const ObshiyRashirovkaComponent = () => {
 
               let valArray = [];
 
+              let arr = [];
               // Process the values array and return the filial and values properties
               for (let i = 0; i < itemVal.length; i++) {
                 const values = { [itemVal[i]]: itemVal[i] };
                 valArray.push(values);
               }
 
-              let arr = [];
               valArray.map((d) => {
                 let o = [d];
                 console.log(d, "d");
@@ -281,7 +281,8 @@ const ObshiyRashirovkaComponent = () => {
               });
               console.log(arr, "arr");
               let filial = item.branch_name;
-
+              // let newData = branchData.push({ filial: filial, data: arr });
+              // setBranchData(newData);
               // Combine the array of objects into a single object using reduce
               let valuesObject = valArray.reduce((acc, obj) => {
                 const key = Object.keys(obj)[0];
@@ -289,7 +290,7 @@ const ObshiyRashirovkaComponent = () => {
                 return acc;
               });
 
-              return { filial, values: valuesObject };
+              return { filial, values: arr };
             });
 
             console.log(groupedBranchData, "groupedBranchData");
@@ -302,6 +303,7 @@ const ObshiyRashirovkaComponent = () => {
       };
 
       fetchData();
+      console.log(branchData);
     }
   };
 
