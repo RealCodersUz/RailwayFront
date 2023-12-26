@@ -255,6 +255,7 @@ const ObshiyRashirovkaComponent = () => {
             console.log(valuesData, "values");
 
             const groupedBranchData = valuesData.map((item) => {
+              console.log(item, "itemni ozi");
               let itemVal = item.values;
 
               console.log(itemVal, "itemVal");
@@ -267,7 +268,18 @@ const ObshiyRashirovkaComponent = () => {
                 valArray.push(values);
               }
 
-              console.log(valArray, "valuesArray");
+              let arr = [];
+              valArray.map((d) => {
+                let o = [d];
+                console.log(d, "d");
+                var Qiymat = Object.values(o[0])[0];
+                var Kalitlar = Object.keys(Qiymat)[0];
+                console.log(Kalitlar, "keys");
+                var birinchiQiymat = Object.values(Qiymat)[0];
+                arr.push(birinchiQiymat);
+                console.log(birinchiQiymat, "birinchiQiymat");
+              });
+              console.log(arr, "arr");
               let filial = item.branch_name;
 
               // Combine the array of objects into a single object using reduce
