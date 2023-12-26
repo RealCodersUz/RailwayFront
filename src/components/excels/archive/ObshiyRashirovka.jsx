@@ -293,7 +293,11 @@ const ObshiyRashirovkaComponent = () => {
 
           const responseData = response.data.data;
           const responseAdmData = admResponse.data.data;
-          console.log(responseAdmData[0].values, "responseAdmData");
+
+          console.log(responseAdmData, "admdata");
+
+          let allVal = responseAdmData[0].values;
+
           if (Array.isArray(responseAdmData)) {
             const valuesData = [];
             const namesData = [];
@@ -345,7 +349,7 @@ const ObshiyRashirovkaComponent = () => {
 
               namesArray.forEach((d) => {
                 let o = [d];
-                console.log(d, "d");
+                // console.log(d, "d");
 
                 // var Qiymat = Object.values(o[0])[0];
                 // kalitlar.push(Object.keys(Qiymat)[0]);
@@ -359,7 +363,7 @@ const ObshiyRashirovkaComponent = () => {
 
               valArray.forEach((d) => {
                 let o = [d];
-                console.log(d, "d");
+                // console.log(d, "d");
 
                 // var Qiymat = Object.values(o[0])[0];
                 // kalitlar.push(Object.keys(Qiymat)[0]);
@@ -383,7 +387,7 @@ const ObshiyRashirovkaComponent = () => {
               //   return acc;
               // }, {});
 
-              return { filial, kalitlar, arr };
+              return { filial, kalitlar, arr, allVal };
             });
 
             console.log(groupedBranchData, "groupedBranchData");
@@ -430,7 +434,7 @@ const ObshiyRashirovkaComponent = () => {
     setSelectedYears(event.target.value);
   };
 
-  const renderTable = (filials) => {
+  const renderTable = (filials, itogo) => {
     if (!filials || filials.length === 0) {
       return <p>No values available.</p>;
     }
@@ -446,17 +450,26 @@ const ObshiyRashirovkaComponent = () => {
             {branches.map((branch, index) => (
               <th key={index}>{branch}</th>
             ))}
+            <th>Итого</th>
           </tr>
         </thead>
         <tbody>
-          {headers.map((header, rowIndex) => (
-            <tr key={rowIndex}>
-              <td>{header}</td>
-              {filials.map((filial, index) => (
-                <td key={index}>{filial.arr[rowIndex] || ""}</td>
-              ))}
-            </tr>
-          ))}
+          {headers.map((header, rowIndex) => {
+            let rowTotal = 0; // Initialize row total for each header
+
+            return (
+              <tr key={rowIndex}>
+                <td>{header}</td>
+                {filials.map((filial, index) => {
+                  const cellValue = filial.arr[rowIndex] || 0; // Use 0 if the value is undefined
+                  rowTotal += cellValue; // Add the cell value to the row total
+
+                  return <td key={index}>{cellValue}</td>;
+                })}
+                <td>{rowTotal}</td>
+              </tr>
+            );
+          })}
         </tbody>
       </Table>
     );
