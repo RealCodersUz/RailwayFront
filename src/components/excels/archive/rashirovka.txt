@@ -296,7 +296,7 @@ const ObshiyRashirovkaComponent = () => {
               //   return acc;
               // }, {});
 
-              return { filial, kalitlar, arr };
+              return { filial, kalitlar: arr };
             });
 
             console.log(groupedBranchData, "groupedBranchData");
@@ -343,16 +343,15 @@ const ObshiyRashirovkaComponent = () => {
       return <p>No values available.</p>;
     }
 
-    const headers = filials[0]?.kalitlar || [];
-    const branches = filials.map((filial) => filial.filial);
+    const headers = Object.keys(filials[0]?.kalitlar || {});
 
     return (
-      <Table striped bordered hover id="xlsxTable">
+      <Table striped bordered hover>
         <thead>
           <tr>
-            <th>Наименование затраты</th>
-            {branches.map((branch, index) => (
-              <th key={index}>{branch}</th>
+            <th>Ключи</th>
+            {filials.map((filial, index) => (
+              <th key={index}>{filial.filial}</th>
             ))}
           </tr>
         </thead>
@@ -361,7 +360,7 @@ const ObshiyRashirovkaComponent = () => {
             <tr key={rowIndex}>
               <td>{header}</td>
               {filials.map((filial, index) => (
-                <td key={index}>{filial.arr[rowIndex] || ""}</td>
+                <td key={index}>{filial.kalitlar[rowIndex] || ""}</td>
               ))}
             </tr>
           ))}
@@ -371,25 +370,17 @@ const ObshiyRashirovkaComponent = () => {
   };
 
   const handleDownload = () => {
-    // Assuming your table has an id attribute, replace 'your-table-id' with the actual id of your table
-    const table = document.getElementById("xlsxTable");
-
-    // Convert HTML table data to worksheet
-    const ws = XLSX.utils.table_to_sheet(table);
-
-    // Create a new workbook
+    const ws = XLSX.utils.json_to_sheet(data);
     const wb = XLSX.utils.book_new();
-
-    // Add the worksheet to the workbook
     XLSX.utils.book_append_sheet(wb, ws, "Sheet1");
+  const filename = `${branchName}_${type}_${selectedYears}_${selectedMonth}.xlsx`;
 
-    // Create a dynamic filename based on branchName, type, and date
-    const filename = `${branchName}_${type}_${selectedYears}_${selectedMonth}.xlsx`;
-
-    // Write the workbook to a file with the dynamic filename
     XLSX.writeFile(wb, filename);
   };
-
+  console.log(branchName);
+  console.log(type);
+  console.log(selectedMonth);
+  console.log(selectedYears);
   return (
     <>
       <div className="container">
