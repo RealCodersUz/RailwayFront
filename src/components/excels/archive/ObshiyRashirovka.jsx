@@ -88,7 +88,6 @@ const ObshiyRashirovkaComponent = () => {
             { type: "warning" }
           );
           console.error("Error fetching data:", error);
-          
         }
       };
 
@@ -242,8 +241,8 @@ const ObshiyRashirovkaComponent = () => {
         let config = {
           method: "get",
           maxBodyLength: Infinity,
-          // url: `https://railwayback.up.railway.app/value?month=${selectedMonth}&year=${selectedYears}&type=${type}&branch_name=${branchName}`,
-          url: `http://localhost:1111/value?month=${selectedMonth}&year=${selectedYears}&type=${type}&branch_name=${branchName}`,
+          url: `https://railwayback.up.railway.app/value?month=${selectedMonth}&year=${selectedYears}&type=${type}&branch_name=${branchName}`,
+          // url: `http://localhost:1111/value?month=${selectedMonth}&year=${selectedYears}&type=${type}&branch_name=${branchName}`,
           headers: {
             Authorization: localStorage.getItem("token"),
             "Content-Type": "application/json",
@@ -252,8 +251,8 @@ const ObshiyRashirovkaComponent = () => {
         let Admconfig = {
           method: "get",
           maxBodyLength: Infinity,
-          // url: `https://railwayback.up.railway.app/admdata?month=${selectedMonth}&year=${selectedYears}&type=${type}&branch_name=${branchName}`,
-          url: `http://localhost:1111/admdata?month=${selectedMonth}&year=${selectedYears}&type=${type}&branch_name=${branchName}`,
+          url: `https://railwayback.up.railway.app/admdata?month=${selectedMonth}&year=${selectedYears}&type=${type}&branch_name=${branchName}`,
+          // url: `http://localhost:1111/admdata?month=${selectedMonth}&year=${selectedYears}&type=${type}&branch_name=${branchName}`,
           headers: {
             Authorization: localStorage.getItem("token"),
             "Content-Type": "application/json",
@@ -263,20 +262,16 @@ const ObshiyRashirovkaComponent = () => {
         try {
           const response = await axios.request(config);
           const admResponse = await axios.request(Admconfig);
-          
+
           const responseData = response.data.data;
           const responseAdmData = admResponse.data.data;
-
-          console.log(responseAdmData, "admdata");
 
           let allVal = responseAdmData[0].values;
 
           if (Array.isArray(responseAdmData)) {
             const valuesData = [];
             const namesData = [];
-            // console.log(JSON.parse(responseAdmData), "valueslar");
             responseAdmData[0].values.map((i) => {
-              // console.log(JSON.stringify(i), "bu i");
               valuesData.push(i);
             });
             responseAdmData[0].names.map((i) => {
@@ -322,9 +317,16 @@ const ObshiyRashirovkaComponent = () => {
 
               namesArray.forEach((d) => {
                 let o = [d];
-              
+                // console.log(d, "d");
+
+                // var Qiymat = Object.values(o[0])[0];
+                // kalitlar.push(Object.keys(Qiymat)[0]);
+                // console.log(kalitlar, "keys");
+
+                // var birinchiQiymat = Object.values(Qiymat)[0];
                 kalitlar.push(d);
 
+                // console.log(birinchiQiymat, "birinchiQiymat");
               });
 
               valArray.forEach((d) => {
