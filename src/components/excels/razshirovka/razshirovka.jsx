@@ -38,6 +38,7 @@ const Razshirovka = () => {
   const [flattenedCValues, setFlattenedCValues] = useState();
   const [flattenedCNameArray, setFlattenedCNameArray] = useState();
   const [values, setValues] = useState();
+  const [names, setNames] = useState();
   const [selectedFiles, setSelectedFiles] = useState([]);
   const [errorMsg, setErrorMsg] = useState(false);
   const [showButtonClicked, setShowButtonClicked] = useState(false);
@@ -146,17 +147,21 @@ const Razshirovka = () => {
           setFlattenedCValues(flattenedCValuesArray);
 
           const values = [];
+          const names = [];
 
           for (let i = 0; i < flattenedCNameArray.length; i++) {
             // Fix the syntax error here
-            values.push({ [flattenedCNameArray[i]]: flattenedCValuesArray[i] });
+            values.push(flattenedCValuesArray[i]);
+            names.push(flattenedCNameArray[i]);
           }
 
           console.log(values, "values");
 
           setValues(values);
+          setNames(names);
 
           console.log(flattenedCValuesArray, "flattenedCValuesArray");
+          console.log(flattenedCNameArray, "flattenedCValuesArray");
         } catch (error) {
           console.error("XLSX faylini o'qishda xatolik yuz berdi:", error);
         }
@@ -165,16 +170,16 @@ const Razshirovka = () => {
       reader.readAsArrayBuffer(file);
     }
   };
-  if (values) {
-    let ss = [];
-    [...values].map((t) => {
-      ss.push(t);
-      return t;
-    });
-    ss.map((q) => {
-      console.log(q, "valls");
-    });
-  }
+  // if (values) {
+  //   let ss = [];
+  //    [...values].map((t) => {
+  //     ss.push(t);
+  //     return t;
+  //   });
+  //   ss.map((q) => {
+  //     console.log(q, "valls");
+  //   });
+  // }
 
   const handleSubmit = async () => {
     try {
@@ -211,6 +216,7 @@ const Razshirovka = () => {
               year: selectedYears,
               month: selectedMonth,
               values: values,
+              names: names,
             },
             {
               headers: {

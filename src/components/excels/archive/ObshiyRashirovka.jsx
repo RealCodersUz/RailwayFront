@@ -237,7 +237,8 @@ const ObshiyRashirovkaComponent = () => {
         let config = {
           method: "get",
           maxBodyLength: Infinity,
-          url: `https://railwayback.up.railway.app/value?month=${selectedMonth}&year=${selectedYears}&type=${type}&branch_name=${branchName}`,
+          // url: `https://railwayback.up.railway.app/value?month=${selectedMonth}&year=${selectedYears}&type=${type}&branch_name=${branchName}`,
+          url: `http://localhost:1111/value?month=${selectedMonth}&year=${selectedYears}&type=${type}&branch_name=${branchName}`,
           headers: {
             Authorization: localStorage.getItem("token"),
             "Content-Type": "application/json",
@@ -246,7 +247,8 @@ const ObshiyRashirovkaComponent = () => {
         let Admconfig = {
           method: "get",
           maxBodyLength: Infinity,
-          url: `https://railwayback.up.railway.app/admdata?month=${selectedMonth}&year=${selectedYears}&type=${type}&branch_name=${branchName}`,
+          // url: `https://railwayback.up.railway.app/admdata?month=${selectedMonth}&year=${selectedYears}&type=${type}&branch_name=${branchName}`,
+          url: `http://localhost:1111/admdata?month=${selectedMonth}&year=${selectedYears}&type=${type}&branch_name=${branchName}`,
           headers: {
             Authorization: localStorage.getItem("token"),
             "Content-Type": "application/json",
@@ -257,49 +259,49 @@ const ObshiyRashirovkaComponent = () => {
           const response = await axios.request(config);
           const admResponse = await axios.request(Admconfig);
           // console.log(JSON.stringify(response.data));
-          if (admResponse) {
-            let ss = [];
-            let aa = [];
-            [...admResponse.data.data[0].values].map((t) => {
-              ss.push(t);
-              return t;
-            });
-            ss.map((q) => {
-              aa.push(q);
-            });
-            aa.map((q) => {
-              // aa.push(q);
-              console.log(...q, "valls");
-            });
-          }
-          let adat = admResponse.data.data[0].values.map((d) => {
-            return Object.values(d);
-          });
-          admResponse.data.data[0].values.map((item, i) => {
-            // console.log(item);
-            let objs = Object.values(item);
-            console.log(objs, "birnima");
-          });
-          console.log(admResponse.data.data[0].values[0], "admdata");
+          // if (admResponse) {
+          //   let ss = [];
+          //   let aa = [];
+          //   admResponse.data.data[0].values.map((t) => {
+          //     ss.push(t);
+          //     return t;
+          //   });
+          //   ss.map((q) => {
+          //     aa.push(Object.values(q));
+          //   });
+          //   aa.map((q) => {
+          //     // aa.push(q);
+          //     console.log(q, "valls");
+          //   });
+          // }
+          // let adat = admResponse.data.data[0].values.map((d) => {
+          //   return Object.values(d);
+          // });
+          // admResponse.data.data[0].values.map((item, i) => {
+          //   // console.log(item);
+          //   let objs = Object.values(item);
+          //   console.log(objs, "birnima");
+          // });
+          // console.log(admResponse.data.data[0].values, "admdata");
 
           const responseData = response.data.data;
           const responseAdmData = admResponse.data.data;
           console.log(responseAdmData[0].values, "responseAdmData");
           if (Array.isArray(responseAdmData)) {
             const valuesData = [];
+            const namesData = [];
             // console.log(JSON.parse(responseAdmData), "valueslar");
             responseAdmData[0].values.map((i) => {
-              console.log(JSON.stringify(i), "bu i");
-              let asd = [i].map((j) => {
-                console.log(Object.values(j), "bu j");
-                return Object.values(j);
-              });
-              console.log(asd);
-              // );
-              return i;
+              // console.log(JSON.stringify(i), "bu i");
+              valuesData.push(i);
+            });
+            responseAdmData[0].names.map((i) => {
+              // console.log(JSON.stringify(i), "bu i");
+              namesData.push(i);
             });
 
             console.log(valuesData, "values");
+            console.log(namesData, "names");
 
             // console.log(groupedItogo, "groupedItogo");
 
@@ -311,33 +313,53 @@ const ObshiyRashirovkaComponent = () => {
             // console.log(valuesData, "values");
 
             const groupedBranchData = valuesData.map((item) => {
-              // console.log(item, "itemni ozi");
+              console.log(item, "itemni ozi");
               let itemVal = item.values;
+              let itemName = item.names;
 
-              // console.log(itemVal, "itemVal");
+              console.log(itemVal, "itemVal");
 
               let valArray = [];
+              let namesArray = [];
 
               // let arr = [];
               // Process the values array and return the filial and values properties
               for (let i = 0; i < itemVal.length; i++) {
-                const values = { [itemVal[i]]: itemVal[i] };
+                const values = itemVal[i];
                 valArray.push(values);
+              }
+              for (let i = 0; i < itemName.length; i++) {
+                const values = itemName[i];
+                namesArray.push(values);
               }
 
               let arr = [];
               let kalitlar = [];
 
-              valArray.forEach((d) => {
+              namesArray.forEach((d) => {
                 let o = [d];
-                // console.log(d, "d");
+                console.log(d, "d");
 
-                var Qiymat = Object.values(o[0])[0];
-                kalitlar.push(Object.keys(Qiymat)[0]);
+                // var Qiymat = Object.values(o[0])[0];
+                // kalitlar.push(Object.keys(Qiymat)[0]);
                 // console.log(kalitlar, "keys");
 
-                var birinchiQiymat = Object.values(Qiymat)[0];
-                arr.push(birinchiQiymat);
+                // var birinchiQiymat = Object.values(Qiymat)[0];
+                kalitlar.push(d);
+
+                // console.log(birinchiQiymat, "birinchiQiymat");
+              });
+
+              valArray.forEach((d) => {
+                let o = [d];
+                console.log(d, "d");
+
+                // var Qiymat = Object.values(o[0])[0];
+                // kalitlar.push(Object.keys(Qiymat)[0]);
+                // console.log(kalitlar, "keys");
+
+                // var birinchiQiymat = Object.values(Qiymat)[0];
+                arr.push(d);
 
                 // console.log(birinchiQiymat, "birinchiQiymat");
               });
