@@ -79,7 +79,6 @@ function UserModal(props) {
   };
 
   function handleEdit() {
-    console.log(editingBranchId);
     let data = JSON.stringify({
       password: editingPassword,
     });
@@ -96,11 +95,6 @@ function UserModal(props) {
     };
 
     if (editingPassword === editingPassword2 && editingPassword !== "") {
-      console.log(
-        editingPassword === editingPassword2,
-        editingPassword,
-        editingPassword2
-      );
       axios
         .request(config)
         .then((response) => {
@@ -140,7 +134,6 @@ function UserModal(props) {
         console.log(error);
         toast("Error!!!", { type: "error" });
       });
-    // console.log("delete ", id);
   }
 
   let config = {

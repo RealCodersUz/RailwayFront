@@ -186,10 +186,8 @@ const RasxodXLSXget = () => {
       //           updatedData[rowIndex][column] = "";
       //         }
       //       });
-      //       console.log("Elseda");
 
       //       setShowColInfo(true);
-      //       console.log("ShowColInfo true");
       //     }
 
       setEditingData(updatedData);

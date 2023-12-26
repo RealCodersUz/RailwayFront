@@ -27,9 +27,7 @@ const SideBar = () => {
   }, []);
   // if (userRole) {
   // }
-  console.log(hidden);
   const navigate = useNavigate();
-  console.log(userRole);
   function handleLogout() {
     localStorage.removeItem("token");
     localStorage.removeItem("role");

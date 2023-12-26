@@ -64,7 +64,6 @@ const ArchiveComponent = () => {
       setHidden(userRole !== "super_admin" ? true : false);
     }
     if (!hidden) {
-      console.log("hiddendan otti");
       const fetchData = async () => {
         let config = {
           method: "get",
@@ -81,7 +80,7 @@ const ArchiveComponent = () => {
             .request(config)
             .then((response) => {
               console.log(JSON.stringify(response.data));
-              console.log(response.data.data);
+              response.data.data;
               const usersData = response.data.data || [];
 
               const allBranchNames = usersData
@@ -94,6 +93,7 @@ const ArchiveComponent = () => {
             })
             .catch((error) => {
               console.log(error);
+              
             });
         } catch (error) {
           console.error("Ma'lumotlarni olishda xatolik:", error);
@@ -270,7 +270,6 @@ const ArchiveComponent = () => {
       console.log(!response.data.data);
       console.log(Boolean(response.data.data[0].file));
       if (!response.data.data) {
-        console.log("ifda");
         toast("Нет в наличии", { type: "error" });
         <h5>Отправка недоступна. Крайний срок истек.</h5>;
       } else if (
@@ -405,10 +404,7 @@ const ArchiveComponent = () => {
 
     XLSX.writeFile(wb, filename);
   };
-  console.log(branchName);
-  console.log(type);
-  console.log(selectedMonth);
-  console.log(selectedYears);
+
   return (
     <>
       <div className="container">

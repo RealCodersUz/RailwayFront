@@ -120,8 +120,6 @@ const RasxodXLSXget = () => {
         const sheetName = workbook.SheetNames[0]; // Assuming you are working with the first sheet
         let excelData = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName]);
 
-        console.log(excelData, "bu yerda ");
-
         const cellLength = excelData.length;
 
         for (let i = 0; i < cellLength; i++) {
@@ -154,7 +152,7 @@ const RasxodXLSXget = () => {
     setEditingData((prevEditingData) => {
       const updatedData = [...prevEditingData];
       updatedData[rowIndex][columnName] = value;
-      console.log(([rowIndex][columnName] = value), "bu value");
+      ([rowIndex][columnName] = value), "bu value";
       return updatedData;
     });
   };

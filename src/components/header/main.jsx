@@ -92,8 +92,6 @@ const Header = () => {
     "default",
     optionsWatch
   ).format(date);
-  // console.log(formattedDate);
-  // console.log(formattedWatch);
   return (
     <>
       <header className="header w-full bg-body-tertiary sticky-top pb-2">

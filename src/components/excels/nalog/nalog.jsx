@@ -179,15 +179,6 @@ const NalogSaver = () => {
     try {
       const token = localStorage.getItem("token");
 
-      console.log(
-        "year",
-        selectedYears,
-        "month",
-        selectedMonth,
-        "values",
-        editingData
-      );
-
       const res = await axios.post(
         "/nalog_value",
         {

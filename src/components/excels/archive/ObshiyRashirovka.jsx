@@ -88,9 +88,7 @@ const ObshiyRashirovkaComponent = () => {
             { type: "warning" }
           );
           console.error("Error fetching data:", error);
-          console.log(
-            "Hech narsa topilmadi yana urinib ko'ring yoki tekshirib ko'ring!"
-          );
+          
         }
       };
 
@@ -265,32 +263,7 @@ const ObshiyRashirovkaComponent = () => {
         try {
           const response = await axios.request(config);
           const admResponse = await axios.request(Admconfig);
-          // console.log(JSON.stringify(response.data));
-          // if (admResponse) {
-          //   let ss = [];
-          //   let aa = [];
-          //   admResponse.data.data[0].values.map((t) => {
-          //     ss.push(t);
-          //     return t;
-          //   });
-          //   ss.map((q) => {
-          //     aa.push(Object.values(q));
-          //   });
-          //   aa.map((q) => {
-          //     // aa.push(q);
-          //     console.log(q, "valls");
-          //   });
-          // }
-          // let adat = admResponse.data.data[0].values.map((d) => {
-          //   return Object.values(d);
-          // });
-          // admResponse.data.data[0].values.map((item, i) => {
-          //   // console.log(item);
-          //   let objs = Object.values(item);
-          //   console.log(objs, "birnima");
-          // });
-          // console.log(admResponse.data.data[0].values, "admdata");
-
+          
           const responseData = response.data.data;
           const responseAdmData = admResponse.data.data;
 
@@ -349,16 +322,9 @@ const ObshiyRashirovkaComponent = () => {
 
               namesArray.forEach((d) => {
                 let o = [d];
-                // console.log(d, "d");
-
-                // var Qiymat = Object.values(o[0])[0];
-                // kalitlar.push(Object.keys(Qiymat)[0]);
-                // console.log(kalitlar, "keys");
-
-                // var birinchiQiymat = Object.values(Qiymat)[0];
+              
                 kalitlar.push(d);
 
-                // console.log(birinchiQiymat, "birinchiQiymat");
               });
 
               valArray.forEach((d) => {

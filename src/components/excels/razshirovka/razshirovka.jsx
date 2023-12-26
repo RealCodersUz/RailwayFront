@@ -170,16 +170,6 @@ const Razshirovka = () => {
       reader.readAsArrayBuffer(file);
     }
   };
-  // if (values) {
-  //   let ss = [];
-  //    [...values].map((t) => {
-  //     ss.push(t);
-  //     return t;
-  //   });
-  //   ss.map((q) => {
-  //     console.log(q, "valls");
-  //   });
-  // }
 
   const handleSubmit = async () => {
     try {
@@ -202,7 +192,6 @@ const Razshirovka = () => {
         },
       });
 
-      console.log("Server response:", response.data);
 
       if (response.status === 201 || response.status === 200) {
         // Corrected the property name to 'status'
@@ -225,7 +214,6 @@ const Razshirovka = () => {
             }
           );
 
-          console.log(res, "res");
         } catch (error) {
           // Toast message for submission error
           // toast.error("Adminga yuborishda xatolik: " + error.message);
@@ -274,7 +262,6 @@ const Razshirovka = () => {
 
   const currentYear = new Date().getFullYear(); // Hozirgi yilni olish
   const years = Array.from({ length: 10 }, (v, i) => currentYear + i); // 10 yil oldinga to‘liq miqdorda yillarni olish
-  console.log(years);
   const [selectedMonth, setSelectedMonth] = useState("");
   const [selectedYears, setselectedYears] = useState(currentYear);
 

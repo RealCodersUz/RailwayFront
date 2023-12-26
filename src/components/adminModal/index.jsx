@@ -5,7 +5,6 @@ const AdminModal = (props) => {
   const [name, setName] = useState("");
 
   const handleSubmit = () => {
-    console.log("submit");
     // Logic for creating/editing admin. You can perform API calls or state management here.
     // handleClose();
   };

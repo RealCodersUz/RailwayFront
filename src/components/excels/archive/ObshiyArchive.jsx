@@ -378,10 +378,7 @@ const ObshiyArchiveComponent = () => {
 
     XLSX.writeFile(wb, filename);
   };
-  console.log(branchName);
-  console.log(type);
-  console.log(selectedMonth);
-  console.log(selectedYears);
+
   return (
     <>
       <div className="container">
