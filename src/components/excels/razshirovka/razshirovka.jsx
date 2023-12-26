@@ -165,6 +165,16 @@ const Razshirovka = () => {
       reader.readAsArrayBuffer(file);
     }
   };
+  if (values) {
+    let ss = [];
+    [...values].map((t) => {
+      ss.push(t);
+      return t;
+    });
+    ss.map((q) => {
+      console.log(q, "valls");
+    });
+  }
 
   const handleSubmit = async () => {
     try {
@@ -195,7 +205,6 @@ const Razshirovka = () => {
           // Use token directly without string interpolation
 
           const token = localStorage.getItem("token");
-
           const res = await axios.post(
             "/value",
             {

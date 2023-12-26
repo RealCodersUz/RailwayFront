@@ -366,7 +366,9 @@ const ObshiyArchiveComponent = () => {
     const ws = XLSX.utils.json_to_sheet(data);
     const wb = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, "Sheet1");
-    XLSX.writeFile(wb, "example.xlsx");
+    const filename = `${branchName}_${type}_${selectedYears}_${selectedMonth}.xlsx`;
+
+    XLSX.writeFile(wb, filename);
   };
   console.log(branchName);
   console.log(type);
