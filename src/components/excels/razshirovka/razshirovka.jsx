@@ -50,7 +50,7 @@ const Razshirovka = () => {
   const [selectedType, setSelectedType] = useState({
     name: "Расход рашировка",
     type: "rashirovka",
-    url: "/files/rasxod_rashirovka.xlsx",
+    url: "files/rasxod_rashirovka.xlsx",
   });
 
   const handleShowButtonClick = () => {
@@ -163,7 +163,7 @@ const Razshirovka = () => {
           console.log(flattenedCValuesArray, "flattenedCValuesArray");
           console.log(flattenedCNameArray, "flattenedCValuesArray");
         } catch (error) {
-          console.error("XLSX faylini o'qishda xatolik yuz berdi:", error);
+          toast.error("Произошла ошибка при чтении файла XLSX.", error);
         }
       };
 
@@ -192,7 +192,6 @@ const Razshirovka = () => {
         },
       });
 
-
       if (response.status === 201 || response.status === 200) {
         // Corrected the property name to 'status'
         try {
@@ -213,13 +212,21 @@ const Razshirovka = () => {
               },
             }
           );
-
         } catch (error) {
+          toast.error(
+            `Произошла ошибка при отправке данных: ${error.message}`,
+            {
+              type: "error",
+            }
+          );
           // Toast message for submission error
           // toast.error("Adminga yuborishda xatolik: " + error.message);
           console.error("Error:", error);
         }
       } else {
+        toast.error(`Произошла ошибка при отправке данных.`, {
+          type: "error",
+        });
         // Handle other status codes if needed
         console.log("Server returned non-200 status:", response.status);
       }
@@ -230,7 +237,7 @@ const Razshirovka = () => {
     } catch (error) {
       // Toast message for submission error
       handleRepeatAttempt();
-      toast.error(`Произошла ошибка при отправке данныхk: ${error.message}`, {
+      toast.error(`Произошла ошибка при отправке данных: ${error.message}`, {
         type: "error",
       });
       console.log("Error:", error.message);

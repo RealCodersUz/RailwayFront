@@ -73,7 +73,7 @@ const NalogSaver = () => {
   const [selectedType, setSelectedType] = useState({
     name: "Налог",
     type: "rasxod",
-    url: "/files/rasxod.xlsx",
+    url: "/files/rasxodData.xlsx",
   });
   const [selectedFiles, setSelectedFiles] = useState([]);
   const fileInputRef = useRef(null);

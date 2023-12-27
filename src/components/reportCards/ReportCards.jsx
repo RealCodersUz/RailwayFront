@@ -5,7 +5,8 @@ import ArchiveComponent from "../excels/archive/ArchiveComponent";
 
 const reportsData = [
   { name: "Расходы", url: "/reports", img: "/sum.png" },
-  { name: "Форма 69", url: "/forma69", img: "/doc.png" },
+  { name: "Pасход рашировка", url: "/rashirovka", img: "/doc.png" },
+  // { name: "Форма 69", url: "/forma69", img: "/doc.png" },
   { name: "Основные инструменты", url: "/tools", img: "/zarik.png" },
   { name: "Материальный отчет", url: "/mreport", img: "/block.png" },
   { name: "Налог", url: "/nalog", img: "/procent.png" },

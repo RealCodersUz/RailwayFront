@@ -39,7 +39,7 @@ const inputStyle = {
 // table styles end
 
 const reportsData = [
-  { name: "Расходы", url: "/files/rasxod.xlsx", urlHref: "/reports" },
+  { name: "Расходы", url: "/files/rasxodData.xlsx", urlHref: "/reports" },
   { name: "Форма 69", url: "/files/forma69.xlsx", urlHref: "/forma69" },
   {
     name: "Debit kredit",
@@ -74,7 +74,7 @@ const RasxodXLSXget = () => {
   const [selectedType, setSelectedType] = useState({
     name: "Расходы",
     type: "rasxod",
-    url: "/files/rasxod.xlsx",
+    url: "/files/rasxodData.xlsx",
   });
 
   const [selectedFiles, setSelectedFiles] = useState([]);
@@ -154,6 +154,10 @@ const RasxodXLSXget = () => {
         setEditingData([...excelData]);
       })
       .catch((error) => {
+        toast.error(`Произошла ошибка при отправке данных: ${error.message}`, {
+          type: "error",
+        });
+
         console.error("Error reading local file:", error);
         setErrorMsg(true);
       });
@@ -288,7 +292,7 @@ const RasxodXLSXget = () => {
       }
     } catch (error) {
       handleRepeatAttempt();
-      toast.error("Error submitting data. Please try again.", {
+      toast.error(`Произошла ошибка при отправке данных: ${error.message}`, {
         type: "error",
       });
       console.log("Error:", error);
