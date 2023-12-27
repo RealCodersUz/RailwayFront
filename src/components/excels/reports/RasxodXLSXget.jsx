@@ -126,7 +126,7 @@ const RasxodXLSXget = () => {
   };
 
   const handleReadLocalFile = () => {
-    const file = "/public/files/rasxodData.xlsx";
+    const file = "/files/rasxodData.xlsx";
 
     fetch(file)
       .then((response) => response.arrayBuffer())
