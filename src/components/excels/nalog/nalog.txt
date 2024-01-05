@@ -1,88 +1,384 @@
 /* eslint-disable no-unused-vars */
-import { useState } from "react";
-import { Button, Table } from "react-bootstrap";
+import React, { useEffect, useRef, useState } from "react";
 import * as XLSX from "xlsx";
+import { FaChevronDown } from "react-icons/fa";
+import axios from "axios";
+import FormData from "form-data";
+import { toast } from "react-toastify";
+import { Link, useNavigate } from "react-router-dom";
+
+import "./index.scss";
+import { Button, Form, Row } from "react-bootstrap";
+import { Workbook } from "exceljs";
+
+// table styles start
+const tableStyle = {
+  width: "100%",
+  borderCollapse: "collapse",
+  margin: "20px 0",
+};
+
+const cellStyle = {
+  border: "1px solid #000",
+  padding: "8px",
+};
+
+const headerCellStyle = {
+  ...cellStyle,
+  backgroundColor: "#00f",
+  fontWeight: "bold",
+};
+
+const inputStyle = {
+  border: "none",
+  padding: "8px",
+  width: "100%",
+  boxSizing: "border-box",
+};
+
+// table styles end
+
+const reportsData = [
+  { name: "Расходы", url: "/files/rasxodData.xlsx", urlHref: "/reports" },
+  { name: "Форма 69", url: "/files/forma69.xlsx", urlHref: "/forma69" },
+  {
+    name: "Debit kredit",
+    url: "/files/Debit_kredit.xlsx",
+    urlHref: "/debitKridet",
+  },
+  {
+    name: "Основные инструменты",
+    url: "/files/Osnovnie_sredstvo.xlsx",
+    urlHref: "/insurments",
+  },
+  {
+    name: "Материальный отчет",
+    url: "/files/Materialni_Otchet.xlsx",
+    urlHref: "/materialOtchet",
+  },
+  { name: "Налог", url: "/files/Nalog.xlsx", urlHref: "/nalog" },
+  {
+    name: "Расход рашировка",
+    url: "/files/Nalog.xlsx",
+    urlHref: "/rashirovka",
+  },
+];
 
 const NalogSaver = () => {
   const [data, setData] = useState([]);
+  const [errorMsg, setErrorMsg] = useState(false);
+  const [editingData, setEditingData] = useState([]);
+  const [showButtonClicked, setShowButtonClicked] = useState(false);
+  const [type, setType] = useState("Rasxod");
+  const [selectedType, setSelectedType] = useState({
+    name: "Налог",
+    type: "rasxod",
+    url: "/files/rasxodData.xlsx",
+  });
+  const [selectedFiles, setSelectedFiles] = useState([]);
+  const fileInputRef = useRef(null);
+  const navigate = useNavigate();
 
-  const handleFileUpload = (e) => {
-    const file = e.target.files[0];
+  useEffect(() => {
+    const foundReport = reportsData.find((report) => report.name === type);
+    if (foundReport) {
+      console.log("Topilgan ma'lumot: ", foundReport);
+      setSelectedType(foundReport);
 
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        try {
-          const data = new Uint8Array(e.target.result);
-          const workbook = XLSX.read(data, { type: "array" });
-          const sheetName = workbook.SheetNames[0];
-          const sheet = workbook.Sheets[sheetName];
-          const jsonData = XLSX.utils.sheet_to_json(sheet, {
-            header: 1,
-            defval: null,
-          });
-          console.log(jsonData, "Json Data");
+      navigate(foundReport.urlHref);
+    } else {
+      console.log("Bunday nomli ma'lumot topilmadi");
+    }
+  }, [type, navigate]);
 
-          setData(jsonData);
-        } catch (error) {
-          console.error("XLSX faylini o'qishda xatolik yuz berdi:", error);
+  useEffect(() => {
+    if (showButtonClicked) {
+      handleReadLocalFile();
+    }
+  }, [showButtonClicked]);
+
+  const handleFileSelect = (event) => {
+    setSelectedFiles([...event.target.files]);
+  };
+
+  const handleShowButtonClick = () => {
+    setShowButtonClicked(true);
+  };
+
+  const handleRepeatAttempt = () => {
+    // Reset state or perform any other necessary actions
+    setShowButtonClicked(false);
+    // Reload the page
+    // window.location.reload();
+    setData([]);
+    setEditingData([]);
+  };
+
+  const handleReadLocalFile = () => {
+    const file = "/public/files/Nalog_User_Send.xlsx";
+
+    fetch(file)
+      .then((response) => response.arrayBuffer())
+      .then((arrayBuffer) => {
+        const data = new Uint8Array(arrayBuffer);
+        const workbook = XLSX.read(data, { type: "array" });
+
+        const sheetName = workbook.SheetNames[0];
+        const excelData = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName]);
+
+        setData(excelData);
+        setEditingData([...excelData]);
+      })
+      .catch((error) => {
+        console.error("Error reading local file:", error);
+        setErrorMsg(true);
+      });
+  };
+
+  const handleEdit = (rowIndex, columnName, value) => {
+    setEditingData((prevEditingData) => {
+      const updatedData = [...prevEditingData];
+      updatedData[rowIndex][columnName] = value;
+
+      console.log(updatedData, "updatedData");
+      return updatedData;
+    });
+    // setEditingData(updatedData);
+  };
+
+  const currentYear = new Date().getFullYear();
+  const years = Array.from({ length: 10 }, (v, i) => currentYear + i);
+
+  const [selectedMonth, setSelectedMonth] = useState("");
+  const [selectedYears, setSelectedYears] = useState(currentYear);
+
+  const handleMonthChange = (event) => {
+    setSelectedMonth(event.target.value);
+  };
+
+  const handleYearsChange = (event) => {
+    setSelectedYears(event.target.value);
+  };
+
+  const months = [
+    "Yanvar",
+    "Fevral",
+    "Mart",
+    "Aprel",
+    "May",
+    "Iyun",
+    "Iyul",
+    "Avgust",
+    "Sentabr",
+    "Oktabr",
+    "Noyabr",
+    "Dekabr",
+  ];
+
+  const handleSubmit = async () => {
+    try {
+      const token = localStorage.getItem("token");
+
+      const res = await axios.post(
+        "/nalog_value",
+        {
+          year: selectedYears,
+          month: selectedMonth,
+          values: editingData,
+          file: editingData,
+        },
+        {
+          headers: {
+            Authorization: token,
+          },
         }
-      };
+      );
 
-      reader.readAsArrayBuffer(file);
+      if (res.status === 201) {
+        setShowButtonClicked(false);
+
+        setData([]);
+        setEditingData([]);
+
+        console.log(res.data);
+        toast.success("Успешно отправлено", {
+          type: "success",
+        });
+      }
+    } catch (error) {
+      toast.error("Error submitting data. Please try again.", {
+        type: "error",
+      });
+      console.error("Error:", error);
     }
-  };
-
-  const handleDownload = () => {
-    // Convert the edited data to a sheet
-    const ws = XLSX.utils.json_to_sheet(data);
-    const wb = XLSX.utils.book_new();
-
-    // Add the sheet to the workbook
-    XLSX.utils.book_append_sheet(wb, ws, "Sheet1");
-
-    // Use XLSX.writeFile to create and save the file
-    XLSX.writeFile(wb, "exampleData.xlsx");
-  };
-
-  const renderTable = () => {
-    if (data.length === 0) {
-      return <p>Faylni yuklang</p>;
-    }
-
-    // Extract headers from the first row with non-empty values
-    const headers = data[0].filter((header) => header !== null);
-
-    return (
-      <Table striped bordered hover>
-        <thead>
-          <tr>
-            {headers.map((header, index) => (
-              <th key={index}>{header}</th>
-            ))}
-          </tr>
-        </thead>
-        <tbody>
-          {data.slice(1).map((row, rowIndex) => (
-            <tr key={rowIndex}>
-              {row.map((cell, index) => (
-                <td key={index}>{cell === null ? "" : cell}</td>
-              ))}
-            </tr>
-          ))}
-        </tbody>
-      </Table>
-    );
   };
 
   return (
-    <div>
-      <input type="file" onChange={handleFileUpload} />
-      {renderTable()}
-      <Button variant="primary" onClick={handleDownload}>
-        Excel Faylni Yuklab Olish
-      </Button>
-    </div>
+    <>
+      <div className="container">
+        <div className=" p-5">
+          <h1 className="text-center">Отчеты</h1>
+          <div className="input-group my-5 ">
+            <select
+              className="form-control mx-3 rounded border-primary"
+              id="reports"
+              onChange={(e) => setType(e.target.value)}
+            >
+              <option selected disabled value="">
+                <p>Выберите тип</p>
+              </option>
+              {reportsData.map((data, index) => (
+                <option key={index} value={data.name}>
+                  {data.name}
+                </option>
+              ))}
+            </select>
+            <select
+              className="form-control mx-3 rounded border-primary"
+              value={selectedMonth}
+              onChange={handleMonthChange}
+            >
+              <option selected disabled value="">
+                Выберите месяц
+              </option>
+              {months.map((month) => (
+                <option key={month} value={month}>
+                  {month}
+                </option>
+              ))}
+            </select>
+            <select
+              className="form-control mx-3 rounded border-primary"
+              onChange={handleYearsChange}
+            >
+              <option selected disabled value="">
+                Выберите год
+              </option>
+              {years.map((year) => (
+                <option key={year} value={year}>
+                  {year}
+                </option>
+              ))}
+            </select>
+            <button
+              className="btn btn-primary mx-3 w-25 rounded"
+              type="button"
+              onClick={handleShowButtonClick}
+            >
+              Поиск
+            </button>
+          </div>
+          <p className="text-danger fw-semibold text-center" hidden={errorMsg}>
+            Отправка недоступна. Крайний срок истек.
+          </p>
+          <div className="px-5 w-100 py-5">
+            <h5 className="text-danger">
+              Напоминаю, убедитесь, что в файле нет лишних символов и лишних
+              цифр!{" "}
+            </h5>
+            <br />
+            <br />
+            <form className="w-100 border-bottom border-secondary d-flex flex-row justify-content-between pb-2">
+              <div className="file-input-wrapper"></div>
+              <div className="d-flex flex-row align-items-center justify-center h-100">
+                <br />
+                <Link
+                  to={"https://railwayback.up.railway.app/" + selectedType.url}
+                  className="btn btn-success h-75 mx-2 align-center"
+                >
+                  Скачать шаблон
+                </Link>
+                <button
+                  className="btn btn-primary mx-3 rounded"
+                  type="button"
+                  onClick={handleShowButtonClick}
+                >
+                  Показать шаблон
+                </button>
+              </div>
+            </form>
+          </div>
+          <div>
+            {data.length > 0 && (
+              <table style={tableStyle}>
+                <thead>
+                  <tr>
+                    <th style={headerCellStyle}>Наименование налогов</th>
+                    <th style={headerCellStyle}>Причитается по расчёту</th>
+                    <th style={headerCellStyle}>Фактически уплачено</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {editingData.map((row, rowIndex) => (
+                    <tr key={rowIndex}>
+                      <td style={cellStyle}>
+                        {row["Наименование налогов"]}
+                        {/* <input
+                          className="excelInputs"
+                          style={inputStyle}
+                          type="text"
+                          value={row["Наименование налогов"]}
+                          onChange={(e) =>
+                            handleEdit(
+                              rowIndex,
+                              "Наименование налогов",
+                              e.target.value
+                            )
+                          }
+                        /> */}
+                      </td>
+                      <td style={cellStyle}>
+                        <input
+                          className="excelInputs"
+                          style={inputStyle}
+                          type="text"
+                          value={row["Причитается по расчёту"]}
+                          onChange={(e) =>
+                            handleEdit(
+                              rowIndex,
+                              "Причитается по расчёту",
+                              e.target.value
+                            )
+                          }
+                        />
+                      </td>
+                      <td style={cellStyle}>
+                        <input
+                          className="excelInputs"
+                          style={inputStyle}
+                          type="text"
+                          value={row["Фактически уплачено"]}
+                          onChange={(e) =>
+                            handleEdit(
+                              rowIndex,
+                              "Фактически уплачено",
+                              e.target.value
+                            )
+                          }
+                        />
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            )}
+          </div>
+
+          {showButtonClicked == true ? (
+            <div className="d-flex flex-row-reverse gap-3 w-full">
+              <button className="btn btn-danger" onClick={handleRepeatAttempt}>
+                Повторить попытку
+              </button>
+              <button className="btn btn-success" onClick={handleSubmit}>
+                Отправить
+              </button>
+            </div>
+          ) : (
+            ""
+          )}
+        </div>
+      </div>
+    </>
   );
 };
 

@@ -7,8 +7,8 @@ import FormData from "form-data";
 import { toast } from "react-toastify";
 import { Link, useNavigate } from "react-router-dom";
 
-// import "./index.scss";
-import { Button, Form, Row } from "react-bootstrap";
+import "./index.scss";
+import { Button, Form, Row, Table } from "react-bootstrap";
 import { Workbook } from "exceljs";
 
 // table styles start
@@ -39,6 +39,7 @@ const inputStyle = {
 // table styles end
 
 const reportsData = [
+  { name: "Налог", url: "/files/Nalog.xlsx", urlHref: "/nalog" },
   { name: "Расходы", url: "/files/rasxodData.xlsx", urlHref: "/reports" },
   { name: "Форма 69", url: "/files/forma69.xlsx", urlHref: "/forma69" },
   {
@@ -56,7 +57,7 @@ const reportsData = [
     url: "/files/Materialni_Otchet.xlsx",
     urlHref: "/materialOtchet",
   },
-  { name: "Налог", url: "/files/Nalog.xlsx", urlHref: "/nalog" },
+
   {
     name: "Расход рашировка",
     url: "/files/Nalog.xlsx",
@@ -69,12 +70,16 @@ const NalogSaver = () => {
   const [errorMsg, setErrorMsg] = useState(false);
   const [editingData, setEditingData] = useState([]);
   const [showButtonClicked, setShowButtonClicked] = useState(false);
-  const [type, setType] = useState("Rasxod");
+  const [showColInfo, setShowColInfo] = useState(false);
+  const [type, setType] = useState("Налог");
   const [selectedType, setSelectedType] = useState({
     name: "Налог",
     type: "rasxod",
-    url: "/files/rasxodData.xlsx",
+    url: "/files/Nalog_User_Send.xlsx",
   });
+
+  const [uplacheno, setUplacheno] = useState();
+  const [rashyot, setRashyot] = useState();
   const [selectedFiles, setSelectedFiles] = useState([]);
   const fileInputRef = useRef(null);
   const navigate = useNavigate();
@@ -106,16 +111,25 @@ const NalogSaver = () => {
   };
 
   const handleRepeatAttempt = () => {
-    // Reset state or perform any other necessary actions
     setShowButtonClicked(false);
-    // Reload the page
-    // window.location.reload();
     setData([]);
     setEditingData([]);
+
+    const yilSelect = document.getElementById("yilSelect");
+    if (yilSelect) {
+      yilSelect.value = "";
+    }
+
+    setSelectedMonth("");
+
+    const reports = document.getElementById("reports");
+    if (reports) {
+      reports.value = "Налог";
+    }
   };
 
   const handleReadLocalFile = () => {
-    const file = "/public/files/Nalog_User_Send.xlsx";
+    const file = "/files/Nalog_User_Send.xlsx";
 
     fetch(file)
       .then((response) => response.arrayBuffer())
@@ -126,10 +140,21 @@ const NalogSaver = () => {
         const sheetName = workbook.SheetNames[0];
         const excelData = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName]);
 
+        for (let i = 0; i < excelData.length; i++) {
+          // excelData[i]["Наименование затрать"] = "";
+          excelData[i]["Причитается по расчёту"] = "";
+          excelData[i]["Фактически уплачено"] = "";
+        }
+
+        console.log(excelData, "excelData");
         setData(excelData);
         setEditingData([...excelData]);
       })
       .catch((error) => {
+        toast.error(`Произошла ошибка при отправке данных: ${error.message}`, {
+          type: "error",
+        });
+
         console.error("Error reading local file:", error);
         setErrorMsg(true);
       });
@@ -138,12 +163,38 @@ const NalogSaver = () => {
   const handleEdit = (rowIndex, columnName, value) => {
     setEditingData((prevEditingData) => {
       const updatedData = [...prevEditingData];
-      updatedData[rowIndex][columnName] = value;
 
-      console.log(updatedData, "updatedData");
+      // if (showColInfo) {
+      updatedData[rowIndex][columnName] = value * 1;
+      // }
+      //     else {
+      //       // Set the value only for the selected column, clear others
+
+      //       updatedData[rowIndex][columnName] = value;
+      //       const columnsToSet = [
+      //         "Наименование затрать",
+      //         "Причитается по расчёту",
+      //         "Фактически уплачено",
+      //         "Материалы",
+      //         "Топливо",
+      //         "Эл/энергия",
+      //         "Износ осн.ср-в",
+      //         "Прочие",
+      //         "Итого",
+      //       ];
+      //       columnsToSet.forEach((column) => {
+      //         if (column !== columnName) {
+      //           updatedData[rowIndex][column] = "";
+      //         }
+      //       });
+
+      //       setShowColInfo(true);
+      //     }
+
+      setEditingData(updatedData);
+      console.log(updatedData, "UpdatedData");
       return updatedData;
     });
-    // setEditingData(updatedData);
   };
 
   const currentYear = new Date().getFullYear();
@@ -161,31 +212,65 @@ const NalogSaver = () => {
   };
 
   const months = [
-    "Yanvar",
-    "Fevral",
-    "Mart",
-    "Aprel",
-    "May",
-    "Iyun",
-    "Iyul",
-    "Avgust",
-    "Sentabr",
-    "Oktabr",
-    "Noyabr",
-    "Dekabr",
+    "кв-1",
+    "кв-2",
+    "кв-3",
+    "кв-4",
+
+    // "Yanvar",
+    // "Fevral",
+    // "Mart",
+    // "Aprel",
+    // "May",
+    // "Iyun",
+    // "Iyul",
+    // "Avgust",
+    // "Sentabr",
+    // "Oktabr",
+    // "Noyabr",
+    // "Dekabr",
   ];
+
+  // const namesOfExpenses = data.map((row) => row["Наименование затрать"] || "");
+  const debit = data.map((row) => row["Причитается по расчёту"] || 0);
+  const kredit = data.map((row) => row["Фактически уплачено"] || 0);
+
+  // setRashyot(debit);
+  // setUplacheno(kredit);
+
+  // console.log(namesOfExpenses, "Наименование затрать");
+  console.log(debit, "Причитается по расчёту");
+  console.log(kredit, "Фактически уплачено");
 
   const handleSubmit = async () => {
     try {
       const token = localStorage.getItem("token");
+
+      console.log(
+        "year",
+        selectedYears,
+        "month",
+        selectedMonth,
+        "file",
+        editingData,
+        "values",
+        {
+          uplacheno: debit,
+          rashyot: kredit,
+        }
+      );
 
       const res = await axios.post(
         "/nalog_value",
         {
           year: selectedYears,
           month: selectedMonth,
-          values: editingData,
           file: editingData,
+
+          values: {
+            uplacheno: debit,
+            rashyot: kredit,
+          },
         },
         {
           headers: {
@@ -194,39 +279,45 @@ const NalogSaver = () => {
         }
       );
 
-      if (res.status === 201) {
+      console.log(res, "res");
+
+      if (res.status === 201 || res.status === 200) {
         setShowButtonClicked(false);
 
         setData([]);
         setEditingData([]);
 
         console.log(res.data);
-        toast.success("Muvaffaqiyatli Adminga yuborildi", {
+        handleRepeatAttempt();
+        toast.success("Успешно отправлено", {
           type: "success",
         });
       }
     } catch (error) {
-      toast.error("Error submitting data. Please try again.", {
+      handleRepeatAttempt();
+      toast.error(`Произошла ошибка при отправке данных: ${error.message}`, {
         type: "error",
       });
-      console.error("Error:", error);
+      console.log("Error:", error);
     }
   };
+
+  // Extracting values from each row
 
   return (
     <>
       <div className="container">
         <div className=" p-5">
-          <h1 className="text-center">Отчеты</h1>
+          <h1 className="text-center">Налог</h1>
           <div className="input-group my-5 ">
             <select
               className="form-control mx-3 rounded border-primary"
               id="reports"
               onChange={(e) => setType(e.target.value)}
             >
-              <option selected disabled value="">
+              {/* <option selected disabled value="">
                 <p>Выберите тип</p>
-              </option>
+              </option> */}
               {reportsData.map((data, index) => (
                 <option key={index} value={data.name}>
                   {data.name}
@@ -239,7 +330,7 @@ const NalogSaver = () => {
               onChange={handleMonthChange}
             >
               <option selected disabled value="">
-                Выберите месяц
+                Выберите квартал
               </option>
               {months.map((month) => (
                 <option key={month} value={month}>
@@ -250,6 +341,7 @@ const NalogSaver = () => {
             <select
               className="form-control mx-3 rounded border-primary"
               onChange={handleYearsChange}
+              id="yilSelect"
             >
               <option selected disabled value="">
                 Выберите год
@@ -278,7 +370,7 @@ const NalogSaver = () => {
             </h5>
             <br />
             <br />
-            <form className="w-100 border-bottom border-secondary d-flex flex-row justify-content-between pb-2">
+            <form className="w-100 border-bottom border-secondary d-flex flex-row justify-content-between pb-5">
               <div className="file-input-wrapper"></div>
               <div className="d-flex flex-row align-items-center justify-center h-100">
                 <br />
@@ -298,35 +390,57 @@ const NalogSaver = () => {
               </div>
             </form>
           </div>
+
+          {showButtonClicked == true ? (
+            <div className="d-flex flex-row-reverse gap-3 w-full mb-5">
+              <button
+                className="btn btn-warning text-light"
+                onClick={handleRepeatAttempt}
+              >
+                Повторить попытку
+              </button>
+              <button className="btn btn-success" onClick={handleSubmit}>
+                Отправить
+              </button>
+            </div>
+          ) : (
+            ""
+          )}
+
           <div>
             {data.length > 0 && (
-              <table style={tableStyle}>
+              <Table striped bordered hover>
                 <thead>
                   <tr>
-                    <th style={headerCellStyle}>Наименование налогов</th>
-                    <th style={headerCellStyle}>Причитается по расчёту</th>
-                    <th style={headerCellStyle}>Фактически уплачено</th>
+                    <th style={cellStyle}>Наименование налогов</th>
+                    <th style={cellStyle}>Причитается по расчёту</th>
+                    <th style={cellStyle}>Фактически уплачено</th>
                   </tr>
                 </thead>
                 <tbody>
                   {editingData.map((row, rowIndex) => (
                     <tr key={rowIndex}>
-                      <td style={cellStyle}>
-                        <input
+                      {/* <td style={cellStyle} className="text-center">{row["№"]}</td> */}
+
+                      <td style={cellStyle} className="text-center">
+                        {row["Наименование налогов"]}
+
+                        {/* <input
                           className="excelInputs"
                           style={inputStyle}
                           type="text"
-                          value={row["Наименование налогов"]}
+                          value={row["Наименование затрать"]}
                           onChange={(e) =>
                             handleEdit(
                               rowIndex,
-                              "Наименование налогов",
+                              "Наименование затрать",
                               e.target.value
                             )
                           }
-                        />
+                        /> */}
                       </td>
-                      <td style={cellStyle}>
+
+                      <td style={cellStyle} className="text-center">
                         <input
                           className="excelInputs"
                           style={inputStyle}
@@ -341,7 +455,7 @@ const NalogSaver = () => {
                           }
                         />
                       </td>
-                      <td style={cellStyle}>
+                      <td style={cellStyle} className="text-center">
                         <input
                           className="excelInputs"
                           style={inputStyle}
@@ -359,22 +473,9 @@ const NalogSaver = () => {
                     </tr>
                   ))}
                 </tbody>
-              </table>
+              </Table>
             )}
           </div>
-
-          {showButtonClicked == true ? (
-            <div className="d-flex flex-row-reverse gap-3 w-full">
-              <button className="btn btn-danger" onClick={handleRepeatAttempt}>
-                Повторить попытку
-              </button>
-              <button className="btn btn-success" onClick={handleSubmit}>
-                Отправить
-              </button>
-            </div>
-          ) : (
-            ""
-          )}
         </div>
       </div>
     </>

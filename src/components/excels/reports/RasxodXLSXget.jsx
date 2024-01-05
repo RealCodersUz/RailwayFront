@@ -59,7 +59,7 @@ const reportsData = [
   { name: "Налог", url: "/files/Nalog.xlsx", urlHref: "/nalog" },
   {
     name: "Расход рашировка",
-    url: "/files/Nalog.xlsx",
+    url: "/files/rasxod_rashirovka.xlsx",
     urlHref: "/rashirovka",
   },
 ];
@@ -286,7 +286,7 @@ const RasxodXLSXget = () => {
 
         console.log(res.data);
         handleRepeatAttempt();
-        toast.success("Muvaffaqiyatli Adminga yuborildi", {
+        toast.success("Успешно отправлено", {
           type: "success",
         });
       }
