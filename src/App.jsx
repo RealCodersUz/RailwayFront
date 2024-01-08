@@ -10,6 +10,7 @@ import RazshirovkaPage from "./pages/razshirovka";
 import NalogPage from "./pages/nalog";
 import ObshiyArchivePage from "./pages/archive-obshiy";
 import ObshiyRashirovkaPage from "./pages/archive-rashirovka";
+import ObshiyNalogPage from "./pages/archive-nalog";
 
 function App() {
   return (
@@ -26,6 +27,8 @@ function App() {
           <Route path="/archives" element={<ArchivePage />} />{" "}
           <Route path="/obshiy-archive" element={<ObshiyArchivePage />} />
           <Route path="/obshiy-rashirovka" element={<ObshiyRashirovkaPage />} />
+          <Route path="/obshiy-nalog" element={<ObshiyNalogPage />} />
+          {/*  */}
           <Route path="/settings" element={<SettingsPage />} />
           <Route path="/*" element={<NotFound />} />
         </Routes>

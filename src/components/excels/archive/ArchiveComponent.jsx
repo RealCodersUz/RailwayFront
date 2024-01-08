@@ -56,7 +56,11 @@ const ArchiveComponent = () => {
       navigate("/obshiy-archive");
     } else if (branchName === "Общий" && type === "Расход рашировка") {
       navigate("/obshiy-rashirovka");
+    } else if (branchName === "Общий" && type === "Налог") {
+      navigate("/obshiy-nalog");
     }
+
+    console.log(type, "type");
   }, [branchName, type]);
   useEffect(() => {
     let userRole = localStorage.getItem("role");
@@ -93,7 +97,6 @@ const ArchiveComponent = () => {
             })
             .catch((error) => {
               console.log(error);
-              
             });
         } catch (error) {
           console.error("Ma'lumotlarni olishda xatolik:", error);
@@ -108,6 +111,7 @@ const ArchiveComponent = () => {
     if (userRole) {
       setHidden(userRole !== "super_admin" ? true : false);
     }
+
     if (!hidden && branchName == "Общий") {
       console.log("hiddendan otti");
       const fetchData = async () => {
@@ -129,10 +133,32 @@ const ArchiveComponent = () => {
             "Content-Type": "application/json",
           },
         };
+        let nalogConfig = {
+          method: "get",
+          maxBodyLength: Infinity,
+          url: `https://railwayback.up.railway.app/nalog-value?month=${selectedMonth}&year=${selectedYears}&type=${type}&branch_name=${branchName}`,
+          headers: {
+            Authorization: localStorage.getItem("token"),
+            "Content-Type": "application/json",
+          },
+        };
+
+        // nalogConfig
+        // Расход рашировка
+        // Налог
 
         try {
           const response = await axios
-            .request(type == "Расходы" ? aperativniyConfig : rashirovkaConfig)
+            .request(
+              type === "Расходы"
+                ? aperativniyConfig
+                : type === "Расход рашировка"
+                ? rashirovkaConfig
+                : type === "Налог"
+                ? rashirovkaConfig
+                : {}
+            )
+
             .then((response) => {
               console.log(JSON.stringify(response.data));
               console.log(response.data.data, "archives");
@@ -266,9 +292,12 @@ const ArchiveComponent = () => {
           "Content-Type": "application/json",
         },
       });
-      console.log(response.data.data);
+      console.log(response.data.data, "response data");
+      console.log(response.data.data.file, "response data file");
+
       console.log(!response.data.data);
       console.log(Boolean(response.data.data[0].file));
+
       if (!response.data.data) {
         toast("Нет в наличии", { type: "error" });
         <h5>Отправка недоступна. Крайний срок истек.</h5>;
@@ -354,6 +383,8 @@ const ArchiveComponent = () => {
     "Noyabr",
     "Dekabr",
   ];
+
+  const kvartallar = ["кв-1", "кв-2", "кв-3", "кв-4"];
 
   const handleMonthChange = (event) => {
     setSelectedMonth(event.target.value);
@@ -445,20 +476,41 @@ const ArchiveComponent = () => {
                 </option>
               ))}
             </select>
-            <select
-              className="form-control mx-3 rounded border-primary"
-              value={selectedMonth}
-              onChange={handleMonthChange}
-            >
-              <option selected disabled value="">
-                Выберите месяц
-              </option>
-              {months.map((month) => (
-                <option key={month} value={month}>
-                  {month}
+
+            {type == "Налог" ? (
+              <select
+                className="form-control mx-3 rounded border-primary"
+                value={selectedMonth}
+                onChange={handleMonthChange}
+              >
+                <option selected disabled value="">
+                  Выберите квартал
                 </option>
-              ))}
-            </select>
+                {kvartallar.map((month) => (
+                  <option key={month} value={month}>
+                    {month}
+                  </option>
+                ))}
+              </select>
+            ) : (
+              <select
+                className="form-control mx-3 rounded border-primary"
+                value={selectedMonth}
+                onChange={handleMonthChange}
+              >
+                <option selected disabled value="">
+                  Выберите месяц
+                </option>
+                {months.map((month) => (
+                  <option key={month} value={month}>
+                    {month}
+                  </option>
+                ))}
+              </select>
+            )}
+
+            {/* kvartallar */}
+
             <select
               className="form-control mx-3 rounded border-primary"
               onChange={handleYearsChange}
